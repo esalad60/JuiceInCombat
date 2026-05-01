@@ -1,0 +1,6 @@
+lucasZ -- 05/01/26 11:10
+- Added .gitignore
+- Added devlog.txt
+- Added src/
+- Added src/test/ for testing WebGL
+- Added index.html, webgl-demo.js for testing
