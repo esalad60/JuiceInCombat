@@ -10,22 +10,52 @@ const TERRAIN = { // placeholder values
 };
 
 const GRID_SIZE  = 18;
-const TILE_SIZE  = 1.0;  
+const TILE_SIZE  = 1.0;
 const TILE_GAP   = 0.06;
 
 function main() {
   const canvas = document.querySelector("#glCanvas");
   const gl = canvas.getContext("webgl2", {
-    antialias:    true,  
+    antialias:    true,
     depth:        true, // ambient occulsion
     powerPreference: "high-performance",
   });
+  const programInfo = {
+    program: shaderProgram,
+    attribLocations: {
+      vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+    },
+    uniformLocations: {
+      projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+      modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+    },
+  };
+
 }
+
+// Vertex shader program
+const vsSource = `
+    attribute vec4 aVertexPosition;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    void main() {
+      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+    }
+  `;
+// Fragment shader program
+const fsSource = `
+    void main() {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+  `;
+
+
 // Need to add error handling to linking
-function linkShaderObj(gl, vsSource, fsSource) {
+function initShaderProgram(gl, vsSource, fsSource) {
   const vs = compileShader(gl, gl.VERTEX_SHADER,   vsSource);
   const fs = compileShader(gl, gl.FRAGMENT_SHADER, fsSource);
- 
+  if (!fs )
+
   const program = gl.createProgram();
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
@@ -36,12 +66,12 @@ function linkShaderObj(gl, vsSource, fsSource) {
     throw new Error(`Could not compile WebGL program. \n\n${info}`);
     return null
   }
- 
+
   gl.detachShader(program, vs);
   gl.detachShader(program, fs);
   gl.deleteShader(vs);
   gl.deleteShader(fs);
- 
+
   return program;
 }
 
@@ -49,7 +79,7 @@ function compileShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source); // To GPU
   gl.compileShader(shader); // Convert GLSL shader to WebGLProgram data
- 
+
   return shader;
 }
 
