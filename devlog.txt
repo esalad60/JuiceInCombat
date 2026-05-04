@@ -4,3 +4,7 @@ lucasZ -- 05/01/26 11:10
 - Added src/
 - Added src/test/ for testing WebGL
 - Added index.html, webgl-demo.js for testing
+
+lucasZ -- 05/03/26 22:56
+- Added shader shenanigans to webgl-demo.js
+- Simplified index.html
