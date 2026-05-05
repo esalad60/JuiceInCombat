@@ -9,7 +9,7 @@ lucasZ -- 05/03/26 22:56
 - Added shader shenanigans to webgl-demo.js
 - Simplified index.html
 
-lucasZ -- 05/04/26
+lucasZ -- 05/04/26 23:17
 - webgl-demo.js
     - Added error handling to initShaderProgram() + main()
     - Added vsSource (vertex shader source) and fsSource (fragement shader source) variables with matricies
