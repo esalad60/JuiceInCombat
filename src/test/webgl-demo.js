@@ -20,41 +20,46 @@ function main() {
     depth:        true, // ambient occulsion
     powerPreference: "high-performance",
   });
-  const programInfo = {
-    program: shaderProgram,
-    attribLocations: {
-      vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-    },
-    uniformLocations: {
-      projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-      modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-    },
-  };
+
+  if (!gl) {
+    const msg = document.createElement("p");
+    msg.style.cssText = "color: black";
+    msg.textContent = "WebGL2 not available";
+    canvas.parentNode.insertAdjacentElement("afterend", msg);
+    return;
+  }
+
+  const vsSource = `
+
+    uniform mat4 uModelMatrix; // Actual Model rotation, position, etc. Just one now extend to many later
+    uniform mat4 uViewMatrix; // Position of camera in world (3d world relative to camera)
+    uniform mat4 uProjectionMatrix; // Actual field of objects through camera -> screen (clip space) 
+
+    out vec4 vColor;  // passed to fragment shader 
+
+    void main() {
+      gl_Position = uModelMatrix * uViewMatrix * uProjectionMatrix * vec4(aPosition, 1.0);
+      vColor = aColor;
+    }
+  `;
+
+  const fsSource = `
+    precision mediump float; // float16 (?) precision. Balance effiency and detail
+
+    in vec4 vColor; // Apply gradient or smoothing
+    out vec4 fragColor;
+
+    void main() {
+      fragColor = vColor;
+    }
+  `;
 
 }
 
-// Vertex shader program
-const vsSource = `
-    attribute vec4 aVertexPosition;
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
-    void main() {
-      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-    }
-  `;
-// Fragment shader program
-const fsSource = `
-    void main() {
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
-  `;
-
-
-// Need to add error handling to linking
 function initShaderProgram(gl, vsSource, fsSource) {
   const vs = compileShader(gl, gl.VERTEX_SHADER,   vsSource);
   const fs = compileShader(gl, gl.FRAGMENT_SHADER, fsSource);
-  if (!fs )
+  if (!fs || !vs) return null;
 
   const program = gl.createProgram();
   gl.attachShader(program, vs);
@@ -77,7 +82,7 @@ function initShaderProgram(gl, vsSource, fsSource) {
 
 function compileShader(gl, type, source) {
   const shader = gl.createShader(type);
-  gl.shaderSource(shader, source); // To GPU
+  gl.shaderSource(shader, source); // Shader data To GPU
   gl.compileShader(shader); // Convert GLSL shader to WebGLProgram data
 
   return shader;

@@ -8,3 +8,9 @@ lucasZ -- 05/01/26 11:10
 lucasZ -- 05/03/26 22:56
 - Added shader shenanigans to webgl-demo.js
 - Simplified index.html
+
+lucasZ -- 05/04/26
+- webgl-demo.js
+    - Added error handling to initShaderProgram() + main()
+    - Added vsSource (vertex shader source) and fsSource (fragement shader source) variables with matricies
+        - For 3D canera MVP --> change idea (?)
