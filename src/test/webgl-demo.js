@@ -54,6 +54,58 @@ function main() {
     }
   `;
 
+  const projection = mat4.create()
+  mat4.perspective(
+    projection, 
+    (55.0 * Math.PI) / 180.0, // 55 degrees above azimuth
+    canvas.clientWidth / canvas.clientHeight, 
+    0.1, // near clip plane
+    200.0, // far clip plane
+  )
+
+  const halfGrid = (GRID_SIZE * TILE_SIZE) / 2;
+  const cam = {
+    target:    [halfGrid, 0, halfGrid],  // face towards map center
+    azimuth:   Math.PI * 0.3, // start horizontal angle
+    elevation: 0.72, // some degree above horizon
+    radius:    22, // start zoom distance
+    // Constraints (tuned)
+    elevMin: 0.15, 
+    elevMax: 1.45,
+    radMin:  5,
+    radMax:  55,
+  }
+
+  gl.enable(gl.DEPTH_TEST); // Check depth buffer
+  gl.enable(gl.CULL_FACE); // Backface culling
+
+
+  function render() {
+    const view = buildViewMatrix(cam);
+    gl.clearColor(0.04, 0.05, 0.08, 1.0); // polytopia bg
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.uniformMatrix4fv(uViewMatrix, false, view);
+    gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
+  }
+
+}
+
+function buildViewMatrix(cam) {
+  const { radius, azimuth, elevation, target } = cam;
+  const cosEl = Math.cos(elevation);
+
+  // Spherical shape transforms
+  const eye = [
+    target[0] + radius * cosEl * Math.sin(azimuth),
+    target[1] + radius * Math.sin(elevation),
+    target[2] + radius * cosEl * Math.cos(azimuth),
+  ];
+
+  const view = mat4.create();
+  // invert the camera transform (moves the world not camera)
+  mat4.lookAt(view, eye, target, [0, 1, 0]);
+  return view;
 }
 
 function initShaderProgram(gl, vsSource, fsSource) {

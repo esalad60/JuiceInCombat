@@ -32,5 +32,12 @@ evissW -- 05/05/26 22:14
 ethanS - 05/05/26 22:35
  - setup gunicorn and nginx to be able to serve to domain. currently says placeholder "hello world"
 
-ivanC - 05/05/26 23:37
+ivanC -- 05/05/26 23:37
 - add flag.jpg
+
+lucasZ -- 05/06/26 00:21
+- webgl-demo.js
+    - Added basic camera transforms and creation with matricies
+    - Added render (no map yet)
+    - Added projection transform (squishes camera view to screen view)
+    - Added zbuffering and backface culling (improve performance)
