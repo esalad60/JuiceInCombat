@@ -14,3 +14,7 @@ lucasZ -- 05/04/26 23:17
     - Added error handling to initShaderProgram() + main()
     - Added vsSource (vertex shader source) and fsSource (fragement shader source) variables with matricies
         - For 3D canera MVP --> change idea (?)
+
+evissW -- 05/05/26 21:35
+- __init__.py added some libraries
+    - For future p2p connections
