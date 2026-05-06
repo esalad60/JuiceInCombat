@@ -18,3 +18,10 @@ lucasZ -- 05/04/26 23:17
 evissW -- 05/05/26 21:35
 - __init__.py added some libraries
     - For future p2p connections
+
+evissW -- 05/05/26 22:14
+-__init__.py added room functionalities
+    - Create a room
+    - Join a room
+    - Delete room
+    - Disconnect handling
