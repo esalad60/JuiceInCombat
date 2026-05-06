@@ -41,3 +41,6 @@ lucasZ -- 05/06/26 00:21
     - Added render (no map yet)
     - Added projection transform (squishes camera view to screen view)
     - Added zbuffering and backface culling (improve performance)
+
+ivanC -- 05/05/26 10:32
+- configured certificate for website, should now be running on https
