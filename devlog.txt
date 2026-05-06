@@ -15,6 +15,9 @@ lucasZ -- 05/04/26 23:17
     - Added vsSource (vertex shader source) and fsSource (fragement shader source) variables with matricies
         - For 3D canera MVP --> change idea (?)
 
+ivanC -- 05/05/26 11:00
+- added __init__.py and bare minimum website functionality
+
 evissW -- 05/05/26 21:35
 - __init__.py added some libraries
     - For future p2p connections
@@ -25,5 +28,9 @@ evissW -- 05/05/26 22:14
     - Join a room
     - Delete room
     - Disconnect handling
+
 ethanS - 05/05/26 22:35
  - setup gunicorn and nginx to be able to serve to domain. currently says placeholder "hello world"
+
+ivanC - 05/05/26 23:37
+- add flag.jpg
