@@ -25,3 +25,5 @@ evissW -- 05/05/26 22:14
     - Join a room
     - Delete room
     - Disconnect handling
+ethanS - 05/05/26 22:35
+ - setup gunicorn and nginx to be able to serve to domain. currently says placeholder "hello world"
