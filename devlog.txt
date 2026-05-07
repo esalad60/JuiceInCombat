@@ -50,3 +50,5 @@ evissW -- 05/06/26 10:33
 
 ethansS --05/07/26 10:27
 - added a CNAME record for www.juiceincombat.me on namecheap, and additionally, removed potential DO domain serving conflicts... 
+    - This CNAME record we have concluded is what allowed www.juiceincombat.me to serve as a valid domain, as opposed to the default 'A record' [thanks lucas for the advice]
+    - additionally, "juiceincombat.me" redirects to www.juiceincombat.me
