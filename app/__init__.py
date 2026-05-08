@@ -1,7 +1,7 @@
 import random
 from flask import Flask
 from flask_socketio import SocketIO, join_room, leave_room, emit
-from flask import request
+from flask import request as socketio_request
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "gabagoobakey"
