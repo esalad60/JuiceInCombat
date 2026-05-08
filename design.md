@@ -1,8 +1,8 @@
 # System Blueprint (_a.k.a._ "Design Doc")
 
-## TNPG: 
-## project:
-## Target ship date: {2026-06-xx}
+## TNPG: JuiceInCombat
+## project: Juice in Combat
+## Target ship date: {2026-06-05}
 
 ---
 
@@ -13,14 +13,14 @@
 |---|---|---|---|
 | | | | |
 | | | | |
-| | | | |
+Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
 | | | | |
 
 ---
 
 
 # Summary
-{Keep it tight. Concise. 1 sentence. Really need more? 3 max.}
+Strategy game where players can join a room for a 1v1 turn-based combat with units on a grid, where the win condition is capturing the other player's base.
 
 ## Problem Being Solved
 
@@ -29,7 +29,7 @@
 
 Who will use this system?
 
-- ____________________________________
+- People that want to have fun!!!
 - ____________________________________
 
 
@@ -42,9 +42,9 @@ Who will use this system?
 
 ## Core Features (Required for Final Submission)
 Features that **must** be completed:
-1. 
-1. 
-1. 
+1. P2P Turn-based
+1. Rendering our game's frontend
+1. Combat and Movement System
 
 ## Stretch Features (Only if MVP is Complete)
 1. 
