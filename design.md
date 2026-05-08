@@ -14,13 +14,14 @@
 | | | | |
 | | | | |
 Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
+Lucas Zheng | lucasz12@nycstudents.net | Graphics Developer | Front-end Developer
 | | | | |
 
 ---
 
 
 # Summary
-Strategy game where players can join a room for a 1v1 turn-based combat with units on a grid, where the win condition is capturing the other player's base.
+[Insert Title Card] is a 3D turn based tabletop strategy game developed by JuiceInCombat. The game revolves around building economy and production buildings to create troops to destroy the enemy team. The game features researching to unlock powerful troops and better economy buildings, different terrain tiles influencing unit stats, and a wide variety of armies to play from. The games are 1v1s and players win by capturing the enemy capital. 
 
 ## Problem Being Solved
 
@@ -30,11 +31,12 @@ Strategy game where players can join a room for a 1v1 turn-based combat with uni
 Who will use this system?
 
 - People that want to have fun!!!
-- ____________________________________
+- People who are bored
 
 
 ## Why This Project Matters
 
+Poeple want to have fun. 
 
 ---
 
@@ -45,11 +47,12 @@ Features that **must** be completed:
 1. P2P Turn-based
 1. Rendering our game's frontend
 1. Combat and Movement System
+1. Buildings
+1. At least two armies
 
 ## Stretch Features (Only if MVP is Complete)
-1. 
-1. 
-1. 
+1. Balancing
+1. Accounts 
 
 ## Explicit Non-Goals
 
@@ -63,10 +66,10 @@ Features intentionally excluded:
 
 | Layer | Selected Tool |
 |---|---|
-| Backend Framework | Flask / Node.js (choose one) |
-| Frontend Framework | none / bootstrap / foundation / tailwind / other? (seek clearance) |
-| Database | SQLite / MongoDB |
-| Authentication | Flask sessions unless you have good reason/need to deviate |
+| Backend Framework | Flask |
+| Frontend Framework | tailwind |
+| Database | SQLite |
+| Authentication |  |
 | ORM / DB Library | optionally SQLAlchemy; initiate clearance protocol if interested |
 
 ## Why This Stack Was Chosen

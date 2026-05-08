@@ -89,6 +89,31 @@ function main() {
     gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
   }
 
+  // Controls
+  document.getElementById("zoom").addEventListener()
+  document.getElementById("orbit").addEventListener()
+}
+
+function makeTile() {
+  const verticies = [
+   // Front face
+  -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
+
+  // Back face
+  -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0,
+
+  // Top face
+  -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0,
+
+  // Bottom face
+  -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
+
+  // Right face
+  1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0,
+
+  // Left face
+  -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0,
+  ]
 }
 
 function buildViewMatrix(cam) {
