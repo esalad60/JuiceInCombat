@@ -72,5 +72,5 @@ lucasZ -- 05/08/26 23:32
 - __init__.py 
     - Made home point towards index.html
 
-lucasZ -- 05/08/26
+lucasZ -- 05/08/26 23:59
 - Moved test files to static folder in app
