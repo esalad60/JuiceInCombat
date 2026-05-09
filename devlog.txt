@@ -71,3 +71,6 @@ lucasZ -- 05/08/26 23:32
     - Made a decent page with colors from polytopia
 - __init__.py 
     - Made home point towards index.html
+
+lucasZ -- 05/08/26
+- Moved test files to static folder in app
