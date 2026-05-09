@@ -2,6 +2,7 @@ import random
 from flask import Flask
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask import request as socketio_request
+from flask import send_from_directory
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "gabagoobakey"
@@ -66,7 +67,7 @@ def handle_disconnect():
 
 @app.route("/")
 def home():
-    return "page is up"
+    return send_from_directory("static", "index.html")
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)

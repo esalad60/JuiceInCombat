@@ -48,7 +48,26 @@ ivanC -- 05/05/26 10:32
 evissW -- 05/06/26 10:33
 - edited imports to fix bug
 
-ethansS --05/07/26 10:27
+ethansS -- 05/07/26 10:27
 - added a CNAME record for www.juiceincombat.me on namecheap, and additionally, removed potential DO domain serving conflicts... 
     - This CNAME record we have concluded is what allowed www.juiceincombat.me to serve as a valid domain, as opposed to the default 'A record' [thanks lucas for the advice]
     - additionally, "juiceincombat.me" redirects to www.juiceincombat.me
+
+lucasZ -- 05/08/26 23:32
+- webgl-demo.js
+    - Added map creation to render() in main()
+    - Made shader buffers #version 300 es for modern syntax in main()
+    - Added makeTile() to make tiles
+        - Make sure to know VAO and VBO interactions with GPU
+    - Fixed MVP interaction with program (order matters in PVM)
+    - Added comments so I don't forget interactions with GPU
+    - Added event listeners for camera control (pan, zoom, orbit)
+    - Added hash2(), smooth_noise(), and fbm() to make a map actually look like a map
+        - Specifically hash2() breaks down coords into unique float for smooth_noise() to reconstruct in blobs (like perlin noise) for realism, and fbm() for detail by stacking smooth_noise()
+    - Added build_map() to build map
+    - Fixed bugs in general along with adding error handling
+    - And some other stuff i forgor
+- index.html
+    - Made a decent page with colors from polytopia
+- __init__.py 
+    - Made home point towards index.html
