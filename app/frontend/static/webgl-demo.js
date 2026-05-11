@@ -30,7 +30,8 @@ function main() {
     return;
   }
 
-  const vsSource = `#version 300 es // Modern syntax
+  const vsSource = `#version 300 es 
+    // Modern syntax 
 
     // Tell GPU where it is
     layout(location = 0) in vec3 aPosition;

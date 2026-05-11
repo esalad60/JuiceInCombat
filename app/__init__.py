@@ -67,9 +67,13 @@ def handle_disconnect():
         else:
             emit("player_disconnected", {"room_code": room_code}, to=room_code)
 
+@app.route("/frontend/static/<path:filename>")
+def serve_static(filename):
+    return send_from_directory(os.path.join(BASE_DIR, "frontend/static"), filename)
+
 @app.route("/")
 def home():
-    return send_from_directory(os.path.join(BASE_DIR, "frontend/static"), "index.html")
+    return serve_static("index.html")
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
