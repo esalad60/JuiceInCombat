@@ -11,8 +11,6 @@
 
 | Name | Email | Primary Role | Secondary Role |
 |---|---|---|---|
-| | | | |
-| | | | |
 Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
 Lucas Zheng | lucasz12@nycstudents.net | Graphics Developer | Front-end Developer
 Ethan Saldanha | ethans201@nycstudents.net | Project Manager | Backend Developer
@@ -63,7 +61,7 @@ Features that **must** be completed:
 1. Fleshed out research trees and units
 1. Multiple maps
 1. Fleshed out terrains/generation
-1. Elo
+1. Skill-based Matchmaking (Elo system)
 
 ## Explicit Non-Goals
 
@@ -99,8 +97,8 @@ Each member must own meaningful deliverables.
 |---|---|---|---|
 |Ethan|Backend Game Logic|Frontend Animation|Working serverside registering of units in battle using rudimentary array displays|
 |Eviss|Working Server|Working Server calls|Server-Player and Peer to Peer communication|
-|Lucas|Game Rendering|Gameplay|Render the game, units, and make the gamplay happen|
-| | | | |
+|Lucas|Game Rendering|Gameplay|Render the game, units, and make the gameplay happen|
+|Ivan |UI Design and Function|Game Balancing|Allow the player easily play the game while making it fun|
 
 ---
 
@@ -123,44 +121,40 @@ As a gamer, I want to game so that I can gain dopamine
 As a skibidi toilet fan, I want to have fun so that I will be able to wait for the episode 80 of skibid toilet to come out
 
 ### eg2
-As a __________, I want to __________ so that...
+As a slightly competetive person, I want to crush my oppenents so that I can gain gratification from being superior to them
 
 
 
 # Database Design
-
 {Insert your table/document organizational structure here}
-
 
 # Testing Plan
 {Delineate here your plan for testing each component}
-
-# Timeline
-Week 1 Goals: May 17
-Finalize unit types, building types, and basic game rules
-Create Flask project structure
-Set up SQLite database
-Build basic room creation and joining system
-Create a simple test map using arrays
-Week 2 Goals: May 24
-All on backend:
-  Implement unit movement
-  Implement combat system
-  Implement basic economy and building income
-Start frontend game board rendering
-Connect frontend buttons to backend routes
-Week 3 Goals: May 25–May 31
-Add at least five working unit types
-Add at least two armies
-Add basic research tree/tutorial (?)
-Improve 3D map rendering and UI
-Test full match from start to finish
-Final Patches: June 5
-Fix bugs
-Balance unit stats
-Clean up UI
-Finish documentation
-Prepare final presentation/demo
+#### Week 1 Goals: May 17
+- Finalize unit types, building types, and basic game rules
+- Create Flask project structure
+- Set up SQLite database
+- Build basic room creation and joining system
+- Create a simple test map using arrays
+#### Week 2 Goals: May 24
+- All on backend:
+    - Implement unit movement
+    - Implement combat system
+    - Implement basic economy and building income
+- Start frontend game board rendering
+- Connect frontend buttons to backend routes
+#### Week 3 Goals: May 25–May 31
+- Add at least five working unit types
+- Add at least two armies
+- Add basic research tree/tutorial (?)
+- Improve 3D map rendering and UI
+- Test full match from start to finish
+#### Final Patches: June 5
+- Fix bugs
+- Balance unit stats
+- Clean up UI
+- Finish documentation
+- Prepare final presentation/demo
 
 # Completion Criteria (_a.k.a._ "Definition of 'Done'")
 Project is considered complete when all of the following are true:
@@ -189,4 +183,5 @@ Terrain will provide some kind of stats, defense, sight etc,
 We will use a lot of OOP and python classes
 
 # Other
+
 
