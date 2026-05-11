@@ -71,6 +71,7 @@ Features intentionally excluded:
 - More than one player on each team in combat
 - AI-controlled armies
 - A campaign of sorts
+- Elo and Sidegrades of extra units
 
 ---
 
@@ -83,6 +84,7 @@ Features intentionally excluded:
 | Database | SQLite |
 | Authentication |  |
 | ORM / DB Library | optionally SQLAlchemy; initiate clearance protocol if interested |
+| Server | FlaskSocketIO
 
 ## Why This Stack Was Chosen
 We prefer to work with technology that we know the best, primarily since a lot of what we're planning on doing requires learning/implementing other software that not all of us are familiar with. By using Flask, tailwing, SQLite we can limit the amount of variables that few of us know and thus can work together more fluidly.
@@ -96,7 +98,7 @@ Each member must own meaningful deliverables.
 | Team Member | Primary Ownership | Secondary Ownership | Specific Deliverables |
 |---|---|---|---|
 |Ethan|Backend Game Logic|Frontend Animation|Working serverside registering of units in battle using rudimentary array displays|
-| | | | |
+|Eviss|Working Server|Working Server calls|Server-Player and Peer to Peer communication|
 | | | | |
 | | | | |
 
@@ -115,7 +117,7 @@ Each member must own meaningful deliverables.
 
 ## Key User Stories
 ### eg0
-As a __________, I want to __________ so that...
+As a gamer, I want to game so that I can gain dopamine
 
 ### eg1
 As a __________, I want to __________ so that...
