@@ -85,7 +85,7 @@ Features intentionally excluded:
 | ORM / DB Library | optionally SQLAlchemy; initiate clearance protocol if interested |
 
 ## Why This Stack Was Chosen
-{your summary/recap of team discussions here}
+We prefer to work with technology that we know the best, primarily since a lot of what we're planning on doing requires learning/implementing other software that not all of us are familiar with. By using Flask, tailwing, SQLite we can limit the amount of variables that few of us know and thus can work together more fluidly.
 
 ---
 
@@ -95,7 +95,7 @@ Each member must own meaningful deliverables.
 
 | Team Member | Primary Ownership | Secondary Ownership | Specific Deliverables |
 |---|---|---|---|
-| | | | |
+|Ethan|Backend Game Logic|Frontend Animation|Working serverside registering of units in battle using rudimentary array displays|
 | | | | |
 | | | | |
 | | | | |
