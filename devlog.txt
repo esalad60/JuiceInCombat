@@ -79,7 +79,7 @@ evissW -- 05/10/26 22:59
 - Edited our plan
 
 lucasZ -- 05/10/26 23:12
-- Added general skeleton of project
+- Added general skeleton of project with placeholders and actual files gonna do
 - build_db.py 
     - Added tables for users
 - __init__.py, index.html
