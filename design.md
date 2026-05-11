@@ -104,22 +104,13 @@ Each member must own meaningful deliverables.
 
 # Component map
 
-{Insert your mermaid(or equivalent)-generated diagram here}
+
+
 
 # Site map
 
-{Insert your mermaid(or equivalent)-generated diagram here}
-eg...
-```
-Landing Page
-   ↓
-Login / Register
-   ↓
-Dashboard
-   ├── Feature A
-   ├── Feature B
-   └── Profile
-```
+<img width="2108" height="1113" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/bd170e42-fe14-4f5d-8bb3-4030057ed86f" />
+
 
 ## Key User Stories
 ### eg0
