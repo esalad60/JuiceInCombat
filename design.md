@@ -104,6 +104,7 @@ Each member must own meaningful deliverables.
 
 # Component map
 
+<img width="3522" height="1380" alt="mermaid-diagram (2)" src="https://github.com/user-attachments/assets/fd0052fd-5e4a-437c-ad11-64fd851109e2" />
 
 
 
@@ -133,24 +134,58 @@ As a __________, I want to __________ so that...
 {Delineate here your plan for testing each component}
 
 # Timeline
-## Week 1 Goals:
-## Week 2 Goals:
-## Week 3 Goals:
-## Internal Deadlines:
-{List milestones your team has identified, in the order they must be completed. Set a target completion date for each.}
-
+Week 1 Goals: May 17
+Finalize unit types, building types, and basic game rules
+Create Flask project structure
+Set up SQLite database
+Build basic room creation and joining system
+Create a simple test map using arrays
+Week 2 Goals: May 24
+All on backend:
+  Implement unit movement
+  Implement combat system
+  Implement basic economy and building income
+Start frontend game board rendering
+Connect frontend buttons to backend routes
+Week 3 Goals: May 25–May 31
+Add at least five working unit types
+Add at least two armies
+Add basic research tree/tutorial (?)
+Improve 3D map rendering and UI
+Test full match from start to finish
+Final Patches: June 5
+Fix bugs
+Balance unit stats
+Clean up UI
+Finish documentation
+Prepare final presentation/demo
 
 # Completion Criteria (_a.k.a._ "Definition of 'Done'")
 Project is considered complete when all of the following are true:
-1.
-1.
-1.
+1. Two players can create or join a room and start a match.
+2. The game displays a working 3D map.
+3. Players can move units, attack enemies, and end their turns.
+4. Buildings generate income and allow players to create units.
+5. At least five different units are implemented.
+6. A basic research tree unlocks units or upgrades.
+7. A player can win by capturing the enemy capital.
+
 
 # Open Questions
-{Delineate anything undecided here}
+1. Balancing? Should we have a research tree in general or unlock different equal value army templates?
+2. How much of the game should be stored locally? [i.e, does the client recieve the entire map or just what their units can see]
+3. Terrain generation... maps in general, how?
 
 # Appendix
-{Any relevant info that is useful but would have interrupted narrative flow above, or cluttered the information portrayed}
+Basic 5 units include the following
+1. Standard infantry
+2. Standard artillery
+3. Anti-tank infantry
+4. Armored unit
+5. Supply unit
+Terrain will provide some kind of stats, defense, sight etc,
+We will use a lot of OOP and python classes
+
 
 # Other
-{Put here anything that did not sensibly fit under above headings. This section will inform evolution of SoftDev.}
+
