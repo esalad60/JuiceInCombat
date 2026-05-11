@@ -77,3 +77,11 @@ lucasZ -- 05/08/26 23:59
 
 evissW -- 05/10/26 22:59
 - Edited our plan
+
+lucasZ -- 05/10/26 23:12
+- Added general skeleton of project
+- build_db.py 
+    - Added tables for users
+- __init__.py, index.html
+    - Edited paths to current structure
+    - Added absolute pathing to __init__.py (so app doesn't crash when python app/__init__.py)
