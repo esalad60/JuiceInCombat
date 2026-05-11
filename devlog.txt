@@ -86,3 +86,11 @@ lucasZ -- 05/10/26 23:12
     - Edited paths to current structure
     - Added absolute pathing to __init__.py (so app doesn't crash when python app/__init__.py)
 - Updated design.md
+
+evissW -- 05/11/26 17:38
+- Fixed server bugs where disconnect would not close room
+- Fixed two servers starting at once when initializing
+- Delete room checks who is the deleter
+- Added more to Room including who is in it
+- Added GameState (the board)
+
