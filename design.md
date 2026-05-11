@@ -16,10 +16,10 @@
 Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
 Lucas Zheng | lucasz12@nycstudents.net | Graphics Developer | Front-end Developer
 Ethan Saldanha | ethans201@nycstudents.net | Project Manager | Backend Developer
+Ivan Chen | ivanc178@nycstudents.net | Backend Developer | Front-end Developer
 | | | | |
 
 ---
-
 
 # Summary
 JuiceInCombat [name subject to change] is a 3D turn based tabletop strategy game developed by JuiceInCombat. The game revolves around building (or utilizing preplaced) economy and production buildings to create troops to destroy the enemy team. The game will feature researching to unlock powerful troops and better economy buildings, different terrain tiles influencing unit stats, and a wide variety of army configurations to play from. The games are 1v1s and players win by capturing the enemy capital. 
@@ -34,7 +34,6 @@ Who will use this system?
 - People that want to have fun!!!
 - People who are bored
 - People who like fair TBS games
-
 
 ## Why This Project Matters
 
@@ -64,6 +63,7 @@ Features that **must** be completed:
 1. Fleshed out research trees and units
 1. Multiple maps
 1. Fleshed out terrains/generation
+1. Elo
 
 ## Explicit Non-Goals
 
@@ -71,7 +71,7 @@ Features intentionally excluded:
 - More than one player on each team in combat
 - AI-controlled armies
 - A campaign of sorts
-- Elo and Sidegrades of extra units
+- Sidegrades of extra units
 
 ---
 
@@ -82,7 +82,7 @@ Features intentionally excluded:
 | Backend Framework | Flask |
 | Frontend Framework | tailwind |
 | Database | SQLite |
-| Authentication |  |
+| Authentication | username/password |
 | ORM / DB Library | optionally SQLAlchemy; initiate clearance protocol if interested |
 | Server | FlaskSocketIO
 
@@ -99,7 +99,7 @@ Each member must own meaningful deliverables.
 |---|---|---|---|
 |Ethan|Backend Game Logic|Frontend Animation|Working serverside registering of units in battle using rudimentary array displays|
 |Eviss|Working Server|Working Server calls|Server-Player and Peer to Peer communication|
-| | | | |
+|Lucas|Game Rendering|Gameplay|Render the game, units, and make the gamplay happen|
 | | | | |
 
 ---
@@ -120,7 +120,7 @@ Each member must own meaningful deliverables.
 As a gamer, I want to game so that I can gain dopamine
 
 ### eg1
-As a __________, I want to __________ so that...
+As a skibidi toilet fan, I want to have fun so that I will be able to wait for the episode 80 of skibid toilet to come out
 
 ### eg2
 As a __________, I want to __________ so that...
@@ -182,12 +182,11 @@ Project is considered complete when all of the following are true:
 Basic 5 units include the following
 1. Standard infantry
 2. Standard artillery
-3. Anti-tank infantry
+3. Anti-armor infantry
 4. Armored unit
 5. Supply unit
 Terrain will provide some kind of stats, defense, sight etc,
 We will use a lot of OOP and python classes
-
 
 # Other
 

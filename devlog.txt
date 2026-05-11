@@ -85,3 +85,4 @@ lucasZ -- 05/10/26 23:12
 - __init__.py, index.html
     - Edited paths to current structure
     - Added absolute pathing to __init__.py (so app doesn't crash when python app/__init__.py)
+- Updated design.md
