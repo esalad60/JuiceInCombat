@@ -15,16 +15,17 @@
 | | | | |
 Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
 Lucas Zheng | lucasz12@nycstudents.net | Graphics Developer | Front-end Developer
+Ethan Saldanha | ethans201@nycstudents.net | Project Manager | Backend Developer
 | | | | |
 
 ---
 
 
 # Summary
-[Insert Title Card] is a 3D turn based tabletop strategy game developed by JuiceInCombat. The game revolves around building economy and production buildings to create troops to destroy the enemy team. The game features researching to unlock powerful troops and better economy buildings, different terrain tiles influencing unit stats, and a wide variety of armies to play from. The games are 1v1s and players win by capturing the enemy capital. 
+JuiceInCombat [name subject to change] is a 3D turn based tabletop strategy game developed by JuiceInCombat. The game revolves around building (or utilizing preplaced) economy and production buildings to create troops to destroy the enemy team. The game will feature researching to unlock powerful troops and better economy buildings, different terrain tiles influencing unit stats, and a wide variety of army configurations to play from. The games are 1v1s and players win by capturing the enemy capital. 
 
 ## Problem Being Solved
-
+Lack of a properly balanced tabletop turn-based strategy game with a good feel
 
 ## Target Users
 
@@ -32,15 +33,22 @@ Who will use this system?
 
 - People that want to have fun!!!
 - People who are bored
+- People who like fair TBS games
 
 
 ## Why This Project Matters
 
-Poeple want to have fun. 
+Poeple want to have fun. People desire well-built turn-based strategy games. 
 
 ---
 
 # Minimum Viable Product (MVP) Scope
+- At least one working 3D map and rendering
+- Five or more different units, including a basic supply unit
+- Working income/building models and implementation
+- Some terrain (even if just plains)
+- A working room-based matchmaking system
+- A rudimentary research tree for unlocking said units
 
 ## Core Features (Required for Final Submission)
 Features that **must** be completed:
@@ -51,14 +59,18 @@ Features that **must** be completed:
 1. At least two armies
 
 ## Stretch Features (Only if MVP is Complete)
-1. Balancing
-1. Accounts 
+1. Even more balancing
+1. Accounts
+1. Fleshed out research trees and units
+1. Multiple maps
+1. Fleshed out terrains/generation
 
 ## Explicit Non-Goals
 
 Features intentionally excluded:
-- 
-- 
+- More than one player on each team in combat
+- AI-controlled armies
+- A campaign of sorts
 
 ---
 
