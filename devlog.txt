@@ -99,3 +99,6 @@ ethanS -- 05/12/26 12:10
 
 lucasZ -- 05/12/26 10:57
 - Updated project skeleton
+
+ivanC -- 05/12/26 10:59
+- build_db.py now makes the db file
