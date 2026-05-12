@@ -1,4 +1,5 @@
 import os
+import server
 from flask import Flask, send_from_directory
 from flask_socketio import SocketIO
 

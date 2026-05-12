@@ -102,3 +102,9 @@ lucasZ -- 05/12/26 10:57
 
 ivanC -- 05/12/26 10:59
 - build_db.py now makes the db file
+
+evissW -- 05/12/26 17:51
+- Added fog function in server.py
+- Seperated into two files for clarity
+  - server.py for server related functions
+  - init.py for actually initializing
