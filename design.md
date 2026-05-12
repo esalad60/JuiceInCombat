@@ -163,12 +163,14 @@ As a slightly competetive person, I want to crush my oppenents so that I can gai
 # Completion Criteria (_a.k.a._ "Definition of 'Done'")
 Project is considered complete when all of the following are true:
 1. Two players can create or join a room and start a match.
-2. The game displays a working 3D map.
-3. Players can move units, attack enemies, and end their turns.
-4. Buildings generate income and allow players to create units.
-5. At least five different units are implemented.
-6. A basic research tree unlocks units or upgrades.
-7. A player can win by capturing the enemy capital.
+2. The game displays a working 3D map. Working here means the map displays terrain, units, and buildings in their correct positions without graphical errors.
+3. Players can move unit.
+4. Units can attack enemies
+5. Players can end their turns and win/lose.
+6. Buildings generate income and allow players to create units.
+7. At least five different units are implemented.
+8. A basic research tree unlocks units or upgrades.
+9. A player can win by capturing the enemy capital.
 
 
 # Open Questions
