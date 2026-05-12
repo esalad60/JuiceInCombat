@@ -94,3 +94,6 @@ evissW -- 05/11/26 17:38
 - Added more to Room including who is in it
 - Added GameState (the board)
 
+ethanS -- 05/12/26 12:10
+- Updated design doc to be more in compliance
+
