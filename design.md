@@ -14,7 +14,7 @@
 Eviss Wu | evissw@nycstudents.net | Server-side Developer | Backend Developer
 Lucas Zheng | lucasz12@nycstudents.net | Graphics Developer | Front-end Developer
 Ethan Saldanha | ethans201@nycstudents.net | Project Manager | Backend Developer
-Ivan Chen | ivanc178@nycstudents.net | Backend Developer | Front-end Developer
+Ivan Chen | ivanc178@nycstudents.net | Logic Developer |Back-end Developer
 | | | | |
 
 ---
@@ -29,7 +29,7 @@ Lack of a properly balanced tabletop turn-based strategy game with a good feel
 
 Who will use this system?
 
-- People that want to have fun!!!
+- People who want to have fun!!!
 - People who are bored
 - People who like fair TBS games
 
@@ -56,7 +56,7 @@ Features that **must** be completed:
 1. At least two armies
 
 ## Stretch Features (Only if MVP is Complete)
-1. Even more balancing
+1. Attributes/complex balancing modifiers
 1. Accounts
 1. Fleshed out research trees and units
 1. Multiple maps
@@ -80,8 +80,10 @@ Features intentionally excluded:
 | Backend Framework | Flask |
 | Frontend Framework | tailwind |
 | Database | SQLite |
-| Authentication | username/password |
+| Authentication | username/password, flask cookies and sessions|
 | ORM / DB Library | optionally SQLAlchemy; initiate clearance protocol if interested |
+| Connection | WebGL | 
+| 3D rendering/animation | Three.js |
 | Server | FlaskSocketIO
 
 ## Why This Stack Was Chosen
@@ -98,19 +100,21 @@ Each member must own meaningful deliverables.
 |Ethan|Backend Game Logic|Frontend Animation|Working serverside registering of units in battle using rudimentary array displays|
 |Eviss|Working Server|Working Server calls|Server-Player and Peer to Peer communication|
 |Lucas|Game Rendering|Gameplay|Render the game, units, and make the gameplay happen|
-|Ivan |UI Design and Function|Game Balancing|Allow the player easily play the game while making it fun|
+|Ivan |UI Design and Function|Game Balancing|Logic behind unit behavior and balancing|
 
 ---
 
 # Component map
 
-<img width="3522" height="1380" alt="mermaid-diagram (2)" src="https://github.com/user-attachments/assets/fd0052fd-5e4a-437c-ad11-64fd851109e2" />
+<img width="7192" height="1416" alt="mermaid-diagram (3)" src="https://github.com/user-attachments/assets/a18c3548-1eef-469f-b307-392e0d824964" />
+
 
 
 
 # Site map
 
-<img width="2108" height="1113" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/bd170e42-fe14-4f5d-8bb3-4030057ed86f" />
+<img width="1511" height="1507" alt="mermaid-diagram (4)" src="https://github.com/user-attachments/assets/bff6451d-a0aa-46b0-907a-8fe35a4d59be" />
+
 
 
 ## Key User Stories
@@ -133,7 +137,7 @@ As a slightly competetive person, I want to crush my oppenents so that I can gai
 #### Week 1 Goals: May 17
 - Finalize unit types, building types, and basic game rules
 - Create Flask project structure
-- Set up SQLite database
+- Test SQLite database
 - Build basic room creation and joining system
 - Create a simple test map using arrays
 #### Week 2 Goals: May 24
