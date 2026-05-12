@@ -4,11 +4,14 @@ from flask import Flask
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask import request as socketio_request
 from flask import send_from_directory
+from app.routes.auth import bp
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "gabagoobakey"
 socketio = SocketIO(app, cors_allowed_origins="*")
 BASE_DIR = os.path.dirname(__file__)
+
+app.register_blueprint(user_bp, url_prefix='')
 
 rooms = {}
 
@@ -97,6 +100,9 @@ def serve_static(filename):
 @app.route("/")
 def home():
     return serve_static("index.html")
+
+@app.route("/login")
+
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
