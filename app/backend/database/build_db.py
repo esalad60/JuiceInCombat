@@ -11,7 +11,7 @@ TABLES = """
     CREATE TABLE IF NOT EXISTS users (
         id            INTEGER PRIMARY KEY AUTOINCREMENT,
         username      TEXT    NOT NULL UNIQUE COLLATE NOCASE,
-        password_hash TEXT    NOT NULL, -- Do this so we cant see password (good practice)
+        PASSWORD      TEXT    NOT NULL, -- Do this so we cant see password (good practice)
         elo           INTEGER NOT NULL DEFAULT 1000
     );
 """

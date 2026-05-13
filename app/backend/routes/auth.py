@@ -3,7 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 bp = Blueprint('auth', __name__, url_prefix='')
-DB_FILE="../data/data.db"
+DB_FILE="data.db"
+db = sqlite3.connect(DB_FILE); # remove later
+db.close(); # test, remove later
 
 @bp.get('/register')
 def register_get():
@@ -58,7 +60,7 @@ def post_login():
         flash("Username incorrect or not found", 'error')
     db.close()
     return redirect(url_for('auth.render_login'))
-    
+
 @bp.get('/logout')
 def render_logout():
     session.pop('username', None)
