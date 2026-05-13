@@ -32,7 +32,7 @@ def render_homepage():
 # def login_page():
     # return serve_static("login.html")
 
-import app.server
+from . import server
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)
