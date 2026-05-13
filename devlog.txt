@@ -49,7 +49,7 @@ evissW -- 05/06/26 10:33
 - edited imports to fix bug
 
 ethansS -- 05/07/26 10:27
-- added a CNAME record for www.juiceincombat.me on namecheap, and additionally, removed potential DO domain serving conflicts... 
+- added a CNAME record for www.juiceincombat.me on namecheap, and additionally, removed potential DO domain serving conflicts...
     - This CNAME record we have concluded is what allowed www.juiceincombat.me to serve as a valid domain, as opposed to the default 'A record' [thanks lucas for the advice]
     - additionally, "juiceincombat.me" redirects to www.juiceincombat.me
 
@@ -69,7 +69,7 @@ lucasZ -- 05/08/26 23:32
     - And some other stuff i forgor
 - index.html
     - Made a decent page with colors from polytopia
-- __init__.py 
+- __init__.py
     - Made home point towards index.html
 
 lucasZ -- 05/08/26 23:59
@@ -80,7 +80,7 @@ evissW -- 05/10/26 22:59
 
 lucasZ -- 05/10/26 23:12
 - Added general skeleton of project with placeholders and actual files gonna do
-- build_db.py 
+- build_db.py
     - Added tables for users
 - __init__.py, index.html
     - Edited paths to current structure
@@ -109,7 +109,12 @@ evissW -- 05/12/26 17:51
   - server.py for server related functions
   - init.py for actually initializing
 
-ethanS -- 05/12 11:10
+ethanS -- 05/12 23:10
 - attempted to add primitive login
-- current errors: internal server error attributed to lack of DB initilization 
+- current errors: internal server error attributed to lack of DB initilization
 - error with routing imports
+
+ivanC -- 05/13/26 10:42
+- fixed issues with attempting to host the server locally
+- resolved database errors
+- modified app to automatically run build_db on init
