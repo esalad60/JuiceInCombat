@@ -1,5 +1,4 @@
 import os
-import server
 from flask import Flask, send_from_directory, session, render_template, redirect, url_for
 from flask_socketio import SocketIO
 
@@ -10,7 +9,7 @@ app.config["SECRET_KEY"] = "gabagoobakey"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-from app.routes.auth import bp as auth_bp
+from app.backend.routes.auth import bp as auth_bp
 app.register_blueprint(auth_bp, url_prefix="")
 
 @app.route("/frontend/static/<path:filename>")
