@@ -1,0 +1,41 @@
+
+    <form
+      method="POST"
+      action="{{ url_for('auth.post_register') }}"
+    >
+        <label for="username"
+          >Username</label
+        >
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          placeholder="Username"
+        />
+        <label 
+          >Password</label
+        >
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          placeholder="Password"
+        />
+        <label for="confirmpwd"
+          >Confirm Password</label
+        >
+        <input
+          id="confirmpwd"
+          name="confirmpwd"
+          type="password"
+          required
+          placeholder="Confirm Password"
+        />
+
+        <button
+          type="submit"
+        >
+          Sign Up
+        </button>

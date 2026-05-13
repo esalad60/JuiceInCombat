@@ -1,0 +1,34 @@
+<h1> login </h1>
+
+
+
+    <form
+      method="POST"
+      action="{{ url_for('auth.post_login') }}"
+    >
+        <label for="username"
+          >Username</label
+        >
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          placeholder="Username"
+        />
+        <label for="password"
+          >Password</label
+        >
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          placeholder="Password"
+        />
+
+        <button
+          type="submit"
+        >
+          Log In
+        </button>
