@@ -108,3 +108,8 @@ evissW -- 05/12/26 17:51
 - Seperated into two files for clarity
   - server.py for server related functions
   - init.py for actually initializing
+
+ethanS -- 05/12 11:10
+- attempted to add primitive login
+- current errors: internal server error attributed to lack of DB initilization 
+- error with routing imports
