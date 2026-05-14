@@ -1,0 +1,27 @@
+
+
+{
+  "units": [
+    {
+      "Name": "Grunt",
+      "Health": "1",
+      "Damage": "1",
+      "Sight": "1",
+      "Movement": "1"
+    },
+    {
+      "Name": "Gruntv2",
+      "Health": "1",
+      "Damage": "1",
+      "Sight": "1",
+      "Movement": "1"
+    },
+    {
+      "Name": "Gruntv3",
+      "Health": "1",
+      "Damage": "1",
+      "Sight": "1",
+      "Movement": "1"
+    }
+  ]
+}
