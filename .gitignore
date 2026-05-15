@@ -122,6 +122,7 @@ _*
 # Windows Files #
 Thumbs.db
 ehthumbs.db
+*.db*
 
 # Filenames with special characters
 **/*[\\/\:;*?!'"<>|$º•¶§∞¢£]*
