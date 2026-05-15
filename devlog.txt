@@ -118,3 +118,6 @@ ivanC -- 05/13/26 10:42
 - fixed issues with attempting to host the server locally
 - resolved database errors
 - modified app to automatically run build_db on init
+
+lucasZ -- 05/15/26 09:08
+- Added more game files

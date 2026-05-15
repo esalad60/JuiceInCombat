@@ -1,0 +1,1 @@
+## Game state here (verification with server)
