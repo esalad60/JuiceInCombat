@@ -1,27 +1,47 @@
-
-
 {
-  "units": [
-    {
-      "Name": "Grunt",
-      "Health": "1",
-      "Damage": "1",
-      "Sight": "1",
-      "Movement": "1"
-    },
-    {
-      "Name": "Gruntv2",
-      "Health": "1",
-      "Damage": "1",
-      "Sight": "1",
-      "Movement": "1"
-    },
-    {
-      "Name": "Gruntv3",
-      "Health": "1",
-      "Damage": "1",
-      "Sight": "1",
-      "Movement": "1"
+  "name": "Commandos",
+      "health": 150,
+      "sight": "2",
+      "movement": "2",
+      "weapons": [
+        {
+          "name": "Shoot",
+          "description": "M4 chambered in 5.56x45mm something something something",
+          "type": "bullet",
+          "damage": 35,
+          "ap": 5,
+          "range": 1,
+          "perks": [
+            {
+              "type": "Mark",
+              "duration": "2"
+            }
+          ]
+        },
+        {
+          "name": "Grenade",
+          "description": "An incendiary grenade",
+          "type": "explosive",
+          "damage": 40,
+          "ap": 2,
+          "range": 2,
+          "perks": [
+            {
+              "type": "incendiary",
+              "duration": 1
+            }
+          ]
+        }
+      ],
+      "traits": [
+        {
+          "type": "Regen",
+          "amount": 10
+        },
+        {
+          "type": "Radio",
+          "range": 2
+        }
+      ] 
     }
-  ]
-}
+
