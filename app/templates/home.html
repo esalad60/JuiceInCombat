@@ -5,10 +5,17 @@
         socket.emit('my event', {data: 'I\'m connected!'});
     });
 </script>
-<h1> hi </h1>
+<h1> home </h1>
 <button type="button" onclick="
   var socket = io();
   socket.on('connect', function() {
       socket.emit('create_room', {data: ''});
+      alert('room created');
   });">Create Room</button><p>
-<button type="submit">Join Room</button> Room code: <input type="text">
+<button type="submit" onclick="
+var socket = io();
+var code = document.getElementById('room_code').value;
+socket.on('connect', function() {
+  socket.emit('join_room', {data: code});
+  alert('room with code ' + code + ' joined');
+});">Join Room</button> Room code: <input type="text" id="room_code">
