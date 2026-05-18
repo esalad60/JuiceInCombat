@@ -58,6 +58,7 @@ def on_create_room():
     rooms[room_code] = new_room(sid)
     player_room[sid] = room_code
     join_room(room_code)
+    print(room_code);
     emit("room_created", {"room_code": room_code})
 
 

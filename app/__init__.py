@@ -9,7 +9,7 @@ app.config["SECRET_KEY"] = "gabagoobakey"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-from backend.database import build_db 
+from backend.database import build_db
 from backend.routes.auth import bp as auth_bp
 app.register_blueprint(auth_bp, url_prefix="")
 
@@ -29,9 +29,9 @@ def render_homepage():
     else:
         return redirect(url_for("auth.render_login"))
 
-# @app.route("/login")
-# def login_page():
-    # return serve_static("login.html")
+@app.route("/login")
+def login_page():
+    return serve_static("login.html")
 
 import server
 
