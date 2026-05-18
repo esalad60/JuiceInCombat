@@ -1,0 +1,48 @@
+{
+  "name": "Commandos",
+  "type": "infantry",
+  "health": 150,
+  "sight": 2,
+  "movement": 2,
+  "weapons": [
+    {
+      "name": "Combined Fire",
+      "description": "",
+      "type": "bullet",
+      "damage": 35,
+      "ap": 4,
+      "range": 1,
+      "perks": [
+        {
+          "type": "Mark",
+          "duration": "2"
+        }
+      ]
+    },
+    {
+      "name": "Grenade",
+      "description": "An incendiary grenade",
+      "type": "explosive",
+      "damage": 40,
+      "ap": 2,
+      "range": 2,
+      "perks": [
+        {
+          "type": "incendiary",
+          "duration": 1
+        }
+      ]
+    }
+  ],
+  "traits": [
+    {
+      "type": "Regen",
+      "amount": 10
+    },
+    {
+      "type": "Radio",
+      "range": 2
+    }
+  ] 
+}
+
