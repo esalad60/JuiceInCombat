@@ -1,0 +1,23 @@
+{
+  "name": "Bomber",
+  "health": 50,
+  "attack": 3,
+  "movement": 2,
+  "range": 1,
+  "sight": 1,
+  "price": 50,
+  "traits": [
+    {
+      "type": "Explosive"
+    }
+    {
+      "type": "Bomb"
+    }
+    {
+      "type": "Sacrifice"
+    }
+    {
+      "type": "Dash"
+    }
+  ]
+}

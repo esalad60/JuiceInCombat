@@ -1,8 +1,8 @@
 {
-  "name": "Riflemen",
-  "health": 125,
-  "attack": 2,
-  "movement": 2,
+  "name": "Engineer",
+  "health": 50,
+  "attack": 0,
+  "movement": 1,
   "sight": 1,
   "range": 1,
   "price": 100,
@@ -11,7 +11,7 @@
       "type": "Infantry"
     }
     {
-      "type": "Dash"
+      "type": "Build Landmine"
     }
   ]
 }

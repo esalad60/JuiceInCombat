@@ -1,0 +1,26 @@
+{
+  "name": "bombCar",
+  "health": 150,
+  "attack": 4,
+  "movement": 2,
+  "range": 1,
+  "sight": 1,
+  "price": 125,
+  "traits": [
+    {
+      "type": "Armored"
+    }
+    {
+      "type": "Explosive"
+    },
+    {
+      "type": "Bomb"
+    }
+    {
+      "type": "Sacrifice"
+    }
+    {
+      "type": "Dash"
+    }
+  ]
+}
