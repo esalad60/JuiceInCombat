@@ -129,3 +129,5 @@ ehthumbs.db
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !__init__.py
 # set special exception
+wsgi.py
+JuiceInCombat.sock

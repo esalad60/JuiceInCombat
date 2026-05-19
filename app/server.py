@@ -2,7 +2,7 @@ import random
 from flask_socketio import join_room, leave_room, emit
 from flask import request
 
-from __init__ import socketio
+from . import socketio
 
 # rooms[room_code] = { "owner": sid, "members": [sid, ...], "turn": sid | None, "board": [[tile, ...], ...] }
 rooms: dict[str, dict] = {}
