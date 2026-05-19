@@ -121,3 +121,9 @@ ivanC -- 05/13/26 10:42
 
 lucasZ -- 05/15/26 09:08
 - Added more game files
+
+lucasZ -- 05/18/26 12:13
+- Added riflemen.json and commando.json, example files of how adding units should look like
+
+evissW -- 05/19/26 10:54
+- Edited how static .json files are put

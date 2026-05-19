@@ -1,0 +1,17 @@
+{
+  "name": "Commando",
+  "health": 100,
+  "attack": 3,
+  "movement": 1,
+  "range": 3
+  "sight": 1
+  "price": 150,
+  "traits": [
+    {
+      "type": "Infantry"
+    }
+    {
+      "type": "Explosive"
+    }
+  ]
+}

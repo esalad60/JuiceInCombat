@@ -1,0 +1,17 @@
+{
+  "name": "Engineer",
+  "health": 50,
+  "attack": 0,
+  "movement": 1,
+  "sight": 1,
+  "range": 1,
+  "price": 100,
+  "traits": [
+    {
+      "type": "Infantry"
+    }
+    {
+      "type": "Build Landmine"
+    }
+  ]
+}

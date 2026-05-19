@@ -1,0 +1,26 @@
+{
+  "name": "Commando",
+  "health": 100,
+  "attack": 2,
+  "movement": 2,
+  "sight": 2,
+  "range": 1,
+  "price": 150,
+  "traits": [
+    {
+      "type": "Infantry"
+    }
+    {
+      "type": "Regen"
+    },
+    {
+      "type": "Stealth"
+    }
+    {
+      "type": "Dash"
+    }
+    {
+      "type": "Escape"
+    }
+  ]
+}
