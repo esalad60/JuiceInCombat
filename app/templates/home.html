@@ -1,57 +1,68 @@
-<script>
-  const socket = io();
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
 
-  socket.on("connect", function () {
-    console.log("Socket connected:", socket.id);
-  });
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
 
-  socket.on("room_created", function (data) {
-    console.log("room_created received:", data);
+<body>
+  <h1>home</h1>
 
-    const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+  <button type="button" onclick="createRoom()">Create Room</button>
 
-    console.log("Redirecting to:", redirectUrl);
-    window.location.assign(redirectUrl);
-  });
+  <p>
+    <button type="button" onclick="joinGameRoom()">Join Room</button>
+    Room code: <input type="text" id="room_code">
+  </p>
 
-  socket.on("room_joined", function (data) {
-    console.log("room_joined received:", data);
+  <script>
+    window.socket = io();
 
-    const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+    window.socket.on("connect", function () {
+      console.log("Socket connected:", window.socket.id);
+    });
 
-    console.log("Redirecting to:", redirectUrl);
-    window.location.assign(redirectUrl);
-  });
+    window.socket.on("room_created", function (data) {
+      console.log("room_created received:", data);
 
-  socket.on("room_error", function (data) {
-    console.log("room_error received:", data);
-    alert(data.message);
-  });
+      const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+      console.log("Redirecting to:", redirectUrl);
 
-  function createRoom() {
-    console.log("Create room clicked");
-    socket.emit("create_room");
-  }
+      window.location.assign(redirectUrl);
+    });
 
-  function joinGameRoom() {
-    console.log("Join room clicked");
+    window.socket.on("room_joined", function (data) {
+      console.log("room_joined received:", data);
 
-    const code = document.getElementById("room_code").value.trim();
+      const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+      console.log("Redirecting to:", redirectUrl);
 
-    if (!code) {
-      alert("Enter a room code first.");
-      return;
+      window.location.assign(redirectUrl);
+    });
+
+    window.socket.on("room_error", function (data) {
+      console.log("room_error received:", data);
+      alert(data.message);
+    });
+
+    function createRoom() {
+      console.log("Create room clicked");
+      window.socket.emit("create_room");
     }
 
-    socket.emit("join_room", { room_code: code });
-  }
-</script>
+    function joinGameRoom() {
+      console.log("Join room clicked");
 
-<h1>home</h1>
+      const code = document.getElementById("room_code").value.trim();
 
-<button type="button" onclick="createRoom()">Create Room</button>
+      if (!code) {
+        alert("Enter a room code first.");
+        return;
+      }
 
-<p>
-  <button type="button" onclick="joinGameRoom()">Join Room</button>
-  Room code: <input type="text" id="room_code">
-</p>
+      window.socket.emit("join_room", { room_code: code });
+    }
+  </script>
+</body>
+</html>
