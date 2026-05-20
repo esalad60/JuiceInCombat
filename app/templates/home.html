@@ -4,7 +4,9 @@
   const socket = io();
 
   socket.on("connect", function () {
-    console.log("Socket connected:", socket.id);
+    socket.emit("enter_room_page", {
+      room_code: "{{ room_code }}"
+    });
   });
 
   socket.on("room_created", function (data) {
