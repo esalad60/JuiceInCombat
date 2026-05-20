@@ -114,16 +114,30 @@ def on_enter_room_page(data):
     room = rooms[room_code]
     username = session.get("username", "Player")
 
+    if room["owner"] is None:
+        room["owner"] = sid
+        room["members"].insert(0, sid)
+        player_room[sid] = room_code
+        join_room(room_code)
+
+        emit("room_state", {
+            "room_code": room_code,
+            "players": room["players"]
+        })
+        return
+
     if sid not in room["members"]:
         if len(room["members"]) < 2:
             room["members"].append(sid)
-            room["players"].append(username)
+
+            if username not in room["players"]:
+                room["players"].append(username)
+
+            player_room[sid] = room_code
+            join_room(room_code)
         else:
             emit("room_error", {"message": "Room is full."})
             return
-
-    player_room[sid] = room_code
-    join_room(room_code)
 
     emit("room_state", {
         "room_code": room_code,
@@ -192,12 +206,13 @@ def on_disconnect():
     room = rooms[room_code]
 
     if sid == room["owner"]:
-        emit(
-            "room_deleted",
-            {"room_code": room_code, "reason": "owner_left"},
-            to=room_code,
-        )
-        close_room(room_code)
+        player_room.pop(sid, None)
+
+        if sid in room["members"]:
+            room["members"].remove(sid)
+
+        room["owner"] = None
+        return
     else:
         room["members"].remove(sid)
         del player_room[sid]
