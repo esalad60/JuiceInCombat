@@ -1,22 +1,26 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-
 <script>
   const socket = io();
 
   socket.on("connect", function () {
-    socket.emit("enter_room_page", {
-      room_code: "{{ room_code }}"
-    });
+    console.log("Socket connected:", socket.id);
   });
 
   socket.on("room_created", function (data) {
     console.log("room_created received:", data);
-    window.location.href = data.redirect_url;
+
+    const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+
+    console.log("Redirecting to:", redirectUrl);
+    window.location.assign(redirectUrl);
   });
 
   socket.on("room_joined", function (data) {
     console.log("room_joined received:", data);
-    window.location.href = data.redirect_url;
+
+    const redirectUrl = data.redirect_url || `/room/${data.room_code}`;
+
+    console.log("Redirecting to:", redirectUrl);
+    window.location.assign(redirectUrl);
   });
 
   socket.on("room_error", function (data) {
@@ -31,7 +35,14 @@
 
   function joinGameRoom() {
     console.log("Join room clicked");
+
     const code = document.getElementById("room_code").value.trim();
+
+    if (!code) {
+      alert("Enter a room code first.");
+      return;
+    }
+
     socket.emit("join_room", { room_code: code });
   }
 </script>
