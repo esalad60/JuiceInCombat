@@ -131,3 +131,13 @@ evissW -- 05/19/26 10:54
 ethanS --05/19/26
 - added room creation and seperate pages, two users should now be able to join a room
 
+lucasZ -- 05/20/26 01:23
+- Re-added type to unit jsons
+- Reordered structure of jsons to be more coherent and match other files
+- Created unit.py, parser.py
+- unit.py
+    - Contains the actual unit class (UnitDefiniton) and registering units to factions (UnitRegistery)
+- parser.py (unfinished)
+    - Used for parsing the jsons as well as converting the read dicts into UnitDefiniton (the actual unit class)
+    - Need to add actual parsing of directory
+
