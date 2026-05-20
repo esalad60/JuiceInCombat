@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-from pathlib import Path
 from typing import Any
 
 from .unit import (
@@ -13,12 +12,6 @@ from .unit import (
 )
 
 logger = logging.getLogger(__name__)
-
-BASE_ARMOR         = 0
-BASE_COST          = 0
-BASE_WEAPON_AP     = 0
-BASE_WEAPON_RANGE  = 1
-BASE_STATUS_DURATION = 1
 
 def parse_unit_dict(
     raw: dict[str, Any],
@@ -40,7 +33,8 @@ def parse_unit_dict(
     sight = fetch("sight")
     movement = fetch("movement")
 
-    ## Add attack and range
+    attack = fetch("attack")
+    range = fetch("range")
     
     traits_raw = raw.get("traits", [])
     traits = tuple(
@@ -63,18 +57,27 @@ def parse_unit_dict(
         sight=sight,
         movement=movement,
 
-        ## Add attack and range
+        attack=attack,
+        range=range,
 
         traits=traits,
         model=model,
     )
 
-def parse_trait(
-    raw: Any,
-) -> TraitRef:
+def parse_trait(raw: Any,) -> TraitRef:
     trait_type = raw["type"]
     params = {k: v for k, v in raw.items() if k != "type"}
     return TraitRef(type=trait_type, params=params)
 
 ## Work on load directory function and parsing the actual file
+
+def parse_file(str: path):
+    data = open(path).read().strip().split("/n")
+
+    return data
+
+
+if __name__ == "__main__":
+    parse_file("../../data/rifleman.json")
+
 
