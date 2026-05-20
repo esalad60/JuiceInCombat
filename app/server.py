@@ -1,6 +1,6 @@
 import random
 from flask_socketio import join_room, leave_room, emit
-from flask import request
+from flask import request, session
 
 from . import socketio
 
@@ -21,11 +21,12 @@ def new_board(rows: int = 10, cols: int = 10) -> list:
     ]
 
 
-def new_room(owner_sid: str) -> dict:
+def new_room(owner_sid: str, owner_name: str) -> dict:
     return {
-        "owner":     owner_sid,
-        "members":   [owner_sid],
-        "turn":      None,
+        "owner": owner_sid,
+        "members": [owner_sid],
+        "players": [owner_name],
+        "turn": None,
         "board": new_board(),
     }
 
@@ -55,11 +56,15 @@ def on_create_room():
         return
 
     room_code = new_room_code()
-    rooms[room_code] = new_room(sid)
+    username = session.get("username", "Player 1")
+    rooms[room_code] = new_room(sid, username)
     player_room[sid] = room_code
     join_room(room_code)
     print(room_code);
-    emit("room_created", {"room_code": room_code})
+    emit("room_created", {
+        "room_code": room_code,
+        "redirect_url": f"/room/{room_code}"
+    })
 
 
 @socketio.on("join_room")
@@ -77,20 +82,53 @@ def on_join_room(data):
         return
 
     room = rooms[room_code]
+    username = session.get("username", "Player 2")
 
     if len(room["members"]) >= 2:
         emit("room_error", {"message": "Room is full."})
         return
 
     room["members"].append(sid)
+    room["players"].append(username)
     player_room[sid] = room_code
     join_room(room_code)
     room["turn"] = room["owner"]
 
-    emit("room_joined", {"room_code": room_code})
+    emit("room_joined", {
+        "room_code": room_code,
+        "redirect_url": f"/room/{room_code}"
+    })
     emit("player_joined", {"room_code": room_code}, to=room_code, skip_sid=sid)
     notify_turn(room_code)
 
+
+@socketio.on("enter_room_page")
+def on_enter_room_page(data):
+    sid = request.sid
+    room_code = data.get("room_code", "").strip()
+
+    if room_code not in rooms:
+        emit("room_error", {"message": "Room does not exist."})
+        return
+
+    room = rooms[room_code]
+    username = session.get("username", "Player")
+
+    if sid not in room["members"]:
+        if len(room["members"]) < 2:
+            room["members"].append(sid)
+            room["players"].append(username)
+        else:
+            emit("room_error", {"message": "Room is full."})
+            return
+
+    player_room[sid] = room_code
+    join_room(room_code)
+
+    emit("room_state", {
+        "room_code": room_code,
+        "players": room["players"]
+    })
 
 @socketio.on("delete_room")
 def on_delete_room():
@@ -185,3 +223,5 @@ def close_room(room_code: str):
         leave_room(room_code, sid=member_sid)
         player_room.pop(member_sid, None)
     del rooms[room_code]
+
+

@@ -11,7 +11,9 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 from .backend.database import build_db
 from .backend.routes.auth import bp as auth_bp
+from .backend.routes.lobby import bp as lobby_bp
 app.register_blueprint(auth_bp, url_prefix="")
+app.register_blueprint(lobby_bp, url_prefix="")
 
 @app.route("/frontend/static/<path:filename>")
 def serve_static(filename):
