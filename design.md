@@ -70,6 +70,8 @@ Features intentionally excluded:
 - AI-controlled armies
 - A campaign of sorts
 - Sidegrades of extra units
+- Random map generation
+- Copy of NiC
 
 ---
 
@@ -177,6 +179,7 @@ Project is considered complete when all of the following are true:
 1. Balancing? Should we have a research tree in general or unlock different equal value army templates?
 2. How much of the game should be stored locally? [i.e, does the client recieve the entire map or just what their units can see]
 3. Terrain generation... maps in general, how?
+
 
 # Appendix
 Basic 5 units include the following
