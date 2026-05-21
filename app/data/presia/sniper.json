@@ -1,0 +1,17 @@
+{
+  "name": "Sniper",
+  "type": "infantry",
+  "health": 75,
+  "armor": 2,
+  "attack": 50,
+  "movement": 2,
+  "sight": 3,
+  "range": 3,
+  "price": 100,
+  "traits": [
+    {
+      "type": "Surprise"
+    }
+  ]
+}
+

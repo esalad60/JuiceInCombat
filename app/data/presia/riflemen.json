@@ -1,0 +1,17 @@
+{
+  "name": "Riflemen",
+  "type": "infantry",
+  "health": 125,
+  "armor": 4,
+  "attack": 30,
+  "movement": 2,
+  "sight": 1,
+  "range": 1,
+  "price": 100,
+  "traits": [
+    {
+      "type": "Dash"
+    }
+  ]
+}
+

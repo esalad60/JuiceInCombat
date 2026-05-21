@@ -11,6 +11,9 @@
   "traits": [
     {
       "type": "Explosive"
+    },
+    {
+      "type": "Surprise"
     }
   ]
 }

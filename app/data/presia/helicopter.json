@@ -1,0 +1,19 @@
+{
+  "name": "Helicopter",
+  "type": "vehicle",
+  "health": 400,
+  "armor": 15,
+  "attack": 150,
+  "movement": 2,
+  "sight": 2,
+  "range": 2,
+  "price": 400,
+  "traits": [
+    {
+      "type": "Dash"
+    },
+    {
+      "type": "Surprise"
+    }
+  ]
+}

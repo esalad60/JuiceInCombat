@@ -7,10 +7,13 @@
   "movement": 2,
   "sight": 2,
   "range": 2,
-  "price": 300,
+  "price": 250,
   "traits": [
     {
       "type": "Dash"
+    },
+    {
+      "type": "Surprise"
     }
   ]
 }
