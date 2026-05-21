@@ -1,6 +1,6 @@
 {
   "name": "Helicopter",
-  "type": "vehicle",
+  "type": "aircraft",
   "health": 400,
   "armor": 15,
   "attack": 150,
