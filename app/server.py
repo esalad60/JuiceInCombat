@@ -9,11 +9,6 @@ rooms: dict[str, dict] = {}
 player_room: dict[str, str] = {}
 
 
-class Unit:
-    def __repr__(self):
-        return f"Unit({self.__dict__})"
-
-
 def new_board(rows: int = 10, cols: int = 10) -> list:
     return [
         [{"terrain": "plains", "unit": None} for _ in range(cols)]
@@ -238,5 +233,3 @@ def close_room(room_code: str):
         leave_room(room_code, sid=member_sid)
         player_room.pop(member_sid, None)
     del rooms[room_code]
-
-
