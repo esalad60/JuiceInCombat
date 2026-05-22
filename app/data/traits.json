@@ -1,0 +1,40 @@
+{
+  "traits": [ 
+    {
+      "type": "Slow",
+      "description": "The unit can not attack after moving, or move after attacking."
+    },
+    {
+      "type": "Surprise",
+      "description": "When attacking, enemies do not retaliate against this unit."
+    },
+    {
+      "type": "Explosive",
+      "description": "placeholder until i recieve a description"
+    },
+    {
+      "type": "Build Landmine",
+      "description": "This unit's attacks do not do damage. Attacks on empty tiles instead deploy a landmine."
+    },
+    {
+      "type": "Regen",
+      "description": "At the end of each turn, recover X health [placeholder number]"
+    },
+    {
+      "type": "Stealth",
+      "description": "placeholder until i recieve a description"
+    },
+    {
+      "type": "Escape",
+      "description": "After attacking, refresh this unit's movement action."
+    },
+    {
+      "type": "Sacrifice",
+      "description": "Lose all health points after attacking."
+    },
+    {
+      "type": "Heal",
+      "description": "This unit's attacks do not do damage, and instead heal the target for X hp."
+    }
+  ]
+}

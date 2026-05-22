@@ -9,9 +9,6 @@
   "range": 1,
   "price": 100,
   "traits": [
-    {
-      "type": "Dash"
-    }
   ]
 }
 
