@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from ...server import rooms
+from import *
 
 bp = Blueprint("lobby", __name__, url_prefix="")
 
