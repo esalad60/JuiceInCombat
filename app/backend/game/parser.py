@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from pathlib import Path
 from typing import Any
 
 from .unit import (
@@ -38,8 +39,8 @@ def parse_unit_dict(
     
     traits_raw = raw.get("traits", [])
     traits = tuple(
-        parse_trait(t, idx=i, source_path=source_path)
-        for i, t in enumerate(traits_raw)
+        parse_trait(t)
+        for t in enumerate(traits_raw)
     )
 
     model = fetch("model") or None ## Not sure if correct syntax
@@ -66,18 +67,47 @@ def parse_unit_dict(
 
 def parse_trait(raw: Any,) -> TraitRef:
     trait_type = raw["type"]
-    params = {k: v for k, v in raw.items() if k != "type"}
+    params = {}
+    for k, v in raw.items():
+        if k != "type":
+            params[k] = v
     return TraitRef(type=trait_type, params=params)
 
-## Work on load directory function and parsing the actual file
+def parse_unit_file(path: str) -> UnitDefinition:
+    path = Path(path)
+    with path.open() as f:
+        raw = json.load(f)
 
-def parse_file(str: path):
-    data = open(path).read().strip().split("/n")
+    unit_type = path.stem
+    faction = path.parent.name
 
-    return data
+    return parse_unit_dict(
+        raw,
+        unit_type=unit_type,
+        faction=faction,
+        source_path=str(path),
+    )
+
+def register_units(root: str) -> UnitRegistry:
+    root = Path(root)
+    registry = UnitRegistry()
+    faction_units: dict[str, int] = {}
+
+    for faction_dir in sorted(root.iterdir()):
+        if not faction_dir.is_dir():
+            continue
+        faction = faction_dir.name
+        faction_units.setdefault(faction, 0)
+
+        for json_path in sorted(faction_dir.iterdir()):
+            if json_path.suffix.lower() != ".json":
+                continue
+            definition = parse_unit_file(json_path)
+            registry.register(definition)
+            faction_units[faction] += 1
+
+    return registry
 
 
-if __name__ == "__main__":
-    parse_file("../../data/rifleman.json")
 
 
