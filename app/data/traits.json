@@ -1,5 +1,5 @@
 {
-  "traits": [ 
+  "traits": [
     {
       "type": "Slow",
       "description": "The unit can not attack after moving, or move after attacking."
@@ -10,7 +10,7 @@
     },
     {
       "type": "Explosive",
-      "description": "placeholder until i recieve a description"
+      "description": "Deals damage in all four cardinal directions when attacking."
     },
     {
       "type": "Build Landmine",
@@ -18,11 +18,11 @@
     },
     {
       "type": "Regen",
-      "description": "At the end of each turn, recover X health [placeholder number]"
+      "description": "At the end of each turn, recover 15 health."
     },
     {
       "type": "Stealth",
-      "description": "placeholder until i recieve a description"
+      "description": "This unit is invisible to your enemy unless they are right next to it."
     },
     {
       "type": "Escape",
@@ -34,7 +34,7 @@
     },
     {
       "type": "Heal",
-      "description": "This unit's attacks do not do damage, and instead heal the target for X hp."
+      "description": "This unit's attacks do not do damage, and instead heal the target for 50 hp."
     }
   ]
 }
