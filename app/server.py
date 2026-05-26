@@ -38,8 +38,26 @@ def other_player(room: dict, sid: str) -> str | None:
     return others[0] if others else None
 
 
-def apply_fog(board: list, viewer_sid: str) -> list:
-    return board
+# def apply_fog(board: list, viewer_sid: str) -> list:
+#     fogboard = [[]]
+#     range = 0 # placeholder because they dont tell me these things
+#     for row in range(len(board)):
+#         for col in range(len(board[row])):
+#             fogboard[row][col] = Tile(
+#             x = board[row][col].x # copy over attributes from previous board except fog status
+#             y = board[row][col].y
+#             terrain = board[row][col].terrain
+#             is_trap = board[row][col].is_trap
+#             faction = board[row][col].faction
+#         )
+#             if (board.is_occupied = True) and True: # condition: check range to see if fog covers. however this is a placeholder
+#                 for row2 in range(len(board)):
+#                     for col2 in range(len(board[row2])): # too lazy to calculate this so we're iterating across the entire board again
+#                         if (range <= abs((row + col)-(row2+col2))) or fogboard[row2][col2]:
+#                             fogboard[row2][col2].is_occupied = board[row2][col2].is_occupied
+#                         else:
+#                             fogboard[row2][col2].is_occupied = False
+#     return board
 
 
 @socketio.on("create_room")
