@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from import *
+#from __init__ import *
 
 bp = Blueprint("lobby", __name__, url_prefix="")
 
