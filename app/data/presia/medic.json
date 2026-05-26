@@ -1,0 +1,19 @@
+{
+  "name": "Medic",
+  "type": "infantry",
+  "health": 50,
+  "armor": 2,
+  "attack": 25,
+  "movement": 1,
+  "sight": 1,
+  "range": 1,
+  "price": 100,
+  "traits": [
+    {
+      "type": "Heal"
+    },
+    {
+      "type": "Dash"
+    }
+  ]
+}
