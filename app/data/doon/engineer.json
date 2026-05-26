@@ -11,6 +11,9 @@
   "traits": [
     {
       "type": "Build Landmine"
+    },
+    {
+      "type": "Slow"
     }
   ]
 }

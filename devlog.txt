@@ -141,8 +141,13 @@ lucasZ -- 05/20/26 01:23
     - Used for parsing the jsons as well as converting the read dicts into UnitDefiniton (the actual unit class)
     - Need to add actual parsing of directory
 
-
 evissW -- 05/20/26
 - Added new faction
 - Organized units into factions
 - Standardized unit #
+
+lucasZ -- 05/22/26 09:56
+- Finished parser.py
+- parser.py
+    - Added method to parse json file and convert to UnitDefinition
+    - Added method to register unit depending on what faction its in

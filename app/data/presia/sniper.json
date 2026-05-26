@@ -11,6 +11,9 @@
   "traits": [
     {
       "type": "Surprise"
+    },
+    {
+      "type": "Slow"
     }
   ]
 }

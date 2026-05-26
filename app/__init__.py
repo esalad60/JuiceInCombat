@@ -9,9 +9,9 @@ app.config["SECRET_KEY"] = "gabagoobakey"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-from .backend.database import build_db
-from .backend.routes.auth import bp as auth_bp
-from .backend.routes.lobby import bp as lobby_bp
+from backend.database import build_db
+from backend.routes.auth import bp as auth_bp
+from backend.routes.lobby import bp as lobby_bp
 app.register_blueprint(auth_bp, url_prefix="")
 app.register_blueprint(lobby_bp, url_prefix="")
 
@@ -35,7 +35,7 @@ def render_homepage():
 def login_page():
     return serve_static("login.html")
 
-from . import server
+import server
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5000)

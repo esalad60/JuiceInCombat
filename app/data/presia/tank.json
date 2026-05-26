@@ -10,9 +10,6 @@
   "price": 250,
   "traits": [
     {
-      "type": "Dash"
-    },
-    {
       "type": "Surprise"
     }
   ]
