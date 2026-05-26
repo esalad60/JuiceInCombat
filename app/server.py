@@ -2,7 +2,10 @@ import random
 from flask_socketio import join_room, leave_room, emit
 from flask import request, session
 
-from __init__ import socketio
+# from __init__ import socketio
+import backend.game.state
+import backend.game.parser
+import backend.game.unit
 
 # rooms[room_code] = { "owner": sid, "members": [sid, ...], "turn": sid | None, "board": [[tile, ...], ...] }
 rooms: dict[str, dict] = {}
@@ -40,27 +43,21 @@ def other_player(room: dict, sid: str) -> str | None:
 
 # def apply_fog(board: list, viewer_sid: str) -> list:
 #     fogboard = [[]]
-#     range = 0 # placeholder because they dont tell me these things
-#     for row in range(len(board)):
-#         for col in range(len(board[row])):
+#     range = 0 # placeholder. this should just be getting the range from a unit but idk how to do that
+#     for row, v1 in enumerate(board):
+#         for col, v2 in enumerate(board[row]):
 #             fogboard[row][col] = Tile(
-#             x = board[row][col].x # copy over attributes from previous board except fog status
-#             y = board[row][col].y
-#             terrain = board[row][col].terrain
-#             is_trap = board[row][col].is_trap
-#             faction = board[row][col].faction
-#         )
-#             if (board.is_occupied = True) and True: # condition: check range to see if fog covers. however this is a placeholder
-#                 for row2 in range(len(board)):
-#                     for col2 in range(len(board[row2])): # too lazy to calculate this so we're iterating across the entire board again
-#                         if (range <= abs((row + col)-(row2+col2))) or fogboard[row2][col2]:
+#               board[row][col] # copy over attributes
+#             )
+#             fogboard[row][col].is_occupied = False; # but remove visibility by default
+#             if (board.is_occupied == True) and True: # check if own unit is on the tile, second cond is a placeholder, should check to see if it matches the player
+#                 for row2, v3 in enumerate(board):
+#                     for col2, v4 in enumerate(board[row2]): # too lazy to calculate a better way to do this so we're iterating across the entire board again
+#                         if (range <= abs((row+col)-(row2+col2))): # should be the proper range calculation
 #                             fogboard[row2][col2].is_occupied = board[row2][col2].is_occupied
-#                         else:
-#                             fogboard[row2][col2].is_occupied = False
-#     return board
+#     return fogboard
 
-
-@socketio.on("create_room")
+#@socketio.on("create_room")
 def on_create_room():
     sid = request.sid
 
@@ -80,7 +77,7 @@ def on_create_room():
     })
 
 
-@socketio.on("join_room")
+#@socketio.on("join_room")
 def on_join_room(data):
     sid = request.sid
 
@@ -115,7 +112,7 @@ def on_join_room(data):
     notify_turn(room_code)
 
 
-@socketio.on("enter_room_page")
+#@socketio.on("enter_room_page")
 def on_enter_room_page(data):
     sid = request.sid
     room_code = data.get("room_code", "").strip()
@@ -157,7 +154,7 @@ def on_enter_room_page(data):
         "players": room["players"]
     })
 
-@socketio.on("delete_room")
+#@socketio.on("delete_room")
 def on_delete_room():
     sid = request.sid
     room_code = player_room.get(sid)
@@ -170,7 +167,7 @@ def on_delete_room():
     close_room(room_code)
 
 
-@socketio.on("submit_move")
+#@socketio.on("submit_move")
 def on_submit_move(data):
     sid = request.sid
     room_code = player_room.get(sid)
@@ -189,7 +186,7 @@ def on_submit_move(data):
     emit("board_update", {"board": fog_board})
 
 
-@socketio.on("end_turn")
+#@socketio.on("end_turn")
 def on_end_turn():
     sid = request.sid
     room_code = player_room.get(sid)
@@ -208,7 +205,7 @@ def on_end_turn():
     notify_turn(room_code)
 
 
-@socketio.on("disconnect")
+#@socketio.on("disconnect")
 def on_disconnect():
     sid = request.sid
     room_code = player_room.get(sid)
