@@ -193,6 +193,61 @@ function main() {
   }, { passive: false });
 }
 
+function makeRecPrism(gl, {w, d, h, top, side}) {
+  const [tr, tg, tb] = top;
+  const [sr, sg, sb] = side;
+
+  // Face brightness multipliers — directional light without shader
+  // WILL ADD DIFFUSE MODEL LATER (?)
+  const FRONT  = 0.90;  // z+ face (facing camera at start)
+  const BACK   = 0.70;  // z- face
+  const LEFT   = 0.80;  // x- face
+  const RIGHT  = 0.80;  // x+ face
+
+
+  const verts = new Float32Array([
+    // Top face   (y2): bright
+    x1, y2, z1,   tr,       tg,       tb,       1.0,  // 0
+    x2, y2, z1,   tr,       tg,       tb,       1.0,  // 1
+    x2, y2, z2,   tr,       tg,       tb,       1.0,  // 2
+    x1, y2, z2,   tr,       tg,       tb,       1.0,  // 3
+
+    // Front face (z2): medium bright
+    x1, y1, z2,   sr*FRONT, sg*FRONT, sb*FRONT, 1.0,  // 4
+    x2, y1, z2,   sr*FRONT, sg*FRONT, sb*FRONT, 1.0,  // 5
+    x2, y2, z2,   sr*FRONT, sg*FRONT, sb*FRONT, 1.0,  // 6
+    x1, y2, z2,   sr*FRONT, sg*FRONT, sb*FRONT, 1.0,  // 7
+
+    // Back face  (z1): darkest
+    x2, y1, z1,   sr*BACK,  sg*BACK,  sb*BACK,  1.0,  // 8
+    x1, y1, z1,   sr*BACK,  sg*BACK,  sb*BACK,  1.0,  // 9
+    x1, y2, z1,   sr*BACK,  sg*BACK,  sb*BACK,  1.0,  // 10
+    x2, y2, z1,   sr*BACK,  sg*BACK,  sb*BACK,  1.0,  // 11
+
+    // Left face  (x1): medium
+    x1, y1, z1,   sr*LEFT,  sg*LEFT,  sb*LEFT,  1.0,  // 12
+    x1, y1, z2,   sr*LEFT,  sg*LEFT,  sb*LEFT,  1.0,  // 13
+    x1, y2, z2,   sr*LEFT,  sg*LEFT,  sb*LEFT,  1.0,  // 14
+    x1, y2, z1,   sr*LEFT,  sg*LEFT,  sb*LEFT,  1.0,  // 15
+
+    // Right face (x2): medium
+    x2, y1, z2,   sr*RIGHT, sg*RIGHT, sb*RIGHT, 1.0,  // 16
+    x2, y1, z1,   sr*RIGHT, sg*RIGHT, sb*RIGHT, 1.0,  // 17
+    x2, y2, z1,   sr*RIGHT, sg*RIGHT, sb*RIGHT, 1.0,  // 18
+    x2, y2, z2,   sr*RIGHT, sg*RIGHT, sb*RIGHT, 1.0,  // 19
+  ]);
+
+  const indices = new Uint16Array([
+     0,  3,  2,   0,  2,  1,  // top     (CCW facing up)
+     4,  5,  6,   4,  6,  7,  // bottom  (CCW facing down)
+     8,  9, 10,   8, 10, 11,  // front   (CCW looking toward +Z)
+    12, 13, 14,  12, 14, 15,  // back    (CCW looking toward -Z)
+    16, 17, 18,  16, 18, 19,  // left    (CCW looking toward -X)
+    20, 21, 22,  20, 22, 23,  // right   (CCW looking toward +X)
+  ]);
+  
+}
+
 // GPU buffers for one tile
 // prettier-ignore
 // Yes I use this extension
