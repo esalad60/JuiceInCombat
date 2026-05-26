@@ -57,7 +57,7 @@ def other_player(room: dict, sid: str) -> str | None:
 #                             fogboard[row2][col2].is_occupied = board[row2][col2].is_occupied
 #     return fogboard
 
-#@socketio.on("create_room")
+@socketio.on("create_room")
 def on_create_room():
     sid = request.sid
 
@@ -77,7 +77,7 @@ def on_create_room():
     })
 
 
-#@socketio.on("join_room")
+@socketio.on("join_room")
 def on_join_room(data):
     sid = request.sid
 
@@ -112,7 +112,7 @@ def on_join_room(data):
     notify_turn(room_code)
 
 
-#@socketio.on("enter_room_page")
+@socketio.on("enter_room_page")
 def on_enter_room_page(data):
     sid = request.sid
     room_code = data.get("room_code", "").strip()
@@ -154,7 +154,7 @@ def on_enter_room_page(data):
         "players": room["players"]
     })
 
-#@socketio.on("delete_room")
+@socketio.on("delete_room")
 def on_delete_room():
     sid = request.sid
     room_code = player_room.get(sid)
@@ -167,7 +167,7 @@ def on_delete_room():
     close_room(room_code)
 
 
-#@socketio.on("submit_move")
+@socketio.on("submit_move")
 def on_submit_move(data):
     sid = request.sid
     room_code = player_room.get(sid)
@@ -186,7 +186,7 @@ def on_submit_move(data):
     emit("board_update", {"board": fog_board})
 
 
-#@socketio.on("end_turn")
+@socketio.on("end_turn")
 def on_end_turn():
     sid = request.sid
     room_code = player_room.get(sid)
@@ -205,7 +205,7 @@ def on_end_turn():
     notify_turn(room_code)
 
 
-#@socketio.on("disconnect")
+@socketio.on("disconnect")
 def on_disconnect():
     sid = request.sid
     room_code = player_room.get(sid)
