@@ -3,23 +3,25 @@ import { initScene } from './renderer/scene.js';
 import { initCamera } from './renderer/camera.js';
 import { createTileMesh, updateTileColors } from './renderer/tile_renderer.js';
 import { createUnitMesh, updateUnitPosition, removeUnitMesh, setUnitIdOnMesh } from './renderer/unit_renderer.js';
+import { createBuildingMesh, updateBuildingMesh } from './renderer/building_renderer.js';
 import { setMatchId, updateGameState, getCurrentPlayerSlot, getMySlot, getUnit, isMyTurn, getMyResources } from './game/client_state.js';
 import { selectUnit, getSelectedUnit, clearSelection } from './game/selection.js';
 import { initHUD, updateHUD, showMessage, setEndTurnEnabled, showRecruitPanel } from './ui/hud.js';
 import { connectSocket, sendAction, sendEndTurn } from './network/socket_client.js';
 
+// Expose sendAction for HUD buttons that emit fire/recruit directly.
 window.sendAction = sendAction;
 
 let scene, camera, renderer;
 let tileMeshes = [];      // 2D array of { mesh, x, y, height }
 let unitMeshes = new Map(); // unitId -> mesh
+let buildingMeshes = new Map(); // buildingId -> mesh
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let controls;
 
 async function init() {
-    const pathParts = window.location.pathname.split('/');
-    const matchId = pathParts[pathParts.length - 1];
+    const matchId = window.MATCH_ID || new URLSearchParams(window.location.search).get('id');
     if (!matchId) {
         alert('No match ID provided');
         window.location.href = '/lobby';
@@ -47,31 +49,30 @@ async function init() {
             updateGameState(gameState);
             rebuildWorld(gameState);
             updateHUD(gameState);
-            const mySlot = getMySlot();
-            const current = getCurrentPlayerSlot();
             setEndTurnEnabled(isMyTurn());
         },
         onActionApplied: (result) => {
             showMessage(`Action executed: ${JSON.stringify(result)}`);
-            // Could refresh selection or highlight
         },
         onTurnChanged: (nextSlot) => {
             showMessage(`It is now Player ${nextSlot + 1}'s turn`);
             clearSelection();
-            setEndTurnEnabled(isMyTurn());
+            setEndTurnEnabled(getMySlot() === nextSlot);
         },
         onGameEnded: (winnerSlot) => {
             const mySlot = getMySlot();
             if (winnerSlot === mySlot) {
-                showMessage("🏆 YOU WIN! Captured enemy HQ.");
+                showMessage("You win!");
             } else {
-                showMessage("💀 You lose...");
+                showMessage("You lose...");
             }
             setEndTurnEnabled(false);
         },
         onGameStarted: (gameState) => {
             updateGameState(gameState);
             rebuildWorld(gameState);
+            updateHUD(gameState);
+            setEndTurnEnabled(isMyTurn());
             showMessage("Game started!");
         },
         onError: (err) => {
@@ -143,6 +144,7 @@ function onClick(event) {
 }
 
 function rebuildWorld(gameState) {
+    if (!gameState || !gameState.game_map) return;
     const gameMap = gameState.game_map;
     const width = gameMap.width;
     const height = gameMap.height;
@@ -161,6 +163,7 @@ function rebuildWorld(gameState) {
             }
         }
     } else {
+        // Update existing tiles (height changes, color changes)
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
                 const tile = gameMap.tiles[y][x];
@@ -202,6 +205,30 @@ function rebuildWorld(gameState) {
         } else {
             const mesh = unitMeshes.get(uid);
             updateUnitPosition(mesh, { x, z }, groundHeight);
+        }
+    }
+
+    // Buildings (HQs etc.)
+    const buildings = gameState.buildings || {};
+    const currentBuildingIds = new Set(Object.keys(buildings).map(Number));
+    for (let [bid, mesh] of buildingMeshes.entries()) {
+        if (!currentBuildingIds.has(bid)) {
+            scene.remove(mesh);
+            buildingMeshes.delete(bid);
+        }
+    }
+    for (let [bid, building] of Object.entries(buildings)) {
+        bid = parseInt(bid);
+        const x = building.x;
+        const z = building.y;
+        const tile = gameMap.tiles[z][x];
+        const groundHeight = tile.height;
+        if (!buildingMeshes.has(bid)) {
+            const mesh = createBuildingMesh(building, { x, z }, groundHeight);
+            scene.add(mesh);
+            buildingMeshes.set(bid, mesh);
+        } else {
+            updateBuildingMesh(buildingMeshes.get(bid), building, { x, z }, groundHeight);
         }
     }
 }

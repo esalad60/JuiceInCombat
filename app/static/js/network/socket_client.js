@@ -31,7 +31,10 @@ export function connectSocket(matchId, handlers) {
     socket.on('joined', (data) => {
         console.log('Joined match:', data);
         setMySlot(data.player_slot);
-        if (callbacks.onGameState) callbacks.onGameState(data.game_state);
+        // don't try to render until the match actually starts (game_started or game_state)
+        if (data.game_state && callbacks.onGameState) {
+            callbacks.onGameState(data.game_state);
+        }
     });
 
     socket.on('game_state', (data) => {
@@ -58,6 +61,7 @@ export function connectSocket(matchId, handlers) {
 
     socket.on('match_created', (data) => {
         console.log('Match created:', data);
+        // Could redirect to game page; handled by lobby page instead.
     });
 
     socket.on('error', (err) => {

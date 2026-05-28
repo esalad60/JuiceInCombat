@@ -24,6 +24,12 @@
 {% endblock %}
 
 {% block content %}
+
+<script>
+    // match_id comes from the /game/<match_id> route (a path param, NOT ?id=).
+    window.MATCH_ID = "{{ match_id }}";
+</script>
+
 <canvas id="glCanvas"></canvas>
 
 <div class="ui-overlay absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-mono">

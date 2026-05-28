@@ -7,12 +7,8 @@ from flask import session, request
 from flask_socketio import Namespace, emit, join_room, leave_room
 
 from backend.database.build_db import (
-    get_db,
-    get_map,
-    save_match_state,
-    load_latest_match_state,
-    create_match as db_create_match,
-    add_match_player,
+    get_db, get_map, save_match_state, load_latest_match_state,
+    create_match as db_create_match, add_match_player
 )
 from backend.game.engine import MatchEngine, MatchStatus, EventType
 from backend.game.state import create_match, TimeControl, GameState as GameStateClass
@@ -65,28 +61,14 @@ def get_or_create_engine(match_id: int) -> Optional[MatchEngine]:
         from backend.game.state import GameMap
         game_map = GameMap.from_saved_map_dict(map_dict)
 
-        snapshot = None
-
         if status != 'waiting':
             snapshot = load_latest_match_state(match_id)
-
-        if snapshot:
-            game_state = GameStateClass.from_dict(snapshot)
-
-            engine = MatchEngine(
-                game_state,
-                now_fn=time.time,
-                unit_registry=unit_registry,
-            )
-
-            engine.status = (
-                MatchStatus.IN_PROGRESS
-                if status == 'in_progress'
-                else MatchStatus.ENDED
-            )
-
-            active_engines[match_id] = engine
-            return engine
+            if snapshot:
+                game_state = GameStateClass.from_dict(snapshot)
+                engine = MatchEngine(game_state, now_fn=time.time, unit_registry=unit_registry)
+                engine.status = MatchStatus.IN_PROGRESS if status == 'in_progress' else MatchStatus.ENDED
+                active_engines[match_id] = engine
+                return engine
 
         if len(player_specs) < 2:
             return None
@@ -154,10 +136,17 @@ class GameNamespace(Namespace):
 
         match_id = data.get('match_id')
         user_id = session.get('user_id')
-        if not user_id or not match_id:
+        if not user_id or match_id is None:
             emit('error', {'message': 'Missing match_id or not logged in'})
             return
 
+        try:
+            match_id = int(match_id)
+        except (TypeError, ValueError):
+            emit('error', {'message': 'Invalid match_id'})
+            return
+
+        # Register this user into a slot (or find their existing slot).
         with get_db() as conn:
             cur = conn.execute("SELECT slot FROM match_players WHERE match_id = ? AND user_id = ?", (match_id, user_id))
             row = cur.fetchone()
@@ -180,12 +169,14 @@ class GameNamespace(Namespace):
         player_match[sid] = match_id
         join_room(f"match_{match_id}")
 
+        # How many players are now in the match?
         with get_db() as conn:
             cur = conn.execute("SELECT COUNT(*) as cnt FROM match_players WHERE match_id = ?", (match_id,))
             cnt = cur.fetchone()['cnt']
 
         engine = get_or_create_engine(match_id)
 
+        # Still waiting for an opponent — no engine yet. Tell the client to wait.
         if engine is None:
             emit('joined', {
                 'match_id': match_id,
@@ -194,6 +185,7 @@ class GameNamespace(Namespace):
             })
             return
 
+        # Two players are present. Start the match if it hasn't started yet.
         if cnt >= 2 and engine.get_status() == MatchStatus.WAITING:
             engine.start()
             with get_db() as conn:
@@ -238,6 +230,8 @@ class GameNamespace(Namespace):
         try:
             engine.submit_action(player_slot, action)
             events = engine.drain_events()
+            save_match_state(match_id, engine.state.turn, engine.state.to_dict())
+            broadcast_to_match(match_id, 'game_state', engine.state.to_dict())
             for ev in events:
                 if ev.type == EventType.ACTION_APPLIED:
                     broadcast_to_match(match_id, 'action_applied', ev.payload)
@@ -245,8 +239,6 @@ class GameNamespace(Namespace):
                     broadcast_to_match(match_id, 'turn_changed', ev.payload)
                 elif ev.type == EventType.MATCH_ENDED:
                     broadcast_to_match(match_id, 'game_ended', ev.payload)
-            save_match_state(match_id, engine.state.turn, engine.state.to_dict())
-            broadcast_to_match(match_id, 'game_state', engine.state.to_dict())
         except Exception as e:
             emit('error', {'message': str(e)})
 
@@ -278,12 +270,14 @@ class GameNamespace(Namespace):
         try:
             engine.end_turn(player_slot)
             events = engine.drain_events()
+            save_match_state(match_id, engine.state.turn, engine.state.to_dict())
+            # Send authoritative state first so clients recompute whose turn it
+            # is correctly, then send the lightweight notifications.
+            broadcast_to_match(match_id, 'game_state', engine.state.to_dict())
             for ev in events:
                 if ev.type == EventType.TURN_ENDED:
                     broadcast_to_match(match_id, 'turn_changed', ev.payload)
                 elif ev.type == EventType.MATCH_ENDED:
                     broadcast_to_match(match_id, 'game_ended', ev.payload)
-            save_match_state(match_id, engine.state.turn, engine.state.to_dict())
-            broadcast_to_match(match_id, 'game_state', engine.state.to_dict())
         except Exception as e:
             emit('error', {'message': str(e)})

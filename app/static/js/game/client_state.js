@@ -20,8 +20,19 @@ export function getMySlot() {
 }
 
 export function updateGameState(newState) {
+    if (newState && newState.game_map && Array.isArray(newState.game_map.tiles)
+        && (newState.game_map.tiles.length === 0 || !Array.isArray(newState.game_map.tiles[0]))) {
+        const gm = newState.game_map;
+        const grid = [];
+        for (let y = 0; y < gm.height; y++) {
+            grid[y] = new Array(gm.width).fill(null);
+        }
+        for (const t of gm.tiles) {
+            if (grid[t.y]) grid[t.y][t.x] = t;
+        }
+        gm.tiles = grid;
+    }
     gameState = newState;
-    // Notify listeners (e.g., for UI updates)
     for (const fn of listeners) {
         fn(gameState);
     }
