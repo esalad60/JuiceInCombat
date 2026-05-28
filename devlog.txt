@@ -151,3 +151,14 @@ lucasZ -- 05/22/26 09:56
 - parser.py
     - Added method to parse json file and convert to UnitDefinition
     - Added method to register unit depending on what faction its in
+
+lucasZ -- 05/28/26 00:00
+- Added app/backend/database/__init__.py
+- app/backend/build_db.py
+    - Added matches table, match_players, match_snapshots, and schema_version   tables
+    - Added indexes to matches for storing
+    - Added many getter and poster methods
+- Added app/backend/game/actions.py
+    - Main purpose to validate and make moves
+- app/backend/game/actions.py
+    - Added methods to validate and apply fire, move, and recruit
