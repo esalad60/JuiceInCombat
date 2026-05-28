@@ -4,19 +4,38 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
+
 class UnitCategory(str, Enum):
     INFANTRY  = "infantry"
     VEHICLE   = "vehicle"
     AIRCRAFT  = "aircraft"
 
-@dataclass(frozen=True) ## immutable
+
+@dataclass(frozen=True)
+class WeaponPerkRef:
+    type: str
+    duration: int = 1
+    params: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class WeaponDef:
+    name: str
+    type: str
+    damage: int
+    ap: int = 0
+    range: int = 1
+    description: str = ""
+    perks: tuple[WeaponPerkRef, ...] = ()
+
+
+@dataclass(frozen=True)
 class TraitRef:
     type: str
-    params: dict[str, Any] = field(default_factory=dict) ## When creating this class, new dict for each instance
+    params: dict[str, Any] = field(default_factory=dict)
 
 @dataclass(frozen=True)
 class UnitDefinition:
-
     unit_type: str
     faction: str
 
@@ -29,11 +48,10 @@ class UnitDefinition:
     sight: int
     movement: int
 
-    attack: int
-    range: int
-
     traits: tuple[TraitRef, ...]
 
+    requires_tech: Optional[str] = None
+    weapons: tuple[WeaponDef, ...] = ()
     model: Optional[str] = None
 
     def has_trait(self, trait_type: str) -> bool:
@@ -44,8 +62,20 @@ class UnitDefinition:
             if t.type == trait_type:
                 return t
         return None
-    
-class UnitRegistry: ## Specific to each faction
+
+    def get_weapon(self, name: str) -> Optional[WeaponDef]:
+        for w in self.weapons:
+            if w.name == name:
+                return w
+        return None
+
+    def max_weapon_range(self) -> int:
+        if not self.weapons:
+            return 0
+        return max(w.range for w in self.weapons)
+
+
+class UnitRegistry:
     def __init__(self) -> None:
         self.defs: dict[tuple[str, str], UnitDefinition] = {}
 
@@ -61,8 +91,6 @@ class UnitRegistry: ## Specific to each faction
 
     def for_faction(self, faction: str) -> list[UnitDefinition]:
         return [d for (f, _), d in self.defs.items() if f == faction]
-
-    ## Bottom easier for frontend
 
     def __contains__(self, key: tuple[str, str]) -> bool:
         return key in self.defs

@@ -1,11 +1,9 @@
-from flask import Blueprint, render_template,request,redirect,url_for,session,flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+
+from backend.database.build_db import get_db, get_user_by_username
 
 bp = Blueprint('auth', __name__, url_prefix='')
-DB_FILE="data.db"
-db = sqlite3.connect(DB_FILE); # remove later
-db.close(); # test, remove later
 
 @bp.get('/register')
 def register_get():
@@ -13,27 +11,39 @@ def register_get():
 
 @bp.post('/register')
 def post_register():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    confirmpwd = request.form.get('confirmpwd')
-    if (password != confirmpwd):
-        flash('Passwords must match', 'error')
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '')
+    confirm = request.form.get('confirmpwd', '')
+
+    if not username or not password:
+        flash('Username and password are required', 'error')
         return redirect(url_for('auth.register_get'))
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-    c.execute("SELECT * FROM USERS WHERE USERNAME = ?", (username,))
-    user_exists = c.fetchone()
-    if user_exists:
+    if password != confirm:
+        flash('Passwords do not match', 'error')
+        return redirect(url_for('auth.register_get'))
+    if len(password) < 4:
+        flash('Password must be at least 4 characters', 'error')
+        return redirect(url_for('auth.register_get'))
+
+    existing = get_user_by_username(username)
+    if existing:
         flash('Username already taken', 'error')
-        db.close()
         return redirect(url_for('auth.register_get'))
-    hashword = generate_password_hash(password)
-    c.execute("INSERT INTO USERS (username, password) VALUES (?, ?)", (username, hashword))
-    db.commit()
-    db.close()
-    session["username"] = username
-    flash('Account registered successfully!', 'success')
-    return redirect(url_for('render_homepage'))
+
+    password_hash = generate_password_hash(password)
+    with get_db() as conn:
+        conn.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, password_hash)
+        )
+        cur = conn.execute("SELECT id FROM users WHERE username = ?", (username,))
+        user_id = cur.fetchone()[0]
+
+    session.clear()
+    session['user_id'] = user_id
+    session['username'] = username
+    flash('Account created successfully!', 'success')
+    return redirect(url_for('lobby.lobby_page'))
 
 @bp.get('/login')
 def render_login():
@@ -41,28 +51,31 @@ def render_login():
 
 @bp.post('/login')
 def post_login():
-    username=request.form.get('username')
-    password=request.form.get('password')
-    db=sqlite3.connect(DB_FILE)
-    c=db.cursor()
-    c.execute("SELECT PASSWORD FROM USERS WHERE USERNAME = ?", (username,))
-    login_deets=c.fetchone()
-    if(login_deets is not None):
-        hashword=login_deets[0]
-        if (check_password_hash(hashword,password)):
-          flash('Logged in successfully!', 'success')
-          session['username']=username
-          db.close()
-          return redirect(url_for('render_homepage'))
-        else:
-            flash('Invalid password', 'error')
-    else:
-        flash("Username incorrect or not found", 'error')
-    db.close()
-    return redirect(url_for('auth.render_login'))
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '')
+
+    if not username or not password:
+        flash('Username and password are required', 'error')
+        return redirect(url_for('auth.render_login'))
+
+    user = get_user_by_username(username)
+    if user is None:
+        flash('Username not found', 'error')
+        return redirect(url_for('auth.render_login'))
+
+    if not check_password_hash(user['password'], password):
+        flash('Invalid password', 'error')
+        return redirect(url_for('auth.render_login'))
+
+    session.clear()
+    session['user_id'] = user['id']
+    session['username'] = user['username']
+    session['is_admin'] = bool(user['is_admin'])
+    flash(f'Welcome back, {username}!', 'success')
+    return redirect(url_for('lobby.lobby_page'))
 
 @bp.get('/logout')
 def render_logout():
-    session.pop('username', None)
-    flash('Logout successful', 'success')
+    session.clear()
+    flash('Logged out successfully', 'success')
     return redirect(url_for('auth.render_login'))

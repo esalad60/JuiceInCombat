@@ -1,0 +1,5 @@
+flask>=3.0
+flask-socketio>=5.3
+eventlet>=0.35
+werkzeug>=3.0
+networkx>=3.0

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Lobby — ProjectName{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 max-w-6xl">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-amber-400">Lobby</h1>
+        <a href="/logout" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded text-white transition">Logout</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="mb-4 p-3 rounded text-sm {% if category == 'error' %}bg-red-900/50 text-red-200 border border-red-700{% else %}bg-green-900/50 text-green-200 border border-green-700{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <!-- Create Match -->
+        <div class="bg-gray-800 p-5 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Create New Match</h2>
+            <form method="POST" action="/lobby/create">
+                <div class="mb-3">
+                    <label class="block text-gray-300 mb-1">Map</label>
+                    <select name="map_id" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2" required>
+                        {% for map in available_maps %}
+                            <option value="{{ map.id }}">{{ map.name }} ({{ map.width }}x{{ map.height }})</option>
+                        {% else %}
+                            <option disabled>No maps available</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-300 mb-1">Time Control</label>
+                    <select name="time_control" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2">
+                        <option value="live">Live (5 min + 2 min/turn)</option>
+                        <option value="24h">24-hour (24h per turn)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 py-2 rounded font-semibold transition">Create Match</button>
+            </form>
+        </div>
+
+        <div class="bg-gray-800 p-5 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Open Matches</h2>
+            {% if waiting_matches %}
+                <ul class="space-y-3">
+                    {% for match in waiting_matches %}
+                        <li class="flex justify-between items-center bg-gray-700 p-3 rounded">
+                            <div>
+                                <span class="font-mono">#{{ match.id }}</span> — {{ match.map_name }} ({{ match.time_control }})<br>
+                                <span class="text-sm text-gray-400">{{ match.player_count }}/2 players</span>
+                            </div>
+                            <form method="POST" action="/lobby/join/{{ match.id }}">
+                                <button type="submit" class="bg-green-700 hover:bg-green-800 px-4 py-1 rounded text-sm transition">Join</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-400">No open matches. Create one!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if my_matches %}
+    <div class="mt-8 bg-gray-800 p-5 rounded-lg shadow">
+        <h2 class="text-xl font-semibold mb-4">Your Active Matches</h2>
+        <ul class="space-y-2">
+            {% for match in my_matches %}
+                <li class="flex justify-between items-center bg-gray-700 p-3 rounded">
+                    <div>
+                        Match #{{ match.id }} — {{ match.map_name }} ({{ match.time_control }})<br>
+                        <span class="text-sm text-gray-400">Status: {{ match.status }} | You are Player {{ match.my_slot + 1 }}</span>
+                    </div>
+                    <a href="/game/{{ match.id }}" class="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded text-sm transition">Resume</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

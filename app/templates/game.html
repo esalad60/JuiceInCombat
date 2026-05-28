@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Game — ProjectName{% endblock %}
+
+{% block head %}
+    <style>
+        #glCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .ui-overlay {
+            position: relative;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .ui-overlay button, .ui-overlay div {
+            pointer-events: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<canvas id="glCanvas"></canvas>
+
+<div class="ui-overlay absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-mono">
+    <div id="turn-indicator" class="font-bold text-amber-300">Waiting for game...</div>
+    <div id="cash" class="text-gray-200">Cash: 0</div>
+    <div id="turn-timer" class="text-gray-300">Time: --</div>
+</div>
+
+<div class="ui-overlay absolute bottom-4 left-4 right-4 flex justify-between gap-4">
+    <div id="selected-unit-panel" class="bg-black/70 backdrop-blur-md rounded-lg p-3 text-white w-64 hidden">
+        <h3 class="font-bold text-amber-400 text-sm">Selected Unit</h3>
+        <div id="unit-stats" class="text-xs mt-1"></div>
+        <div id="unit-actions" class="mt-2 flex gap-2"></div>
+    </div>
+    <button id="end-turn-btn" class="bg-amber-700 hover:bg-amber-800 disabled:opacity-50 disabled:cursor-not-allowed px-5 py-2 rounded-lg font-bold shadow-lg transition">End Turn</button>
+</div>
+
+<div id="message-area" class="ui-overlay absolute bottom-20 left-4 bg-black/60 rounded px-3 py-1 text-amber-300 text-sm font-mono"></div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module" src="/static/js/main.js"></script>
+{% endblock %}

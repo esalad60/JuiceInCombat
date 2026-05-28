@@ -1,41 +1,67 @@
+# Monkey-patch MUST happen before importing anything that uses sockets/threads.
+import eventlet
+eventlet.monkey_patch()
+
 import os
-from flask import Flask, send_from_directory, session, render_template, redirect, url_for
+from pathlib import Path
+
+from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
 
-BASE_DIR = os.path.dirname(__file__)
+from config import Config
+from backend.database.build_db import init_db
+from backend.routes import auth, lobby, game, editor, settings, api
+from server import GameNamespace
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "gabagoobakey"
+BASE_DIR = Path(__file__).resolve().parent
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+app = Flask(
+    __name__,
+    static_folder=str(BASE_DIR  / 'static'),
+    template_folder=str(BASE_DIR / 'templates'),
+)
+app.config.from_object(Config)
 
-from backend.database import build_db
-from backend.routes.auth import bp as auth_bp
-from backend.routes.lobby import bp as lobby_bp
-app.register_blueprint(auth_bp, url_prefix="")
-app.register_blueprint(lobby_bp, url_prefix="")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode='eventlet',
+    logger=True,
+    engineio_logger=True,
+)
 
-@app.route("/frontend/static/<path:filename>")
-def serve_static(filename):
-    return send_from_directory(os.path.join(BASE_DIR, "frontend/static"), filename)
+init_db()
 
-#@app.route("/")
-#def home():
-    #return serve_static("index.html")
+app.register_blueprint(auth.bp)
+app.register_blueprint(lobby.bp)
+app.register_blueprint(game.bp)
+app.register_blueprint(editor.bp)
+app.register_blueprint(settings.bp)
+app.register_blueprint(api.bp)
+
+socketio.on_namespace(GameNamespace('/game'))
 
 
-@app.route("/")
-def render_homepage():
-    if session.get("username"):
-        return render_template("home.html")
-    else:
-        return redirect(url_for("auth.render_login"))
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route("/login")
-def login_page():
-    return serve_static("login.html")
 
-import server
+@app.errorhandler(404)
+def not_found(e):
+    return "Not found", 404
 
-if __name__ == "__main__":
-    socketio.run(app, debug=True, port=5000)
+
+@app.errorhandler(500)
+def server_error(e):
+    return "Server error", 500
+
+
+if __name__ == '__main__':
+    socketio.run(
+        app,
+        host='0.0.0.0',
+        port=5000,
+        debug=Config.DEBUG,
+        use_reloader=False,  # reloader + eventlet + module-level state don't mix well
+    )
