@@ -1,15 +1,14 @@
 import * as THREE from 'three';
 import { initScene } from './renderer/scene.js';
 import { initCamera } from './renderer/camera.js';
-import { createTileMesh, updateTileColors } from './renderer/tile_renderer.js';
+import { createTileMesh, updateTileColors, highlightTile, unhighlightTile } from './renderer/tile_renderer.js';
 import { createUnitMesh, updateUnitPosition, removeUnitMesh, setUnitIdOnMesh } from './renderer/unit_renderer.js';
 import { createBuildingMesh, updateBuildingMesh } from './renderer/building_renderer.js';
-import { setMatchId, updateGameState, getCurrentPlayerSlot, getMySlot, getUnit, isMyTurn, getMyResources } from './game/client_state.js';
-import { selectUnit, getSelectedUnit, clearSelection } from './game/selection.js';
+import { setMatchId, updateGameState, getCurrentPlayerSlot, getMySlot, getUnit, isMyTurn, getMyResources, getGameState } from './game/client_state.js';
+import { selectUnit, getSelectedUnit, clearSelection, onSelectionChange } from './game/selection.js';
 import { initHUD, updateHUD, showMessage, setEndTurnEnabled, showRecruitPanel } from './ui/hud.js';
 import { connectSocket, sendAction, sendEndTurn } from './network/socket_client.js';
 
-// Expose sendAction for HUD buttons that emit fire/recruit directly.
 window.sendAction = sendAction;
 
 let scene, camera, renderer;
@@ -19,6 +18,70 @@ let buildingMeshes = new Map(); // buildingId -> mesh
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let controls;
+let reachable = new Map(); // "x,y" -> cost
+
+// Flood-fill reachable tiles
+function computeReachable(unit) {
+    const result = new Map();
+    const gs = getGameState();
+    if (!gs || !gs.game_map) return result;
+    const map = gs.game_map;
+    const budget = unit.movement_remaining ?? 0;
+
+    const occupied = new Set();
+    for (const u of Object.values(gs.units || {})) {
+        if (u.id !== unit.id) occupied.add(`${u.x},${u.y}`);
+    }
+
+    const start = `${unit.x},${unit.y}`;
+    const costs = new Map([[start, 0]]);
+    // Dijkstra / BFS (uniform cost) frontier
+    let frontier = [[unit.x, unit.y, 0]];
+    const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
+    while (frontier.length) {
+        frontier.sort((a,b) => a[2]-b[2]);
+        const [cx, cy, cc] = frontier.shift();
+        if (cc > (costs.get(`${cx},${cy}`) ?? Infinity)) continue;
+        for (const [dx,dy] of dirs) {
+            const nx = cx+dx, ny = cy+dy;
+            if (nx<0||ny<0||ny>=map.height||nx>=map.width) continue;
+            const tile = map.tiles[ny] && map.tiles[ny][nx];
+            if (!tile) continue;
+            if (tile.base === 'ocean') continue;
+            const key = `${nx},${ny}`;
+            if (occupied.has(key)) continue;
+            const nc = cc + 1;
+            if (nc > budget) continue;
+            if (nc < (costs.get(key) ?? Infinity)) {
+                costs.set(key, nc);
+                result.set(key, nc);
+                frontier.push([nx, ny, nc]);
+            }
+        }
+    }
+    return result;
+}
+
+function clearHighlights() {
+    for (let row of tileMeshes) {
+        for (let entry of row) {
+            if (entry && entry.mesh) unhighlightTile(entry.mesh);
+        }
+    }
+    reachable = new Map();
+}
+
+function showReachable(unitId) {
+    clearHighlights();
+    const unit = getUnit(unitId);
+    if (!unit) return;
+    reachable = computeReachable(unit);
+    for (const key of reachable.keys()) {
+        const [x, y] = key.split(',').map(Number);
+        const entry = tileMeshes[y] && tileMeshes[y][x];
+        if (entry && entry.mesh) highlightTile(entry.mesh);
+    }
+}
 
 async function init() {
     const matchId = window.MATCH_ID || new URLSearchParams(window.location.search).get('id');
@@ -36,6 +99,15 @@ async function init() {
     renderer = r;
     
     controls = initCamera(camera, renderer.domElement);
+
+    // When a unit is selected, highlight its reachable tiles; clear on deselect.
+    onSelectionChange((unitId) => {
+        if (unitId !== null && unitId !== undefined) {
+            showReachable(unitId);
+        } else {
+            clearHighlights();
+        }
+    });
     
     initHUD({
         onEndTurn: () => sendEndTurn(),
@@ -62,9 +134,9 @@ async function init() {
         onGameEnded: (winnerSlot) => {
             const mySlot = getMySlot();
             if (winnerSlot === mySlot) {
-                showMessage("You win!");
+                showMessage("🏆 YOU WIN! Captured enemy HQ.");
             } else {
-                showMessage("You lose...");
+                showMessage("💀 You lose...");
             }
             setEndTurnEnabled(false);
         },
@@ -102,8 +174,7 @@ function onClick(event) {
     mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
     
     raycaster.setFromCamera(mouse, camera);
-    
-    // First, try to select a unit
+
     const unitObjects = Array.from(unitMeshes.values());
     const unitIntersects = raycaster.intersectObjects(unitObjects);
     if (unitIntersects.length > 0) {
@@ -131,12 +202,17 @@ function onClick(event) {
     if (tileIntersects.length > 0) {
         const hitTile = tileIntersects[0].object;
         const { x, z } = hitTile.userData; // x and z are grid coordinates
-        const y = z; // because grid is square, but store as z, actual y coordinate is grid row
-    
+        const y = z;
+
         const selectedUnitId = getSelectedUnit();
         if (selectedUnitId !== null) {
+            const key = `${x},${y}`;
+            if (!reachable.has(key)) {
+                showMessage("Can't move there — out of range", true);
+                return;
+            }
             sendAction({ type: 'move', unit_id: selectedUnitId, to: [x, y] });
-            clearSelection();
+            clearSelection();   // clears highlights from onSelectionChange
         } else {
             showMessage("Select a unit first (click on it)");
         }
@@ -163,14 +239,13 @@ function rebuildWorld(gameState) {
             }
         }
     } else {
-        // Update existing tiles (height changes, color changes)
+        // Update existing tiles 
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
                 const tile = gameMap.tiles[y][x];
                 const entry = tileMeshes[y][x];
                 if (!entry) continue;
                 if (entry.height !== tile.height) {
-                    // Recreate mesh for height change
                     scene.remove(entry.mesh);
                     const newMesh = createTileMesh(x, y, tile.height, tile.base);
                     newMesh.userData = { type: 'tile', x, z: y };
@@ -208,7 +283,6 @@ function rebuildWorld(gameState) {
         }
     }
 
-    // Buildings (HQs etc.)
     const buildings = gameState.buildings || {};
     const currentBuildingIds = new Set(Object.keys(buildings).map(Number));
     for (let [bid, mesh] of buildingMeshes.entries()) {

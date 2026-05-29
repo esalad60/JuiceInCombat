@@ -23,11 +23,26 @@ export function createTileMesh(x, z, height, terrainType) {
     cube.position.set(x, height / 2, z);
     cube.castShadow = true;
     cube.receiveShadow = true;
-    cube.userData = { type: 'tile', x, z, height };
+    cube.userData = { type: 'tile', x, z, height, baseColor: color, highlighted: false };
     return cube;
 }
 
 export function updateTileColors(mesh, terrainType) {
     const color = COLORS[terrainType] || COLORS.plains;
-    mesh.material.color.setHex(color);
+    mesh.userData.baseColor = color;
+    if (!mesh.userData.highlighted) {
+        mesh.material.color.setHex(color);
+    }
+}
+
+export function highlightTile(mesh) {
+    mesh.userData.highlighted = true;
+    mesh.material.color.setHex(0x4fc3f7); // light blue
+    mesh.material.emissive.setHex(0x16435c);
+}
+
+export function unhighlightTile(mesh) {
+    mesh.userData.highlighted = false;
+    mesh.material.color.setHex(mesh.userData.baseColor || COLORS.plains);
+    mesh.material.emissive.setHex(0x000000);
 }

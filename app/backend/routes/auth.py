@@ -1,3 +1,4 @@
+# backend/routes/auth.py
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -30,7 +31,7 @@ def post_register():
         flash('Username already taken', 'error')
         return redirect(url_for('auth.register_get'))
 
-    password_hash = generate_password_hash(password)
+    password_hash = generate_password_hash(password, method='pbkdf2:sha256')
     with get_db() as conn:
         conn.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
@@ -63,7 +64,11 @@ def post_login():
         flash('Username not found', 'error')
         return redirect(url_for('auth.render_login'))
 
-    if not check_password_hash(user['password'], password):
+    try:
+        password_ok = check_password_hash(user['password'], password)
+    except Exception:
+        password_ok = False
+    if not password_ok:
         flash('Invalid password', 'error')
         return redirect(url_for('auth.render_login'))
 

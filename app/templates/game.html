@@ -25,8 +25,11 @@
 
 {% block content %}
 
+{# Consume (and discard) any pending flashes so they don't spill onto the
+   next page that renders flashes, e.g. login/register. #}
+{% set _flushed = get_flashed_messages() %}
+
 <script>
-    // match_id comes from the /game/<match_id> route (a path param, NOT ?id=).
     window.MATCH_ID = "{{ match_id }}";
 </script>
 
