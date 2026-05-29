@@ -10,12 +10,98 @@
             margin: 0;
             padding: 0;
             min-height: 100%;
+            overflow-x: hidden;
+            background-color: #050507;
         }
-        canvas { display: block; }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
     </style>
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-900 text-white">
-    {% block content %}{% endblock %}
+<body class="text-zinc-100 antialiased selection:bg-zinc-700/50">
+    <canvas id="bg-canvas"></canvas>
+    <div class="content-layer">
+        {% block content %}{% endblock %}
+    </div>
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+        });
+        const particleCount = 65;
+        const particles = [];
+        for(let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.8 + 0.5,
+                alpha: Math.random() * 0.6 + 0.2,
+                speedX: (Math.random() - 0.5) * 0.25,
+                speedY: (Math.random() - 0.5) * 0.15
+            });
+        }
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+        function animate() {
+            mouse.x += (mouse.targetX - mouse.x) * 0.05;
+            mouse.y += (mouse.targetY - mouse.y) * 0.05;
+            ctx.fillStyle = '#050507';
+            ctx.fillRect(0, 0, width, height);
+            let nebulaLeft = ctx.createRadialGradient(
+                width * 0.2 + (mouse.x * 0.04), height * 0.3 + (mouse.y * 0.04), 0,
+                width * 0.2, height * 0.3, Math.max(width, height) * 0.6
+            );
+            nebulaLeft.addColorStop(0, 'rgba(63, 63, 70, 0.25)');
+            nebulaLeft.addColorStop(0.5, 'rgba(24, 24, 27, 0.1)');
+            nebulaLeft.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = nebulaLeft;
+            ctx.fillRect(0, 0, width, height);
+            let nebulaRight = ctx.createRadialGradient(
+                width * 0.8 - (mouse.x * 0.03), height * 0.7 - (mouse.y * 0.03), 0,
+                width * 0.8, height * 0.7, Math.max(width, height) * 0.5
+            );
+            nebulaRight.addColorStop(0, 'rgba(161, 161, 170, 0.08)');
+            nebulaRight.addColorStop(0.6, 'rgba(9, 9, 11, 0.05)');
+            nebulaRight.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = nebulaRight;
+            ctx.fillRect(0, 0, width, height);
+            for(let i = 0; i < particleCount; i++) {
+                let p = particles[i];
+                p.x += p.speedX + (mouse.x - width/2) * 0.0004;
+                p.y += p.speedY + (mouse.y - height/2) * 0.0004;
+                if(p.x < 0) p.x = width;
+                if(p.x > width) p.x = 0;
+                if(p.y < 0) p.y = height;
+                if(p.y > height) p.y = 0;
+                p.alpha += (Math.random() - 0.5) * 0.02;
+                if(p.alpha < 0.1) p.alpha = 0.1;
+                if(p.alpha > 0.8) p.alpha = 0.8;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(244, 244, 245, ${p.alpha})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
