@@ -159,9 +159,20 @@ lucasZ -- 05/28/26 00:00
     - Added indexes to matches for storing
     - Added many getter and poster methods
 - Added app/backend/game/actions.py
-    - Main purpose to validate and make moves
-- app/backend/game/actions.py
+    - To validate and make moves
     - Added methods to validate and apply fire, move, and recruit
+- Added app/backend/game/combat.py
+    - Added methods to account for armor, perks, and terrain height, and status mults for the future. 
+- Added app/backend/economy.py
+    - Added temporary holders for cash income --> create a json dedicated to building income
+    - Added income and spending functions
+- Added app/backend/elevation.py
+    - Added methods to get and calculate cost for movement
+    - Added methods to check if check movement is legal
+- Aded app/backend/engine.py
+    - Controller for entire game logic
+    - Added fucntions to validate turn start and turn end
+    - Added functions to end match and tick the game
 
 evissW-5/29/26 00:02
 - Updated base
