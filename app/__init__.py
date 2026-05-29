@@ -1,3 +1,7 @@
+# Monkey-patch MUST happen before importing anything that uses sockets/threads.
+import eventlet
+eventlet.monkey_patch()
+
 import os
 from pathlib import Path
 
@@ -21,7 +25,7 @@ app.config.from_object(Config)
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode='gevent',
+    async_mode='eventlet',
     logger=True,
     engineio_logger=True,
 )
