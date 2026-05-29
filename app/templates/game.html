@@ -13,9 +13,23 @@
             z-index: 0;
         }
         .ui-overlay {
-            position: relative;
-            z-index: 10;
+            z-index: 30;
             pointer-events: none;
+        }
+
+        .hud-root {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            pointer-events: none;
+            font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .nic-panel {
+            background: linear-gradient(180deg, rgba(26,26,32,.92), rgba(10,10,14,.94));
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow: 0 12px 32px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.04);
+            backdrop-filter: blur(12px);
         }
         .ui-overlay button, .ui-overlay div {
             pointer-events: auto;
@@ -25,32 +39,47 @@
 
 {% block content %}
 
-{# Consume (and discard) any pending flashes so they don't spill onto the
-   next page that renders flashes, e.g. login/register. #}
 {% set _flushed = get_flashed_messages() %}
 
 <script>
     window.MATCH_ID = "{{ match_id }}";
 </script>
 
+
 <canvas id="glCanvas"></canvas>
 
-<div class="ui-overlay absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm font-mono">
-    <div id="turn-indicator" class="font-bold text-amber-300">Waiting for game...</div>
-    <div id="cash" class="text-gray-200">Cash: 0</div>
-    <div id="turn-timer" class="text-gray-300">Time: --</div>
-</div>
-
-<div class="ui-overlay absolute bottom-4 left-4 right-4 flex justify-between gap-4">
-    <div id="selected-unit-panel" class="bg-black/70 backdrop-blur-md rounded-lg p-3 text-white w-64 hidden">
-        <h3 class="font-bold text-amber-400 text-sm">Selected Unit</h3>
-        <div id="unit-stats" class="text-xs mt-1"></div>
-        <div id="unit-actions" class="mt-2 flex gap-2"></div>
+<div class="hud-root">
+    <div class="ui-overlay absolute top-4 left-4 nic-panel rounded-2xl px-5 py-4 text-white min-w-[260px]">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-400">Command</div>
+        <div id="turn-indicator" class="font-extrabold text-amber-300 text-lg">Waiting for game...</div>
+        <div class="mt-3 flex items-center justify-between text-sm">
+            <div>
+                <div class="text-zinc-500 uppercase text-[10px]">Cash</div>
+                <div id="cash" class="font-bold text-emerald-300">0</div>
+            </div>
+            <div class="text-right">
+                <div class="text-zinc-500 uppercase text-[10px]">Turn Timer</div>
+                <div id="turn-timer" class="font-semibold text-zinc-200">--</div>
+            </div>
+        </div>
     </div>
-    <button id="end-turn-btn" class="bg-amber-700 hover:bg-amber-800 disabled:opacity-50 disabled:cursor-not-allowed px-5 py-2 rounded-lg font-bold shadow-lg transition">End Turn</button>
-</div>
 
-<div id="message-area" class="ui-overlay absolute bottom-20 left-4 bg-black/60 rounded px-3 py-1 text-amber-300 text-sm font-mono"></div>
+    <div class="ui-overlay absolute bottom-5 left-5 right-5 flex justify-between items-end gap-4">
+        <div id="selected-unit-panel" class="nic-panel rounded-3xl p-4 text-white w-[320px] hidden">
+            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Selected Unit</div>
+            <div id="unit-stats" class="text-sm mt-2 space-y-1"></div>
+            <div id="unit-actions" class="mt-3 flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="flex-1 flex justify-center">
+            <div id="message-area" class="ui-overlay nic-panel rounded-xl px-4 py-2 text-amber-300 text-sm min-w-[240px] text-center"></div>
+        </div>
+
+        <button id="end-turn-btn" class="pointer-events-auto bg-amber-600/90 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed border border-amber-300/20 px-6 py-3 rounded-2xl font-extrabold tracking-wide shadow-2xl transition text-zinc-950">
+            END TURN
+        </button>
+    </div>
+</div>
 
 <script type="importmap">
     {

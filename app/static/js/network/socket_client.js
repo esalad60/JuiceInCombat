@@ -1,6 +1,6 @@
 // frontend/static/js/network/socket_client.js
 import { io } from "https://cdn.socket.io/4.5.4/socket.io.esm.min.js";
-import { setMySlot, updateGameState, getMatchId, setMatchId } from '../game/client_state.js';
+import { setMySlot, updateGameState, getMatchId, setMatchId, setUnitCatalog } from '../game/client_state.js';
 
 let socket = null;
 let currentMatchId = null;
@@ -31,7 +31,7 @@ export function connectSocket(matchId, handlers) {
     socket.on('joined', (data) => {
         console.log('Joined match:', data);
         setMySlot(data.player_slot);
-        // don't try to render until the match actually starts (game_started or game_state)
+        if (data.unit_catalog) setUnitCatalog(data.unit_catalog);
         if (data.game_state && callbacks.onGameState) {
             callbacks.onGameState(data.game_state);
         }
@@ -56,12 +56,12 @@ export function connectSocket(matchId, handlers) {
     });
 
     socket.on('game_started', (payload) => {
+        if (payload.unit_catalog) setUnitCatalog(payload.unit_catalog);
         if (callbacks.onGameStarted) callbacks.onGameStarted(payload.game_state);
     });
 
     socket.on('match_created', (data) => {
         console.log('Match created:', data);
-        // Could redirect to game page; handled by lobby page instead.
     });
 
     socket.on('error', (err) => {
@@ -83,7 +83,6 @@ export function connectSocket(matchId, handlers) {
     });
 }
 
-
 export function sendAction(action) {
     if (socket && socket.connected) {
         socket.emit('action', { match_id: currentMatchId, action });
@@ -93,7 +92,6 @@ export function sendAction(action) {
     }
 }
 
-
 export function sendEndTurn() {
     if (socket && socket.connected) {
         socket.emit('end_turn', { match_id: currentMatchId });
@@ -102,7 +100,6 @@ export function sendEndTurn() {
         if (callbacks.onError) callbacks.onError({ message: 'Not connected to server' });
     }
 }
-
 
 export function createMatch(mapId, timeControl) {
     if (socket && socket.connected) {

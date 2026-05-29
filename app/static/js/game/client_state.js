@@ -1,7 +1,22 @@
+// src/frontend/static/js/game/client_state.js
+
 let matchId = null;
 let gameState = null;
 let mySlot = null;          // 0 or 1, set by server on join
 let listeners = [];         // functions to call when state changes
+let unitCatalog = {};       // faction -> [ {unit_type, name, cost, ...} ]
+
+export function setUnitCatalog(catalog) {
+    if (catalog) unitCatalog = catalog;
+}
+
+export function getUnitCatalog() {
+    return unitCatalog;
+}
+
+export function getRecruitableUnits(faction) {
+    return unitCatalog[faction] || [];
+}
 
 export function setMatchId(id) {
     matchId = id;

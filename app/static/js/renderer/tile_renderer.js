@@ -41,6 +41,12 @@ export function highlightTile(mesh) {
     mesh.material.emissive.setHex(0x16435c);
 }
 
+export function highlightTileAttack(mesh) {
+    mesh.userData.highlighted = true;
+    mesh.material.color.setHex(0xe74c3c); // red
+    mesh.material.emissive.setHex(0x5c1a16);
+}
+
 export function unhighlightTile(mesh) {
     mesh.userData.highlighted = false;
     mesh.material.color.setHex(mesh.userData.baseColor || COLORS.plains);

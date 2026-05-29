@@ -18,9 +18,32 @@ from backend.game.actions import set_unit_registry
 active_engines: Dict[int, MatchEngine] = {}          # match_id -> engine
 player_match: Dict[str, int] = {}                    # sid -> match_id
 
+# Absolute path so this works regardless of the process working directory.
 _UNITS_DIR = Path(__file__).resolve().parent / "data" / "units"
 unit_registry = register_units(str(_UNITS_DIR))
 set_unit_registry(unit_registry)
+
+
+def build_unit_catalog() -> dict:
+    catalog: dict[str, list] = {}
+    for definition in unit_registry.all():
+        catalog.setdefault(definition.faction, []).append({
+            "unit_type": definition.unit_type,
+            "name": definition.name,
+            "category": definition.category.value if hasattr(definition.category, "value") else definition.category,
+            "cost": definition.price,
+            "health": definition.health,
+            "armor": definition.armor,
+            "movement": definition.movement,
+            "weapons": [
+                {"name": w.name, "damage": w.damage, "ap": w.ap, "range": w.range}
+                for w in definition.weapons
+            ],
+        })
+    return catalog
+
+
+UNIT_CATALOG = build_unit_catalog()
 
 def get_or_create_engine(match_id: int) -> Optional[MatchEngine]:
     if match_id in active_engines:
@@ -126,6 +149,7 @@ class GameNamespace(Namespace):
             'match_id': match_id,
             'player_slot': 0,
             'game_state': None,   # no state until the match starts
+            'unit_catalog': UNIT_CATALOG,
         })
 
     def on_join_match(self, data):
@@ -139,14 +163,12 @@ class GameNamespace(Namespace):
         if not user_id or match_id is None:
             emit('error', {'message': 'Missing match_id or not logged in'})
             return
-
         try:
             match_id = int(match_id)
         except (TypeError, ValueError):
             emit('error', {'message': 'Invalid match_id'})
             return
 
-        # Register this user into a slot (or find their existing slot).
         with get_db() as conn:
             cur = conn.execute("SELECT slot FROM match_players WHERE match_id = ? AND user_id = ?", (match_id, user_id))
             row = cur.fetchone()
@@ -169,19 +191,18 @@ class GameNamespace(Namespace):
         player_match[sid] = match_id
         join_room(f"match_{match_id}")
 
-        # How many players are now in the match?
         with get_db() as conn:
             cur = conn.execute("SELECT COUNT(*) as cnt FROM match_players WHERE match_id = ?", (match_id,))
             cnt = cur.fetchone()['cnt']
 
         engine = get_or_create_engine(match_id)
 
-        # Still waiting for an opponent — no engine yet. Tell the client to wait.
         if engine is None:
             emit('joined', {
                 'match_id': match_id,
                 'player_slot': player_slot,
                 'game_state': None,
+                'unit_catalog': UNIT_CATALOG,
             })
             return
 
@@ -193,12 +214,13 @@ class GameNamespace(Namespace):
                     "UPDATE matches SET status = 'in_progress', started_at = CURRENT_TIMESTAMP WHERE id = ?",
                     (match_id,))
             save_match_state(match_id, engine.state.turn, engine.state.to_dict())
-            broadcast_to_match(match_id, 'game_started', {'game_state': engine.get_state().to_dict()})
+            broadcast_to_match(match_id, 'game_started', {'game_state': engine.get_state().to_dict(), 'unit_catalog': UNIT_CATALOG})
 
         emit('joined', {
             'match_id': match_id,
             'player_slot': player_slot,
-            'game_state': engine.get_state().to_dict()
+            'game_state': engine.get_state().to_dict(),
+            'unit_catalog': UNIT_CATALOG,
         })
 
     def on_action(self, data):
@@ -271,8 +293,6 @@ class GameNamespace(Namespace):
             engine.end_turn(player_slot)
             events = engine.drain_events()
             save_match_state(match_id, engine.state.turn, engine.state.to_dict())
-            # Send authoritative state first so clients recompute whose turn it
-            # is correctly, then send the lightweight notifications.
             broadcast_to_match(match_id, 'game_state', engine.state.to_dict())
             for ev in events:
                 if ev.type == EventType.TURN_ENDED:

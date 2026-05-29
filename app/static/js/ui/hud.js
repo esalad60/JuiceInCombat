@@ -1,183 +1,117 @@
-// frontend/static/js/ui/hud.js
-import { getUnit, getMySlot, getCurrentPlayerSlot, getMyResources, getPlayer, getGameState, isMyTurn } from '../game/client_state.js';
-import { getSelectedUnit, onSelectionChange, clearSelection } from '../game/selection.js';
+import { getUnit, getMySlot, getMyResources, getGameState, isMyTurn } from '../game/client_state.js';
+import { getSelectedUnit } from '../game/selection.js';
 
-let endTurnCallback = null;
-let recruitCallback = null;
-let selectedUnitId = null;
-let unsubscribeSelection = null;
+let cb = {};   // callbacks from main.js
+let turnIndicatorEl, cashEl, timerEl, endTurnBtn, panelEl, statsEl, actionsEl;
 
-let turnIndicatorEl, cashEl, timerEl, endTurnBtn, selectedPanel, unitStatsEl, unitActionsEl;
-
-let timerInterval = null;
-
-export function initHUD(uiCallbacks) {
-    endTurnCallback = uiCallbacks.onEndTurn;
-    recruitCallback = uiCallbacks.onRecruit;
-    
+export function initHUD(callbacks) {
+    cb = callbacks || {};
     turnIndicatorEl = document.getElementById('turn-indicator');
-    cashEl = document.getElementById('cash');
-    timerEl = document.getElementById('turn-timer');
-    endTurnBtn = document.getElementById('end-turn-btn');
-    selectedPanel = document.getElementById('selected-unit-panel');
-    unitStatsEl = document.getElementById('unit-stats');
-    unitActionsEl = document.getElementById('unit-actions');
-    
+    cashEl          = document.getElementById('cash');
+    timerEl         = document.getElementById('turn-timer');
+    endTurnBtn      = document.getElementById('end-turn-btn');
+    panelEl         = document.getElementById('selected-unit-panel');
+    statsEl         = document.getElementById('unit-stats');
+    actionsEl       = document.getElementById('unit-actions');
+
     if (endTurnBtn) {
         endTurnBtn.addEventListener('click', () => {
-            if (endTurnCallback && isMyTurn()) {
-                endTurnCallback();
-                clearSelection(); // optional
-            }
+            if (isMyTurn() && cb.onEndTurn) cb.onEndTurn();
         });
     }
-    
-    unsubscribeSelection = onSelectionChange((unitId) => {
-        selectedUnitId = unitId;
-        if (unitId) {
-            updateUnitPanel(unitId);
-            selectedPanel.style.display = 'block';
-        } else {
-            selectedPanel.style.display = 'none';
-        }
-    });
-    
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        updateTimer();
-    }, 1000);
 }
 
 export function updateHUD(gameState) {
     if (!gameState) return;
-    
     const currentSlot = gameState.current_player_slot;
-    const mySlot = getMySlot();
-    const turnText = `Turn ${gameState.turn} — Player ${currentSlot + 1}`;
-    if (turnIndicatorEl) turnIndicatorEl.textContent = turnText;
-    
-    // Cash
-    const myResources = getMyResources();
-    if (cashEl && myResources) {
-        cashEl.textContent = `Cash: ${myResources.cash || 0}`;
-    }
-    
-    if (endTurnBtn) {
-        endTurnBtn.disabled = !isMyTurn();
-    }
-    
-    // If a unit is selected, refresh its panel (stats may have changed)
-    if (selectedUnitId) {
-        updateUnitPanel(selectedUnitId);
-    }
+    if (turnIndicatorEl) turnIndicatorEl.textContent = isMyTurn() ? `Your Turn • Round ${gameState.turn}` : `Enemy Turn • P${currentSlot + 1}`;
+    const res = getMyResources();
+    if (cashEl) cashEl.textContent = `$${res.cash || 0}`;
+    if (endTurnBtn) endTurnBtn.disabled = !isMyTurn();
 }
 
-function updateUnitPanel(unitId) {
-    const unit = getUnit(unitId);
-    if (!unit) {
-        selectedPanel.style.display = 'none';
-        return;
-    }
-    
-    unitStatsEl.innerHTML = `
+export function showUnitPanel(unit) {
+    if (!panelEl || !unit) return;
+    panelEl.classList.remove('hidden');
+    panelEl.style.display = 'block';
+
+    statsEl.innerHTML = `
         <div><strong>${unit.type}</strong></div>
         <div>HP: ${unit.hp}</div>
         <div>Armor: ${unit.armor}</div>
-        <div>⚡Movement: ${unit.movement_remaining}/${unit.max_movement}</div>
+        <div>Move: ${unit.movement_remaining}/${unit.max_movement}</div>
         <div>Fired: ${unit.has_fired_weapon ? 'Yes' : 'No'}</div>
     `;
-    
-    unitActionsEl.innerHTML = '';
-    
-    if (unit.movement_remaining > 0 && !unit.has_moved) {
-        const moveBtn = document.createElement('button');
-        moveBtn.textContent = 'Move';
-        moveBtn.addEventListener('click', () => {
-            // Movement is handled by clicking on tiles; this button just deselects? 
-            showMessage('Click on a tile to move this unit');
-        });
-        unitActionsEl.appendChild(moveBtn);
-    }
-    
-    for (const weapon of unit.weapons) {
-        if (!unit.has_fired_weapon) {
-            const fireBtn = document.createElement('button');
-            fireBtn.textContent = `${weapon.name} (${weapon.range})`;
-            fireBtn.addEventListener('click', () => {
-                const targetX = prompt(`Enter target X coordinate for ${weapon.name}:`);
-                const targetY = prompt(`Enter target Y coordinate:`);
-                if (targetX !== null && targetY !== null) {
-                    const action = { type: 'fire', unit_id: unitId, weapon_name: weapon.name, target_xy: [parseInt(targetX), parseInt(targetY)] };
-                    if (window.sendAction) window.sendAction(action);
-                    else console.warn('sendAction not available');
-                }
+    actionsEl.innerHTML = '';
+
+    if (!unit.has_fired_weapon) {
+        for (const weapon of (unit.weapons || [])) {
+            const btn = document.createElement('button');
+            btn.textContent = `${weapon.name} (rng ${weapon.range})`;
+            btn.className = 'bg-red-700/90 hover:bg-red-600 border border-red-400/20 px-3 py-2 rounded-xl text-xs font-semibold';
+            btn.addEventListener('click', () => {
+                if (cb.onWeaponSelected) cb.onWeaponSelected(unit.id, weapon.name);
             });
-            unitActionsEl.appendChild(fireBtn);
+            actionsEl.appendChild(btn);
         }
+    } else {
+        const note = document.createElement('div');
+        note.className = 'text-xs text-gray-400';
+        note.textContent = 'Already fired this turn';
+        actionsEl.appendChild(note);
     }
-    
-    const recruitBtn = document.createElement('button');
-    recruitBtn.textContent = 'Recruit Unit';
-    recruitBtn.style.backgroundColor = '#4a6e3a';
-    recruitBtn.addEventListener('click', () => {
-        const unitType = prompt('Enter unit type (riflemen or commandos):', 'riflemen');
-        if (unitType) {
-            const x = prompt('Enter X coordinate for spawn (must be on owned building):');
-            const y = prompt('Enter Y coordinate:');
-            if (x !== null && y !== null) {
-                if (recruitCallback) {
-                    recruitCallback(unitType, parseInt(x), parseInt(y));
-                } else {
-                    if (window.sendAction) window.sendAction({ type: 'recruit', unit_type: unitType, to: [parseInt(x), parseInt(y)] });
-                }
-            }
-        }
-    });
-    unitActionsEl.appendChild(recruitBtn);
-    
-    selectedPanel.style.display = 'block';
 }
 
-function updateTimer() {
-    const gameState = getGameState();
-    if (!gameState) return;
-    const currentSlot = gameState.current_player_slot;
-    if (currentSlot === getMySlot() && gameState.time_control === 'live') {
-        // placeholder
-        if (timerEl) timerEl.textContent = 'Time: --';
-    } else {
-        if (timerEl) timerEl.textContent = '';
+export function showRecruitList(units) {
+    if (!panelEl) return;
+    panelEl.classList.remove('hidden');
+    panelEl.style.display = 'block';
+
+    const res = getMyResources();
+    const cash = res.cash || 0;
+
+    statsEl.innerHTML = `<div><strong>Recruit a unit</strong></div>
+        <div class="text-xs text-gray-400">Cash: ${cash}</div>`;
+    actionsEl.innerHTML = '';
+    actionsEl.style.flexDirection = 'column';
+
+    if (!units || units.length === 0) {
+        const d = document.createElement('div');
+        d.className = 'text-xs text-gray-400';
+        d.textContent = 'No units available';
+        actionsEl.appendChild(d);
+        return;
     }
+
+    for (const u of units) {
+        const affordable = cash >= u.cost;
+        const btn = document.createElement('button');
+        btn.textContent = `${u.name} - $${u.cost}`;
+        btn.className = affordable ? 'bg-emerald-700 hover:bg-emerald-600 px-3 py-2 rounded-xl text-xs mb-1 font-semibold' : 'bg-gray-700 px-3 py-2 rounded-xl text-xs mb-1 opacity-50 cursor-not-allowed';
+        btn.disabled = !affordable;
+        btn.addEventListener('click', () => {
+            if (affordable && cb.onRecruitUnitChosen) cb.onRecruitUnitChosen(u.unit_type);
+        });
+        actionsEl.appendChild(btn);
+    }
+}
+
+export function hidePanels() {
+    if (panelEl) {
+        panelEl.classList.add('hidden');
+        panelEl.style.display = 'none';
+    }
+    if (actionsEl) actionsEl.style.flexDirection = 'row';
 }
 
 export function showMessage(msg, isError = false) {
-    const msgDiv = document.getElementById('message-area');
-    if (!msgDiv) return;
-    msgDiv.textContent = msg;
-    msgDiv.style.color = isError ? '#ff8888' : '#ffd966';
-    setTimeout(() => {
-        if (msgDiv.textContent === msg) msgDiv.textContent = '';
-    }, 3000);
+    const el = document.getElementById('message-area');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#ff8888' : '#ffd966';
+    setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3000);
 }
-
-
-export function showRecruitPanel(onSelect) {
-    const unitType = prompt('Unit type (riflemen/commandos):', 'riflemen');
-    if (unitType) {
-        const x = prompt('X coordinate:');
-        const y = prompt('Y coordinate:');
-        if (x !== null && y !== null) {
-            onSelect(unitType, parseInt(x), parseInt(y));
-        }
-    }
-}
-
 
 export function setEndTurnEnabled(enabled) {
     if (endTurnBtn) endTurnBtn.disabled = !enabled;
 }
-
-window.addEventListener('beforeunload', () => {
-    if (timerInterval) clearInterval(timerInterval);
-    if (unsubscribeSelection) unsubscribeSelection();
-});

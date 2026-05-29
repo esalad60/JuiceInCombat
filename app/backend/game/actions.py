@@ -240,27 +240,59 @@ def validate_recruit(
         raise ActionError("Recruit action missing 'unit_type'")
 
     x, y = get_xy(action, "to")
+
     if not state.game_map.in_bounds(x, y):
         raise ActionError(f"Spawn tile ({x},{y}) out of bounds")
 
     tile = state.game_map.tile_at(x, y)
+
     if tile.unit_id is not None:
-        raise ActionError("Spawn tile is already occupied by a unit")
+        raise ActionError("Spawn tile is already occupied")
 
-    building_here = state.building_at(x, y)
-    if building_here is None or building_here.owner_slot != player_slot:
-        raise ActionError("Can only recruit on a tile with one of your buildings")
+    # find player's HQ / capital
+    player = state.get_player(player_slot)
 
-    # Check unit definition exists
+    if player.capital_building_id is None:
+        raise ActionError("No HQ found")
+
+    hq = state.get_building(player.capital_building_id)
+
+    if hq is None:
+        raise ActionError("HQ building missing")
+
+    dx = abs(x - hq.x)
+    dy = abs(y - hq.y)
+
+    if max(dx, dy) != 1:
+        raise ActionError("Recruit tile must be adjacent to HQ")
+
+    hq_tile = state.game_map.tile_at(hq.x, hq.y)
+
+    if tile.height != hq_tile.height:
+        raise ActionError(
+            "Recruit tile must be on same elevation as HQ"
+        )
+
+    if tile.base == "ocean":
+        raise ActionError("Cannot recruit on water")
+
     if UNIT_REGISTRY is None:
         raise ActionError("Unit registry not initialized")
+
     faction = state.get_player(player_slot).faction
     definition = UNIT_REGISTRY.get(faction, unit_type)
-    if definition is None:
-        raise ActionError(f"No such unit '{unit_type}' for faction '{faction}'")
 
-    # Check cost
-    if not economy.can_afford(state, player_slot, definition.price):
+    if definition is None:
+        raise ActionError(
+            f"No such unit '{unit_type}' for faction '{faction}'"
+        )
+
+    # money
+    if not economy.can_afford(
+        state,
+        player_slot,
+        definition.price
+    ):
         raise ActionError(
             f"Not enough cash ({definition.price} needed)"
         )
