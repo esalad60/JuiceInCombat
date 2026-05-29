@@ -8,7 +8,8 @@ import { setMatchId, updateGameState, getCurrentPlayerSlot, getMySlot, getUnit, 
          getMyResources, getGameState, getTile, getRecruitableUnits } from './game/client_state.js';
 import { selectUnit, getSelectedUnit, clearSelection, onSelectionChange } from './game/selection.js';
 import { initHUD, updateHUD, showMessage, setEndTurnEnabled,
-         showRecruitList, showUnitPanel, hidePanels } from './ui/hud.js';
+         showRecruitList, showUnitPanel, showEnemyUnitPanel,
+         showBuildingPanel, showWeaponInfo, hidePanels } from './ui/hud.js';
 import { connectSocket, sendAction, sendEndTurn } from './network/socket_client.js';
 
 let scene, camera, renderer;
@@ -19,7 +20,6 @@ let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let controls;
 
-// interaction mode: 'idle' | 'move' | 'fire' | 'recruit'
 let mode = 'idle';
 let highlightSet = new Map();
 let pendingWeaponName = null;
@@ -120,6 +120,7 @@ function enterFireMode(unitId, weaponName) {
     clearHighlights();
     highlightSet = computeFireTargets(unit, weapon);
     paintHighlights('fire');
+    showWeaponInfo(weapon);   // pop the weapon stats box beside the unit panel
     showMessage(`Firing ${weaponName} - click an enemy in range`);
 }
 
@@ -388,7 +389,10 @@ function onClick(event) {
 
         if (unit && unit.owner_slot === getMySlot()) {
             if (!isMyTurn()) {
-                showMessage("Not your turn", true);
+                enterIdle();
+                selectUnit(unitId);
+                showUnitPanel(unit, true);   // read-only
+                showMessage("Viewing unit (not your turn)", false);
                 return;
             }
 
@@ -399,10 +403,9 @@ function onClick(event) {
         }
 
         if (unit) {
-            showMessage(
-                "Enemy unit. Select your unit and a weapon to attack.",
-                true
-            );
+            enterIdle();
+            showEnemyUnitPanel(unit);
+            showMessage("Enemy unit — view only", false);
             return;
         }
     }
@@ -417,19 +420,19 @@ function onClick(event) {
         if (!clicked?.userData) return;
 
         const ud = clicked.userData;
+        const b = getGameState().buildings[ud.buildingId];
+        if (!b) return;
 
         if (ud.ownerSlot === getMySlot()) {
-            if (!isMyTurn()) {
-                showMessage("Not your turn", true);
-                return;
-            }
-
-            const b = getGameState().buildings[ud.buildingId];
-            openRecruitList(b.x, b.y);
+            enterIdle();
+            showBuildingPanel(b, true);
+            if (!isMyTurn()) showMessage("Not your turn (view only)", true);
             return;
         }
 
-        showMessage("That's an enemy building.", true);
+        enterIdle();
+        showBuildingPanel(b, false);
+        showMessage("Enemy building — view only", false);
         return;
     }
 

@@ -8,10 +8,10 @@ from pathlib import Path
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
 
-from .config import Config
-from .backend.database.build_db import init_db
-from .backend.routes import auth, lobby, game, editor, settings, api
-from .server import GameNamespace
+from config import Config
+from backend.database.build_db import init_db
+from backend.routes import auth, lobby, game, editor, settings, api
+from server import GameNamespace
 
 BASE_DIR = Path(__file__).resolve().parent
 

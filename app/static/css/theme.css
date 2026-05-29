@@ -1,0 +1,155 @@
+:root {
+    --jic-bg:        #1c1d18;
+    --jic-bg-2:      #15160f;
+    --jic-panel:     #2b2c24;  
+    --jic-panel-2:   #34352b;
+    --jic-ink:       #e8e4d4;
+    --jic-ink-dim:   #b3ad97;
+    --jic-line:      #5b5c4a; 
+    --jic-line-soft: #43443a;
+    --jic-olive:     #6f7544;  
+    --jic-olive-hi:  #888f54;
+    --jic-rust:      #9d5a32;  
+    --jic-rust-hi:   #b86b3c;
+    --jic-steel:     #5a6b6e; 
+    --jic-cream:     #d8cfa8;  
+    --jic-danger:    #b4452f;
+    --jic-ok:        #7a8b3c;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-color: var(--jic-bg);
+    background-image:
+        radial-gradient(var(--jic-line-soft) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--jic-ink);
+    font-family: "Courier New", "Consolas", ui-monospace, monospace;
+    -webkit-font-smoothing: none;
+}
+
+.jic-panel {
+    background: var(--jic-panel);
+    border: 2px solid var(--jic-line);
+    box-shadow: 0 0 0 2px var(--jic-bg-2), 4px 4px 0 0 rgba(0,0,0,.35);
+    border-radius: 0;   
+}
+
+.jic-panel-inset {
+    background: var(--jic-bg-2);
+    border: 1px solid var(--jic-line-soft);
+    border-radius: 0;
+}
+
+.jic-titlebar {
+    background: var(--jic-panel-2);
+    border-bottom: 2px solid var(--jic-line);
+    padding: 6px 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--jic-cream);
+}
+
+.jic-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--jic-ink-dim);
+    font-weight: 700;
+}
+.jic-value { font-weight: 700; color: var(--jic-ink); }
+
+.jic-btn {
+    display: inline-block;
+    background: var(--jic-olive);
+    color: var(--jic-bg-2);
+    border: 2px solid var(--jic-line);
+    border-radius: 0;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 0 rgba(0,0,0,.4);
+    transition: transform .04s, background .1s;
+}
+.jic-btn:hover { background: var(--jic-olive-hi); }
+.jic-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 0 rgba(0,0,0,.4); }
+.jic-btn:disabled {
+    background: var(--jic-line-soft);
+    color: var(--jic-ink-dim);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .7;
+}
+
+.jic-btn-rust   { background: var(--jic-rust); color: var(--jic-ink); }
+.jic-btn-rust:hover { background: var(--jic-rust-hi); }
+.jic-btn-steel  { background: var(--jic-steel); color: var(--jic-ink); }
+.jic-btn-danger { background: var(--jic-danger); color: var(--jic-ink); }
+.jic-btn-block  { display: block; width: 100%; text-align: center; }
+
+.jic-input {
+    width: 100%;
+    background: var(--jic-bg-2);
+    border: 2px solid var(--jic-line-soft);
+    border-radius: 0;
+    padding: 8px 10px;
+    color: var(--jic-ink);
+    font-family: inherit;
+    font-size: 13px;
+}
+.jic-input:focus {
+    outline: none;
+    border-color: var(--jic-olive-hi);
+}
+.jic-input::placeholder { color: #6b6c5a; }
+
+select.jic-input { appearance: none; }
+
+.jic-title {
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--jic-cream);
+    text-shadow: 2px 2px 0 rgba(0,0,0,.5);
+}
+.jic-flash {
+    border: 2px solid var(--jic-line);
+    border-left-width: 6px;
+    border-radius: 0;
+    padding: 8px 12px;
+    font-size: 13px;
+    background: var(--jic-panel);
+    margin-bottom: 12px;
+}
+.jic-flash-error { border-left-color: var(--jic-danger); color: #e9b3a6; }
+.jic-flash-ok    { border-left-color: var(--jic-ok);    color: #cdd6a0; }
+
+.jic-link {
+    color: var(--jic-cream);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.jic-link:hover { color: #fff; }
+
+.jic-divider { border-top: 1px dashed var(--jic-line); margin: 14px 0; }
+
+.jic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--jic-bg-2);
+    border: 1px solid var(--jic-line-soft);
+    border-radius: 0;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}

@@ -1,14 +1,17 @@
 {% extends "base.html" %}
-{% block title %}ProjectName{% endblock %}
+{% block title %}JuiceInCombat{% endblock %}
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
-  <div class="text-center">
-    <h1 class="text-5xl font-bold text-amber-400 mb-6">ProjectName</h1>
-    <p class="text-gray-300 mb-8">A 1v1 turn-based strategy game.</p>
-    <div class="flex gap-4 justify-center">
-      <a href="/login" class="bg-amber-600 hover:bg-amber-700 px-6 py-3 rounded font-semibold">Login</a>
-      <a href="/register" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded font-semibold">Register</a>
+<div class="min-h-screen flex items-center justify-center p-4">
+    <div class="jic-panel max-w-lg w-full text-center">
+        <div class="jic-titlebar">JuiceInCombat</div>
+        <div class="p-10">
+            <h1 class="jic-title text-4xl mb-3">JUICE IN COMBAT</h1>
+            <p class="mb-8" style="color:var(--jic-ink-dim)">A 1v1 turn-based military strategy game.</p>
+            <div class="flex gap-3 justify-center">
+                <a href="/login" class="jic-btn">Login</a>
+                <a href="/register" class="jic-btn jic-btn-steel">Register</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

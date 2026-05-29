@@ -1,8 +1,9 @@
 import { getUnit, getMySlot, getMyResources, getGameState, isMyTurn } from '../game/client_state.js';
 import { getSelectedUnit } from '../game/selection.js';
 
-let cb = {};   // callbacks from main.js
-let turnIndicatorEl, cashEl, timerEl, endTurnBtn, panelEl, statsEl, actionsEl;
+let cb = {};
+let turnIndicatorEl, cashEl, timerEl, endTurnBtn, panelEl, statsEl, actionsEl, panelTitleEl;
+let weaponPanelEl, weaponTitleEl, weaponStatsEl;
 
 export function initHUD(callbacks) {
     cb = callbacks || {};
@@ -13,6 +14,10 @@ export function initHUD(callbacks) {
     panelEl         = document.getElementById('selected-unit-panel');
     statsEl         = document.getElementById('unit-stats');
     actionsEl       = document.getElementById('unit-actions');
+    panelTitleEl    = document.getElementById('panel-title');
+    weaponPanelEl   = document.getElementById('weapon-info-panel');
+    weaponTitleEl   = document.getElementById('weapon-info-title');
+    weaponStatsEl   = document.getElementById('weapon-info-stats');
 
     if (endTurnBtn) {
         endTurnBtn.addEventListener('click', () => {
@@ -24,31 +29,63 @@ export function initHUD(callbacks) {
 export function updateHUD(gameState) {
     if (!gameState) return;
     const currentSlot = gameState.current_player_slot;
-    if (turnIndicatorEl) turnIndicatorEl.textContent = isMyTurn() ? `Your Turn • Round ${gameState.turn}` : `Enemy Turn • P${currentSlot + 1}`;
+    if (turnIndicatorEl)
+        turnIndicatorEl.textContent = isMyTurn()
+            ? `Your Turn // Round ${gameState.turn}`
+            : `Enemy Turn // P${currentSlot + 1}`;
     const res = getMyResources();
     if (cashEl) cashEl.textContent = `$${res.cash || 0}`;
     if (endTurnBtn) endTurnBtn.disabled = !isMyTurn();
 }
 
-export function showUnitPanel(unit) {
-    if (!panelEl || !unit) return;
+function showPanel() {
+    if (!panelEl) return;
     panelEl.classList.remove('hidden');
-    panelEl.style.display = 'block';
+}
 
-    statsEl.innerHTML = `
-        <div><strong>${unit.type}</strong></div>
-        <div>HP: ${unit.hp}</div>
-        <div>Armor: ${unit.armor}</div>
-        <div>Move: ${unit.movement_remaining}/${unit.max_movement}</div>
-        <div>Fired: ${unit.has_fired_weapon ? 'Yes' : 'No'}</div>
-    `;
+function statRow(label, value) {
+    return `<div class="stat"><span class="jic-label">${label}</span><span class="jic-value">${value}</span></div>`;
+}
+
+export function showUnitPanel(unit, readOnly = false) {
+    if (!panelEl || !unit) return;
+    showPanel();
+    if (panelTitleEl)
+        panelTitleEl.innerHTML = readOnly
+            ? `${unit.type} <span class="recon-tag">View</span>`
+            : `${unit.type}`;
+
+    statsEl.innerHTML =
+        statRow('HP', unit.hp) +
+        statRow('Armor', unit.armor) +
+        statRow('Move', `${unit.movement_remaining}/${unit.max_movement}`) +
+        statRow('Fired', unit.has_fired_weapon ? 'Yes' : 'No');
+
     actionsEl.innerHTML = '';
+    actionsEl.style.flexDirection = 'row';
+
+    if (readOnly) {
+        for (const weapon of (unit.weapons || [])) {
+            const btn = document.createElement('button');
+            btn.textContent = `${weapon.name} (R${weapon.range})`;
+            btn.className = 'jic-btn jic-btn-rust';
+            btn.style.fontSize = '11px';
+            btn.style.padding = '6px 10px';
+            btn.disabled = true;          // can't fire off-turn
+            // still let the player inspect the weapon's stats
+            btn.addEventListener('click', () => showWeaponInfo(weapon));
+            actionsEl.appendChild(btn);
+        }
+        return;
+    }
 
     if (!unit.has_fired_weapon) {
         for (const weapon of (unit.weapons || [])) {
             const btn = document.createElement('button');
-            btn.textContent = `${weapon.name} (rng ${weapon.range})`;
-            btn.className = 'bg-red-700/90 hover:bg-red-600 border border-red-400/20 px-3 py-2 rounded-xl text-xs font-semibold';
+            btn.textContent = `${weapon.name} (R${weapon.range})`;
+            btn.className = 'jic-btn jic-btn-rust';
+            btn.style.fontSize = '11px';
+            btn.style.padding = '6px 10px';
             btn.addEventListener('click', () => {
                 if (cb.onWeaponSelected) cb.onWeaponSelected(unit.id, weapon.name);
             });
@@ -56,38 +93,107 @@ export function showUnitPanel(unit) {
         }
     } else {
         const note = document.createElement('div');
-        note.className = 'text-xs text-gray-400';
+        note.className = 'jic-label';
         note.textContent = 'Already fired this turn';
         actionsEl.appendChild(note);
     }
 }
 
+export function showWeaponInfo(weapon) {
+    if (!weaponPanelEl || !weapon) return;
+    weaponPanelEl.classList.remove('hidden');
+    if (weaponTitleEl) weaponTitleEl.textContent = weapon.name || 'Weapon';
+
+    let html =
+        statRow('Damage', weapon.damage) +
+        statRow('AP', weapon.ap) +
+        statRow('Range', weapon.range);
+    if (weapon.type) html += statRow('Type', weapon.type);
+
+    // if (weapon.perks && weapon.perks.length) {
+    //     html += '<div class="jic-divider"></div>';
+    //     html += '<div class="jic-label">Perks</div>';
+    //     for (const p of weapon.perks) {
+    //         html += statRow(p.type, p.duration ? `${p.duration}t` : '—');
+    //     }
+    // }
+
+    weaponStatsEl.innerHTML = html;
+}
+
+export function hideWeaponInfo() {
+    if (weaponPanelEl) weaponPanelEl.classList.add('hidden');
+}
+
+// ---- Read-only enemy unit panel (recon: stats only, no actions) ----
+export function showEnemyUnitPanel(unit) {
+    if (!panelEl || !unit) return;
+    showPanel();
+    if (panelTitleEl) panelTitleEl.innerHTML = `${unit.type} <span class="recon-tag">Recon</span>`;
+
+    let html =
+        statRow('HP', unit.hp) +
+        statRow('Armor', unit.armor) +
+        statRow('Move', `${unit.movement_remaining}/${unit.max_movement}`);
+    for (const w of (unit.weapons || [])) {
+        html += statRow(`Wpn: ${w.name}`, `DMG ${w.damage} / AP ${w.ap} / R${w.range}`);
+    }
+    statsEl.innerHTML = html;
+    actionsEl.innerHTML = '<div class="jic-label">Enemy unit — view only</div>';
+}
+
+export function showBuildingPanel(building, owned) {
+    if (!panelEl || !building) return;
+    showPanel();
+    const label = building.is_capital ? 'Headquarters' : (building.type || 'Building');
+    if (panelTitleEl)
+        panelTitleEl.innerHTML = owned ? label : `${label} <span class="recon-tag">Recon</span>`;
+
+    statsEl.innerHTML =
+        statRow('HP', building.hp) +
+        statRow('Armor', building.armor) +
+        statRow('Type', building.is_capital ? 'Capital' : (building.type || '—'));
+
+    actionsEl.innerHTML = '';
+    actionsEl.style.flexDirection = 'row';
+
+    if (owned) {
+        const btn = document.createElement('button');
+        btn.textContent = 'Recruit';
+        btn.className = 'jic-btn';
+        btn.style.fontSize = '12px';
+        btn.addEventListener('click', () => {
+            if (cb.onRecruitRequested) cb.onRecruitRequested(building.x, building.y);
+        });
+        actionsEl.appendChild(btn);
+    } else {
+        actionsEl.innerHTML = '<div class="jic-label">Enemy building — view only</div>';
+    }
+}
+
+// ---- Recruit list ----
 export function showRecruitList(units) {
     if (!panelEl) return;
-    panelEl.classList.remove('hidden');
-    panelEl.style.display = 'block';
+    showPanel();
+    if (panelTitleEl) panelTitleEl.textContent = 'Recruit Unit';
 
-    const res = getMyResources();
-    const cash = res.cash || 0;
-
-    statsEl.innerHTML = `<div><strong>Recruit a unit</strong></div>
-        <div class="text-xs text-gray-400">Cash: ${cash}</div>`;
+    const cash = (getMyResources().cash) || 0;
+    statsEl.innerHTML = statRow('Available Cash', `$${cash}`);
     actionsEl.innerHTML = '';
     actionsEl.style.flexDirection = 'column';
 
     if (!units || units.length === 0) {
-        const d = document.createElement('div');
-        d.className = 'text-xs text-gray-400';
-        d.textContent = 'No units available';
-        actionsEl.appendChild(d);
+        actionsEl.innerHTML = '<div class="jic-label">No units available</div>';
         return;
     }
 
     for (const u of units) {
         const affordable = cash >= u.cost;
         const btn = document.createElement('button');
-        btn.textContent = `${u.name} - $${u.cost}`;
-        btn.className = affordable ? 'bg-emerald-700 hover:bg-emerald-600 px-3 py-2 rounded-xl text-xs mb-1 font-semibold' : 'bg-gray-700 px-3 py-2 rounded-xl text-xs mb-1 opacity-50 cursor-not-allowed';
+        btn.textContent = `${u.name} — $${u.cost}`;
+        btn.className = affordable ? 'jic-btn jic-btn-block' : 'jic-btn jic-btn-block';
+        btn.style.fontSize = '12px';
+        btn.style.marginBottom = '6px';
         btn.disabled = !affordable;
         btn.addEventListener('click', () => {
             if (affordable && cb.onRecruitUnitChosen) cb.onRecruitUnitChosen(u.unit_type);
@@ -97,19 +203,19 @@ export function showRecruitList(units) {
 }
 
 export function hidePanels() {
-    if (panelEl) {
-        panelEl.classList.add('hidden');
-        panelEl.style.display = 'none';
-    }
+    if (panelEl) panelEl.classList.add('hidden');
     if (actionsEl) actionsEl.style.flexDirection = 'row';
+    hideWeaponInfo();
 }
 
 export function showMessage(msg, isError = false) {
     const el = document.getElementById('message-area');
     if (!el) return;
     el.textContent = msg;
-    el.style.color = isError ? '#ff8888' : '#ffd966';
-    setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3000);
+    el.style.display = 'block';
+    el.style.color = isError ? '#e9b3a6' : 'var(--jic-cream)';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { if (el.textContent === msg) el.style.display = 'none'; }, 3000);
 }
 
 export function setEndTurnEnabled(enabled) {

@@ -2,47 +2,36 @@
 {% block title %}Login — JuiceInCombat{% endblock %}
 {% block content %}
 <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-zinc-950/60 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-zinc-800/80 tracking-tight">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500">
-                JuiceInCombat
-            </h1>
-            <p class="text-sm text-zinc-400 mt-1 font-medium">log back into your acc</p>
-        </header>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <div class="mb-5 p-3.5 rounded-xl text-sm font-medium transition-all duration-300 {% if category == 'error' %}bg-red-500/10 text-red-300 border border-red-500/20{% else %}bg-zinc-100/10 text-zinc-300 border border-zinc-100/20{% endif %}">
-                    <div class="flex items-center gap-2">
-                        <span class="h-1.5 w-1.5 rounded-full {% if category == 'error' %}bg-red-400{% else %}bg-zinc-400{% endif %}"></span>
+    <div class="w-full max-w-md jic-panel">
+        <div class="jic-titlebar">JuiceInCombat</div>
+        <div class="p-7">
+            <header class="mb-6">
+                <h1 class="jic-title text-2xl">Login</h1>
+            </header>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="jic-flash {% if category == 'error' %}jic-flash-error{% else %}jic-flash-ok{% endif %}">
                         {{ message }}
                     </div>
+                {% endfor %}
+            {% endwith %}
+            <form method="POST" action="/login" class="space-y-4">
+                <div>
+                    <label class="jic-label block mb-1.5">Username</label>
+                    <input type="text" name="username" class="jic-input" placeholder="name" required>
                 </div>
-            {% endfor %}
-        {% endwith %}
-        <form method="POST" action="/login" class="space-y-5">
-            <div>
-                <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Username</label>
-                <input type="text" name="username" 
-                       class="w-full px-4 py-2.5 bg-zinc-900/40 border border-zinc-800 rounded-xl focus:outline-none focus:border-zinc-400 focus:ring-4 focus:ring-zinc-400/10 text-white transition placeholder-zinc-700 text-sm" 
-                       placeholder="Enter username" required>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Password</label>
-                <input type="password" name="password" 
-                       class="w-full px-4 py-2.5 bg-zinc-900/40 border border-zinc-800 rounded-xl focus:outline-none focus:border-zinc-400 focus:ring-4 focus:ring-zinc-400/10 text-white transition placeholder-zinc-700 text-sm" 
-                       placeholder="••••••••" required>
-            </div>
-            <button type="submit" 
-                    class="w-full mt-2 bg-gradient-to-r from-zinc-200 to-zinc-400 hover:from-white hover:to-zinc-300 text-black font-bold py-3 rounded-xl shadow-lg shadow-black/50 active:scale-[0.98] transition-all duration-150 text-sm">
-                Login
-            </button>
-        </form>
-        <footer class="mt-6 pt-5 border-t border-zinc-800/60 text-center text-sm text-zinc-400">
-            No account? 
-            <a href="/register" class="text-zinc-200 hover:text-white font-medium ml-1 underline underline-offset-4 decoration-zinc-700 hover:decoration-zinc-400 transition">
-                Register here
-            </a>
-        </footer>
+                <div>
+                    <label class="jic-label block mb-1.5">Password</label>
+                    <input type="password" name="password" class="jic-input" placeholder="......" required>
+                </div>
+                <button type="submit" class="jic-btn jic-btn-block mt-2">Login</button>
+            </form>
+            <div class="jic-divider"></div>
+            <p class="text-center text-sm" style="color:var(--jic-ink-dim)">
+                No account?
+                <a href="/register" class="jic-link ml-1">Register here</a>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

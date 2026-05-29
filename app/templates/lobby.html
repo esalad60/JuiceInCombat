@@ -1,84 +1,81 @@
 {% extends "base.html" %}
-
-{% block title %}Lobby — ProjectName{% endblock %}
-
+{% block title %}Lobby — JuiceInCombat{% endblock %}
 {% block content %}
-<div class="container mx-auto p-6 max-w-6xl">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-amber-400">Lobby</h1>
-        <a href="/logout" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded text-white transition">Logout</a>
+<div class="container mx-auto p-6 max-w-5xl">
+    <div class="flex justify-between items-center mb-6">Lobby
+        <h1 class="jic-title text-3xl">Match Room</h1>
+        <a href="/logout" class="jic-btn jic-btn-danger">Logout</a>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
-            <div class="mb-4 p-3 rounded text-sm {% if category == 'error' %}bg-red-900/50 text-red-200 border border-red-700{% else %}bg-green-900/50 text-green-200 border border-green-700{% endif %}">
-                {{ message }}
-            </div>
+            <div class="jic-flash {% if category == 'error' %}jic-flash-error{% else %}jic-flash-ok{% endif %}">{{ message }}</div>
         {% endfor %}
     {% endwith %}
 
-    <div class="grid md:grid-cols-2 gap-6">
-        <!-- Create Match -->
-        <div class="bg-gray-800 p-5 rounded-lg shadow">
-            <h2 class="text-xl font-semibold mb-4">Create New Match</h2>
-            <form method="POST" action="/lobby/create">
-                <div class="mb-3">
-                    <label class="block text-gray-300 mb-1">Map</label>
-                    <select name="map_id" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2" required>
-                        {% for map in available_maps %}
-                            <option value="{{ map.id }}">{{ map.name }} ({{ map.width }}x{{ map.height }})</option>
-                        {% else %}
-                            <option disabled>No maps available</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-1">Time Control</label>
-                    <select name="time_control" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2">
-                        <option value="live">Live (5 min + 2 min/turn)</option>
-                        <option value="24h">24-hour (24h per turn)</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 py-2 rounded font-semibold transition">Create Match</button>
-            </form>
+    <div class="grid md:grid-cols-2 gap-5">
+        <div class="jic-panel">
+            <div class="jic-titlebar">New Match</div>
+            <div class="p-5">
+                <form method="POST" action="/lobby/create" class="space-y-4">
+                    <div>
+                        <label class="jic-label block mb-1.5">Map</label>
+                        <select name="map_id" class="jic-input" required>
+                            {% for map in available_maps %}
+                                <option value="{{ map.id }}">{{ map.name }} ({{ map.width }}x{{ map.height }})</option>
+                            {% else %}
+                                <option disabled>No maps available</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="jic-label block mb-1.5">Time Control</label>
+                        <select name="time_control" class="jic-input">
+                            <option value="live">Live (5 min + 2 min/turn)</option>
+                            <option value="24h">24-hour (24h per turn)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="jic-btn jic-btn-block">Start Match</button>
+                </form>
+            </div>
         </div>
 
-        <div class="bg-gray-800 p-5 rounded-lg shadow">
-            <h2 class="text-xl font-semibold mb-4">Open Matches</h2>
-            {% if waiting_matches %}
-                <ul class="space-y-3">
+        <div class="jic-panel">
+            <div class="jic-titlebar">Open Matches</div>
+            <div class="p-5">
+                {% if waiting_matches %}
                     {% for match in waiting_matches %}
-                        <li class="flex justify-between items-center bg-gray-700 p-3 rounded">
-                            <div>
-                                <span class="font-mono">#{{ match.id }}</span> — {{ match.map_name }} ({{ match.time_control }})<br>
-                                <span class="text-sm text-gray-400">{{ match.player_count }}/2 players</span>
+                        <div class="jic-row">
+                            <div class="text-sm">
+                                <span class="jic-value">#{{ match.id }}</span> — {{ match.map_name }} ({{ match.time_control }})<br>
+                                <span class="jic-label">{{ match.player_count }}/2 players</span>
                             </div>
                             <form method="POST" action="/lobby/join/{{ match.id }}">
-                                <button type="submit" class="bg-green-700 hover:bg-green-800 px-4 py-1 rounded text-sm transition">Join</button>
+                                <button type="submit" class="jic-btn">Join</button>
                             </form>
-                        </li>
+                        </div>
                     {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-gray-400">No open matches. Create one!</p>
-            {% endif %}
+                {% else %}
+                    <p style="color:var(--jic-ink-dim)">Make a match</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 
     {% if my_matches %}
-    <div class="mt-8 bg-gray-800 p-5 rounded-lg shadow">
-        <h2 class="text-xl font-semibold mb-4">Your Active Matches</h2>
-        <ul class="space-y-2">
+    <div class="jic-panel mt-6">
+        <div class="jic-titlebar">Your Active Matches</div>
+        <div class="p-5">
             {% for match in my_matches %}
-                <li class="flex justify-between items-center bg-gray-700 p-3 rounded">
-                    <div>
-                        Match #{{ match.id }} — {{ match.map_name }} ({{ match.time_control }})<br>
-                        <span class="text-sm text-gray-400">Status: {{ match.status }} | You are Player {{ match.my_slot + 1 }}</span>
+                <div class="jic-row">
+                    <div class="text-sm">
+                        <span class="jic-value">Match #{{ match.id }}</span> — {{ match.map_name }} ({{ match.time_control }})<br>
+                        <span class="jic-label">Status: {{ match.status }} | You are Player {{ match.my_slot + 1 }}</span>
                     </div>
-                    <a href="/game/{{ match.id }}" class="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded text-sm transition">Resume</a>
-                </li>
+                    <a href="/game/{{ match.id }}" class="jic-btn jic-btn-steel">Resume</a>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
     {% endif %}
 </div>
