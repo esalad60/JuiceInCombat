@@ -162,3 +162,9 @@ lucasZ -- 05/28/26 00:00
     - Main purpose to validate and make moves
 - app/backend/game/actions.py
     - Added methods to validate and apply fire, move, and recruit
+
+evissW-5/29/26 00:02
+- Updated base
+  - Base template updated for background
+- Register and Login updated
+- Updated for concise animation 
