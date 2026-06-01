@@ -1,0 +1,20 @@
+{
+  "name": "El Bomberman",
+  "type": "infantry",
+  "cost": 50,
+  "health": 50,
+  "armor": 1,
+  "sight": 1,
+  "movement": 3,
+  "weapons": [
+    {
+      "name": "Kaboom",
+      "description": "",
+      "type": "he",
+      "damage": 125,
+      "ap": 12.5,
+      ""
+    }
+  ]
+
+}

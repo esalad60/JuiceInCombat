@@ -17,7 +17,7 @@
       "cooldown": "1",
       "perks": [
         {
-          "type": "Mark",
+          "type": "mark",
           "duration": 2
         }
       ]
@@ -39,11 +39,11 @@
   ],
   "traits": [
     {
-      "type": "Regen",
+      "type": "regen",
       "amount": 10
     },
     {
-      "type": "Radio",
+      "type": "radio",
       "range": 2
     }
   ] 

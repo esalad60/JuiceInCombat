@@ -14,17 +14,18 @@
       "damage": 35,
       "ap": 4,
       "range": 1,
+      "cooldown": "1",
       "perks": [
         {
-          "type": "Mark",
-          "duration": "2"
+          "type": "mark",
+          "duration": 2
         }
       ]
     },
     {
       "name": "Grenade",
       "description": "An incendiary grenade",
-      "type": "explosive",
+      "type": "HE",
       "damage": 40,
       "ap": 2,
       "range": 2,
@@ -38,11 +39,11 @@
   ],
   "traits": [
     {
-      "type": "Regen",
+      "type": "regen",
       "amount": 10
     },
     {
-      "type": "Radio",
+      "type": "radio",
       "range": 2
     }
   ] 
