@@ -1,0 +1,40 @@
+{
+  "name": "Anti Armour Personel",
+  "type": "infantry",
+  "cost": "150",
+  "health": "125", 
+  "armor": "3",
+  "sight": "2", 
+  "movement": "2",
+  "weapons": [
+    {
+      "name": "HEAT Round",
+      "description": "PG-7V", 
+      "type": "heat",
+      "damage": 60,
+      "ap": 15,
+      "range": "2",
+      "cooldown": "2",
+      "perks": [
+        {
+          "type": "Cripple", 
+          "chance": "0.25"
+        }
+      ]
+    },
+    {
+      "name": "HE Round",
+      "description": "",
+      "type": "HE",
+      "damage": 50,
+      "ap": 4,
+      "range": 2,
+      "perk": [
+        {
+          "type": "bleed",
+          "duration": 1
+        }
+      ]
+    }
+  ]
+}
