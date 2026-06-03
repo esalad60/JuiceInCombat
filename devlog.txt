@@ -179,3 +179,8 @@ evissW-5/29/26 00:02
   - Base template updated for background
 - Register and Login updated
 - Updated for concise animation 
+
+evissW-05/03/26 00:51
+- Created models folder
+- Began creating gltf files from blender
+- Added first model
