@@ -21,11 +21,12 @@ class WeaponPerkRef:
 @dataclass(frozen=True)
 class WeaponDef:
     name: str
+    description: str = ""
     type: str
     damage: int
     ap: int = 0
     range: int = 1
-    description: str = ""
+    cooldown: int = 1
     perks: tuple[WeaponPerkRef, ...] = ()
 
 
