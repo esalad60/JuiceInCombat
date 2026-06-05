@@ -30,6 +30,7 @@
       "damage": 55,
       "ap": 4,
       "range": 2,
+      "cooldown": 2,
       "perk": [
         {
           "type": "bleed",
