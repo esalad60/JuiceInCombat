@@ -32,6 +32,9 @@ Linux:
 ```
 $ . venv/bin/activate
 $ pip install -r requirements.txt
+$ cd app
+$ python3 -m backend.database.build_db --force
+$ python3 tools/seed_maps.py
 $ python3 __init__.py
 ```
 
@@ -40,5 +43,7 @@ Windows:
 ```
 $ venv\Scripts\activate
 $ pip install -r requirements.txt
+$ python3 -m backend.database.build_db --force
+$ python3 tools/seed_maps.py
 $ python3 __init__.py
 ```

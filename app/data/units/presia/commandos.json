@@ -14,7 +14,7 @@
       "damage": 35,
       "ap": 4,
       "range": 1,
-      "cooldown": "1",
+      "cooldown": 1,
       "perks": [
         {
           "type": "mark",
@@ -29,6 +29,7 @@
       "damage": 40,
       "ap": 2,
       "range": 2,
+      "cooldown": 2,
       "perks": [
         {
           "type": "incendiary",

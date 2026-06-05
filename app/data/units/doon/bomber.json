@@ -13,7 +13,8 @@
       "type": "he",
       "damage": 125,
       "ap": 12.5,
-      "range": 1     
+      "range": 1,
+      "cooldown": 0     
     }
   ]
 }
