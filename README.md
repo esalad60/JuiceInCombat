@@ -23,7 +23,7 @@ Click Code (green), and choose SSH cloning option. Copy the link and open a term
 
 ```
 $ git clone git@github.com:esalad60/JuiceInCombat.git
-$ cd JuiceInCombat
+$ cd JuiceInCombat/app
 $ python -m venv venv
 ```
 
@@ -32,6 +32,7 @@ Linux:
 ```
 $ . venv/bin/activate
 $ pip install -r requirements.txt
+$ python3 __init__.py
 ```
 
 Windows: 
@@ -39,4 +40,5 @@ Windows:
 ```
 $ venv\Scripts\activate
 $ pip install -r requirements.txt
+$ python3 __init__.py
 ```
