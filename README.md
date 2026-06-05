@@ -21,23 +21,22 @@ Prereqs:
 
 Click Code (green), and choose SSH cloning option. Copy the link and open a terminal session.
 
-'''
+```
 $ git clone git@github.com:esalad60/JuiceInCombat.git
 $ cd JuiceInCombat
 $ python -m venv venv
-'''
+```
 
 Linux:
 
-'''
+```
 $ . venv/bin/activate
 $ pip install -r requirements.txt
-
-'''
+```
 
 Windows: 
 
-'''
+```
 $ venv\Scripts\activate
 $ pip install -r requirements.txt
-'''
+```
