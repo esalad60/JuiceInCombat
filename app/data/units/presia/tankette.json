@@ -1,0 +1,33 @@
+{
+  "name": "Tankette",
+  "type": "vehicle",
+  "cost": 175,
+  "health": 200,
+  "armor": 10,
+  "sight": 2,
+  "movement": 3,
+  "weapons": [
+    {
+      "name": "HE round",
+      "description": "",
+      "type": "he",
+      "damage": 75,
+      "ap": 8,
+      "range": 2
+    }
+    {
+      "name": "Machine Gun Fire",
+      "description": "",
+      "type": "bullet",
+      "damage": 40,
+      "ap": 2,
+      "range": 1
+    }
+  ]
+  "traits": [
+    {
+      "type": "salvage",
+      "amount": 25
+    }
+  ]
+}

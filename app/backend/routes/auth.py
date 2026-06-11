@@ -53,7 +53,9 @@ def render_login():
 def post_login():
     username = request.form.get('username', '').strip()
     password = request.form.get('password', '')
-
+    if sid in player_match:
+        flash('Only one player per browser', 'error')
+        return redirect(url_for('auth.render_login'))
     if not username or not password:
         flash('Username and password are required', 'error')
         return redirect(url_for('auth.render_login'))
