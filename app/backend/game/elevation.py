@@ -4,12 +4,11 @@ from enum import Enum
 from typing import Optional
 
 from .state import GameMap, Ramp, Tile, Unit
+from . import traits
 
-
-DEFAULT_MAX_HEIGHT_DELTA = 1
-DEFAULT_EXTRA_COST_UP    = 1
-DEFAULT_EXTRA_COST_DOWN  = 0
-
+MAX_HEIGHT_DELTA = 1
+EXTRA_COST_UP    = 1
+EXTRA_COST_DOWN  = 0
 
 class StepReason(str, Enum):
     OK                  = "ok"
@@ -18,7 +17,6 @@ class StepReason(str, Enum):
 
     def is_ok(self) -> bool:
         return self is StepReason.OK
-
 
 def can_step(
     game_map: GameMap,
@@ -32,9 +30,8 @@ def can_step(
     if delta == 0:
         return StepReason.OK
 
-    # # Climb trait: ignore height restrictions entirely.
-    # if unit is not None and has_climb_trait(unit):
-    #     return StepReason.OK
+    if unit is not None and traits.unit_ignores_climb(unit):
+        return StepReason.OK
 
     ramp = game_map.ramp_between(
         (from_tile.x, from_tile.y),
@@ -60,17 +57,16 @@ def step_cost(
     delta = to_tile.height - from_tile.height
     if delta == 0:
         return base_terrain_cost
-
-    # # Climb trait: no extra cost.
-    # if unit is not None and has_climb_trait(unit):
-    #     return base_terrain_cost
+    
+    if unit is not None and traits.unit_ignores_climb(unit):
+        return base_terrain_cost
 
     ramp = game_map.ramp_between(
         (from_tile.x, from_tile.y),
         (to_tile.x,   to_tile.y),
     )
     if ramp is None:
-        return base_terrain_cost + DEFAULT_EXTRA_COST_UP
+        return base_terrain_cost + EXTRA_COST_UP
 
     if delta > 0:
         return base_terrain_cost + ramp_extra_cost_up(ramp)
@@ -87,12 +83,12 @@ def has_climb_trait(unit: Unit) -> bool:
 
 
 def ramp_max_delta(ramp: Ramp) -> int:
-    return DEFAULT_MAX_HEIGHT_DELTA
+    return MAX_HEIGHT_DELTA
 
 
 def ramp_extra_cost_up(ramp: Ramp) -> float:
-    return DEFAULT_EXTRA_COST_UP
+    return EXTRA_COST_UP
 
 
 def ramp_extra_cost_down(ramp: Ramp) -> float:
-    return DEFAULT_EXTRA_COST_DOWN
+    return EXTRA_COST_DOWN

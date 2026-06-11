@@ -39,6 +39,8 @@ from . import pathfinding
 from . import elevation
 from . import turn_order
 from . import timer
+from . import perks
+from . import traits
 
 __all__ = [
     "MatchEngine", "Event", "EventType", "EngineMatchStatus",
@@ -50,5 +52,5 @@ __all__ = [
     "WeaponDef", "WeaponPerkRef", "TraitRef",
     "register_units", "parse_unit_file", "parse_unit_dict",
     "validate", "apply_action", "set_unit_registry",
-    "combat", "economy", "pathfinding", "elevation", "turn_order", "timer",
+    "combat", "economy", "pathfinding", "elevation", "turn_order", "timer", "perks", "traits",
 ]

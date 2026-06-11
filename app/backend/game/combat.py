@@ -11,7 +11,6 @@ from .state import (
     Weapon,
 )
 
-
 ARMOR_DAMAGE_REDUCTION_PER_POINT = 2
 
 HEIGHT_ATK_BONUS_PER_LEVEL    = 0.25
@@ -132,12 +131,8 @@ def status_damage_multiplier(target: Union[Unit, Building]) -> float:
     effects = getattr(target, "status_effects", None)
     if not effects:
         return 1.0
-
-    mult = 1.0
-    for eff in effects:
-        if eff.type == "Mark":
-            mult *= 1.25  # placeholder — load from JSON once perk data is wired
-    return mult
+    from . import perks
+    return perks.damage_multiplier_for_effects(effects)
 
 
 def apply_weapon_perk(

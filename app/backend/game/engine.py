@@ -12,6 +12,7 @@ from . import economy
 from . import timer
 from .unit import UnitRegistry
 from .parser import register_units
+from . import traits, perks
 
 
 class EventType(str, Enum):
@@ -163,14 +164,33 @@ class MatchEngine:
         turn_order.reset_unit_budgets(self.state, player_slot)
         timer.start_turn_clock(self.state, player_slot, self._now())
 
+        heal_events = traits.apply_turn_traits_for_player(self.state, player_slot)
+        for ev in heal_events:
+            self.emit(EventType.ACTION_APPLIED, player_slot=player_slot, payload={
+                "kind": "trait_tick",
+                "trait": ev["type"],
+                "unit_id": ev["unit_id"],
+                "hp_delta": ev["hp_delta"],
+                "new_hp": ev["new_hp"],
+            })
+
+        burn_events = perks.apply_tick_damage_for_player(self.state, player_slot)
+        for ev in burn_events:
+            self.emit(EventType.ACTION_APPLIED, player_slot=player_slot, payload={
+                "kind": "perk_tick",
+                "perk": ev["type"],
+                "unit_id": ev["unit_id"],
+                "damage": ev["damage"],
+                "destroyed": ev["destroyed"],
+            })
+
         self.emit(EventType.TURN_STARTED, player_slot=player_slot, payload={
             "turn": self.state.turn,
             "resources": self._player_resources(player_slot),
         })
 
     def resolve_end_of_turn(self, player_slot: int) -> None:
-        # Placeholder for perks that trigger at end of turn
-        pass
+        self.state.tick_status_effects(player_slot)
 
     def finalize_timer(self, player_slot: int) -> None:
         timer.end_turn_clock(self.state, player_slot, self._now())

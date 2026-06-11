@@ -186,6 +186,7 @@ class Unit:
     y: int
     hp: int
     armor: int = 0
+    max_hp: int = 0 
     weapons: list[Weapon] = field(default_factory=list)
     traits: list[UnitTrait] = field(default_factory=list)
     status_effects: list[ActiveStatusEffect] = field(default_factory=list)
@@ -347,6 +348,7 @@ class GameState:
             x=x, y=y,
             hp=definition.health,
             armor=definition.armor,
+            max_hp=definition.health,
             weapons=weapons,
             traits=traits,
             movement_remaining=definition.movement,
@@ -388,6 +390,8 @@ class GameState:
 
     def tick_status_effects(self, player_slot: int) -> None:
         for unit in self.units.values():
+            if unit.owner_slot != player_slot:
+                continue
             if not unit.status_effects:
                 continue
             kept: list[ActiveStatusEffect] = []
@@ -464,6 +468,7 @@ def unit_to_dict(u: Unit) -> dict[str, Any]:
         "y":                 u.y,
         "hp":                u.hp,
         "armor":             u.armor,
+        "max_hp":            u.max_hp,
         "weapons": [
             {
                 "name": w.name, "type": w.type, "damage": w.damage,
@@ -514,6 +519,7 @@ def unit_from_dict(d: dict[str, Any]) -> Unit:
         id=d["id"], type=d["type"], owner_slot=d["owner_slot"],
         x=d["x"], y=d["y"], hp=d["hp"],
         armor=d.get("armor", 0),
+        max_hp=d.get("max_hp", d["hp"]),
         weapons=weapons, traits=traits, status_effects=status_effects,
         veterancy=d.get("veterancy", 0),
         has_moved=d.get("has_moved", False),

@@ -21,9 +21,9 @@ class WeaponPerkRef:
 @dataclass(frozen=True)
 class WeaponDef:
     name: str
-    description: str = ""
     type: str
     damage: int
+    description: str = ""
     ap: int = 0
     range: int = 1
     cooldown: int = 1

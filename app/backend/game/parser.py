@@ -64,9 +64,9 @@ def parse_weapon(raw: dict[str, Any]) -> WeaponDef:
     description = raw.get("description", "")
     weapon_type = fetch("type")
     damage      = fetch("damage")
-    ap          = fetch("ap")
-    rng         = fetch("range")
-    cd          = fetch("cooldown")
+    ap          = raw.get("ap", 0)
+    rng         = raw.get("range", 1)
+    cd          = raw.get("cooldown", 1)
 
     perks_raw = raw.get("perks", [])
     perks = tuple(parse_weapon_perk(p) for p in perks_raw)
@@ -78,6 +78,7 @@ def parse_weapon(raw: dict[str, Any]) -> WeaponDef:
         damage=damage,
         ap=ap,
         range=rng,
+        cooldown=cd,
         perks=perks,
     )
 
