@@ -1,0 +1,19 @@
+{
+  "name": "Riflemen",
+  "type": "infantry",
+  "cost": 75,
+  "health": 75,
+  "armor": 2,
+  "sight": 2,
+  "movement": 2,
+  "weapons": [
+    {
+      "name": "Shoot",
+      "description": "",
+      "type": "bullet",
+      "damage": 25,
+      "ap": 2,
+      "range": 1
+    }
+  ]
+}

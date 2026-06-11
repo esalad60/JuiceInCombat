@@ -40,8 +40,8 @@
   ],
   "traits": [
     {
-      "type": "regen",
-      "amount": 10
+      "type": "salvage",
+      "amount": 25
     },
     {
       "type": "radio",
