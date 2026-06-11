@@ -1,0 +1,20 @@
+{
+  "name": "Mortar",
+  "type": "infantry",
+  "cost": 125,
+  "health": 40,
+  "armor": 1,
+  "sight": 1,
+  "movement": 1,
+  "weapons": [
+    {
+      "name": "Shell",
+      "description": "",
+      "type": "he",
+      "damage": 60,
+      "ap": 6,
+      "range": 3,
+      "cooldown": 0
+    }
+  ]
+}
