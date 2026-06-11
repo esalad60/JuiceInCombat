@@ -1,0 +1,9 @@
+{
+  "name": "Engineer",
+  "type": "infantry",
+  "cost": 125,
+  "health": 75,
+  "armor": 2,
+  "sight": 2,
+  "movement":
+}
