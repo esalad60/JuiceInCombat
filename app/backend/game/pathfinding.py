@@ -147,10 +147,7 @@ def fog_parser(
     *,
     budget: Optional[float] = None,
 ) -> dict[tuple[int, int], float]:
-    if budget is None:
-        budget = float(unit.sight)
-    if budget < 0:
-        return {(unit.x, unit.y): 0.0} # exit if no move
+    budget = float(unit.sight)
 
     start = (unit.x, unit.y)
     costs: dict[tuple[int, int], float] = {start: 0.0}
