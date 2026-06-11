@@ -13,7 +13,8 @@
       "type": "bullet",
       "damage": 25,
       "ap": 2,
-      "range": 1
+      "range": 1,
+      "cooldown": 1
     }
   ]
 }

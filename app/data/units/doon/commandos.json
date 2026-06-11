@@ -2,7 +2,7 @@
   "name": "Commandos",
   "type": "infantry",
   "cost": 150,
-  "health": 150,
+  "health": 125,
   "armor": 3,
   "sight": 2,
   "movement": 2,
@@ -25,10 +25,11 @@
     {
       "name": "Grenade",
       "description": "An incendiary grenade",
-      "type": "HE",
+      "type": "he",
       "damage": 40,
       "ap": 2,
       "range": 2,
+      "cooldown": 2,
       "perks": [
         {
           "type": "incendiary",

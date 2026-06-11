@@ -1,11 +1,11 @@
 {
   "name": "Mortar",
   "type": "infantry",
-  "cost": 125,
-  "health": 40,
-  "armor": 1,
-  "sight": 1,
-  "movement": 1,
+  "cost": 150,
+  "health": 100,
+  "armor": 2,
+  "sight": 2,
+  "movement": 2,
   "weapons": [
     {
       "name": "Shell",
@@ -14,7 +14,16 @@
       "damage": 60,
       "ap": 6,
       "range": 3,
-      "cooldown": 0
+      "cooldown": 1
+    },
+    {
+      "name": "Pistol Fire",
+      "description": "",
+      "type": "bullet",
+      "damage": 20,
+      "ap": 2,
+      "range": 1,
+      "cooldown": 1
     }
   ]
 }

@@ -7,13 +7,14 @@
   "sight": 2,
   "movement": 2,
   "weapons": [
-      {   "name": "Shoot",
-          "description": "",
-          "type": "bullet",
-          "damage": 30,
-          "ap": 2,
-          "range": 1,
-            "cooldown": 1
-        }
-    ]
+    {   
+      "name": "Shoot",
+      "description": "",
+      "type": "bullet",
+      "damage": 30,
+      "ap": 2,
+      "range": 1,
+      "cooldown": 1
+    }
+  ]
 }

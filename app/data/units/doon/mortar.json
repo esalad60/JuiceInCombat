@@ -2,9 +2,9 @@
   "name": "Mortar",
   "type": "infantry",
   "cost": 125,
-  "health": 40,
-  "armor": 1,
-  "sight": 1,
+  "health": 75,
+  "armor": 2,
+  "sight": 2,
   "movement": 1,
   "weapons": [
     {
@@ -14,7 +14,7 @@
       "damage": 60,
       "ap": 6,
       "range": 3,
-      "cooldown": 0
+      "cooldown": 1
     }
   ]
 }

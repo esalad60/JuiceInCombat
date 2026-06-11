@@ -10,7 +10,20 @@
     {
       "name": "Repair Torch",
       "description": "",
-      
+      "type": "repair",
+      "damage": 35,
+      "ap": 10,
+      "range": 1,
+      "cooldown": 1
+    },
+    {
+      "name": "Pistol Fire",
+      "description": "",
+      "type": "bullet",
+      "damage": 20,
+      "ap": 2,
+      "range": 1,
+      "cooldown": 1
     }
   ]
 }
