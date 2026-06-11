@@ -1,10 +1,10 @@
 # JuiceInCombat
 
 ## Roster
-Ethan Saldanha - PM
-Ivan Chen - Devo
-Eviss Wu - Devo
-Lucas Zheng - Devo
+Ethan Saldanha - PM  
+Ivan Chen - Devo  
+Eviss Wu - Devo  
+Lucas Zheng - Devo  
 
 ### Link to app
 www.juiceincombat.me
