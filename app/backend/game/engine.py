@@ -72,7 +72,7 @@ class MatchEngine:
         tc = getattr(self.state, "time_control", "live")
         self.emit(EventType.MATCH_STARTED, player_slot=None, payload={
             "map_id": getattr(self.state, "map_id", None),
-            "players": [self._player_summary(s) for s in self.player_slots()],
+            "players": [self.player_summary(s) for s in self.player_slots()],
             "time_control": tc.value if hasattr(tc, "value") else tc,
         })
 
@@ -141,7 +141,7 @@ class MatchEngine:
         current = self.state.current_player_slot
 
         if timer.has_expired(self.state, current, now):
-            self._on_timer_expired(current)
+            self.on_timer_expired(current)
 
     def get_state(self) -> GameState:
         return self.state
@@ -186,7 +186,7 @@ class MatchEngine:
 
         self.emit(EventType.TURN_STARTED, player_slot=player_slot, payload={
             "turn": self.state.turn,
-            "resources": self._player_resources(player_slot),
+            "resources": self.player_resources(player_slot),
         })
 
     def resolve_end_of_turn(self, player_slot: int) -> None:
@@ -195,7 +195,7 @@ class MatchEngine:
     def finalize_timer(self, player_slot: int) -> None:
         timer.end_turn_clock(self.state, player_slot, self._now())
 
-    def _on_timer_expired(self, player_slot: int) -> None:
+    def on_timer_expired(self, player_slot: int) -> None:
         self.emit(EventType.PLAYER_TIMEOUT, player_slot=player_slot, payload={
             "time_control": getattr(self.state, "time_control", "live"),
         })
@@ -261,7 +261,7 @@ class MatchEngine:
     def next_slot(self, slot: int) -> int:
         return (slot + 1) % len(self.state.players)
 
-    def _player_summary(self, slot: int) -> dict[str, Any]:
+    def player_summary(self, slot: int) -> dict[str, Any]:
         p = self.state.players[slot]
         return {
             "slot": slot,
@@ -269,5 +269,5 @@ class MatchEngine:
             "user_id": getattr(p, "user_id", None),
         }
 
-    def _player_resources(self, slot: int) -> dict[str, int]:
+    def player_resources(self, slot: int) -> dict[str, int]:
         return dict(self.state.players[slot].resources)
