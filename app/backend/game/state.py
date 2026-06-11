@@ -185,8 +185,9 @@ class Unit:
     x: int
     y: int
     hp: int
+    sight: int
     armor: int = 0
-    max_hp: int = 0 
+    max_hp: int = 0
     weapons: list[Weapon] = field(default_factory=list)
     traits: list[UnitTrait] = field(default_factory=list)
     status_effects: list[ActiveStatusEffect] = field(default_factory=list)
@@ -346,6 +347,7 @@ class GameState:
             type=definition.unit_type,
             owner_slot=owner_slot,
             x=x, y=y,
+            sight=definition.sight,
             hp=definition.health,
             armor=definition.armor,
             max_hp=definition.health,
