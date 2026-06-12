@@ -11,7 +11,6 @@ OFFSETS_4 = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
 
 def vision_neighbors(game_map: GameMap, from_tile: Tile) -> list[tuple[Tile, float]]:
-    # Tiles visible by units. This is just a helper function.
     out: list[tuple[Tile, float]] = []
 
     for dx, dy in OFFSETS_4:
@@ -23,7 +22,6 @@ def vision_neighbors(game_map: GameMap, from_tile: Tile) -> list[tuple[Tile, flo
 
         tile = game_map.tile_at(nx, ny)
 
-        # Every tile costs 1 sight for now.
         out.append((tile, 1.0))
 
     return out
@@ -33,10 +31,7 @@ def visible_tiles_from_unit(
     game_map: GameMap,
     unit: Unit,
 ) -> set[tuple[int, int]]:
-    """
-    Returns all tiles currently visible to one unit.
-    Uses unit.sight as the visibility budget.
-    """
+    
     sight_budget = float(unit.sight)
 
     if sight_budget < 0:
@@ -132,31 +127,43 @@ def tile_to_player_view(
     is_visible = pos in viewer.visible_tiles
     is_explored = pos in viewer.explored_tiles
 
-    if not is_explored:
+    if is_visible:
         return {
             "x": tile.x,
             "y": tile.y,
-            "fog": "unexplored",
+            "fog": "visible",
+            "base": tile.base,
+            "feature": tile.feature,
+            "height": tile.height,
+            "resource": tile.resource,
+            "building_id": tile.building_id,
+            "unit_id": tile.unit_id,
         }
 
-    data: dict[str, Any] = {
+    if is_explored:
+        return {
+            "x": tile.x,
+            "y": tile.y,
+            "fog": "explored",
+            "base": tile.base,
+            "feature": tile.feature,
+            "height": tile.height,
+            "resource": tile.resource,
+            "building_id": tile.building_id,
+            "unit_id": None,
+        }
+
+    return {
         "x": tile.x,
         "y": tile.y,
-        "fog": "visible" if is_visible else "explored",
+        "fog": "unexplored",
         "base": tile.base,
-        "feature": tile.feature,
         "height": tile.height,
-        "resource": tile.resource,
+        "feature": None,
+        "resource": None,
+        "building_id": None,
+        "unit_id": None,
     }
-
-    if is_visible:
-        data["unit_id"] = tile.unit_id
-        data["building_id"] = tile.building_id
-    else:
-        data["unit_id"] = None
-        data["building_id"] = None
-
-    return data
 
 
 def unit_visible_to_player(
@@ -180,7 +187,8 @@ def building_visible_to_player(
         return True
 
     viewer = state.get_player(viewer_slot)
-    return (building.x, building.y) in viewer.visible_tiles
+    pos = (building.x, building.y)
+    return pos in viewer.explored_tiles 
 
 
 def state_to_player_view(

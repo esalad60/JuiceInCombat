@@ -17,8 +17,8 @@ const COLORS = {
 };
 
 const FOG_COLORS = {
-    unexplored: 0x050505,
-    exploredTint: 0.35,
+    unexplored: 0x1c3a1c,
+    exploredTint: 0.45,
 };
 
 
@@ -106,11 +106,6 @@ export function applyFogToTile(mesh, fogState = "visible") {
 
 
 export function highlightTile(mesh) {
-    // Do not highlight unexplored tiles
-    if (mesh.userData.fogState === "unexplored") {
-        return;
-    }
-
     mesh.userData.highlighted = true;
     mesh.material.color.setHex(0x4fc3f7);
     mesh.material.emissive.setHex(0x16435c);
@@ -118,12 +113,6 @@ export function highlightTile(mesh) {
 
 
 export function highlightTileAttack(mesh) {
-    // Do not attack-highlight unexplored/explored tiles
-    // Attack targets should only be currently visible.
-    if (mesh.userData.fogState !== "visible") {
-        return;
-    }
-
     mesh.userData.highlighted = true;
     mesh.material.color.setHex(0xe74c3c);
     mesh.material.emissive.setHex(0x5c1a16);

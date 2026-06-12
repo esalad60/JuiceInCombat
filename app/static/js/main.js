@@ -267,8 +267,6 @@ function computeReachable(unit) {
     if (!gs || !gs.game_map) return result;
 
     const map = gs.game_map;
-
-
     const budget =
         unit.movement_remaining ??
         unit.movement ??
@@ -340,14 +338,11 @@ function computeFireTargets(unit, weapon) {
 
     const map = gs.game_map;
     const range = weapon.range ?? 1;
-    const mySlot = getMySlot();
 
     for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
             const tile = map.tiles[y]?.[x];
-
             if (!tile) continue;
-            if (tile.fog !== "visible") continue;
 
             const dist = Math.max(
                 Math.abs(x - unit.x),
@@ -356,26 +351,7 @@ function computeFireTargets(unit, weapon) {
 
             if (dist < 1 || dist > range) continue;
 
-            const hasUnitId =
-                tile.unit_id !== null &&
-                tile.unit_id !== undefined;
-
-            const hasBuildingId =
-                tile.building_id !== null &&
-                tile.building_id !== undefined;
-
-            const targetUnit = hasUnitId ? gs.units?.[tile.unit_id] : null;
-            const targetBuilding = hasBuildingId ? gs.buildings?.[tile.building_id] : null;
-
-            const hasEnemyUnit =
-                targetUnit && targetUnit.owner_slot !== mySlot;
-
-            const hasEnemyBuilding =
-                targetBuilding && targetBuilding.owner_slot !== mySlot;
-
-            if (hasEnemyUnit || hasEnemyBuilding) {
-                result.set(`${x},${y}`, dist);
-            }
+            result.set(`${x},${y}`, dist);
         }
     }
 
@@ -448,15 +424,8 @@ function clearHighlights() {
 
 
 function paintHighlights(kind) {
-    const gs = getGameState();
-    const map = gs?.game_map;
-
-    if (!map) return;
-
     for (const key of highlightSet.keys()) {
         const [x, y] = key.split(',').map(Number);
-
-        if (!tileIsVisible(map, x, y)) continue;
 
         const entry = tileMeshes[y] && tileMeshes[y][x];
 
@@ -524,14 +493,6 @@ function onClick(event) {
         }
 
         if (cell) {
-            const gs = getGameState();
-            const map = gs?.game_map;
-
-            if (!map || !tileIsVisible(map, cell.x, cell.y)) {
-                showMessage("Cannot fire at hidden tile", true);
-                return;
-            }
-
             const key = `${cell.x},${cell.y}`;
 
             if (highlightSet.has(key)) {
@@ -547,7 +508,7 @@ function onClick(event) {
             }
         }
 
-        showMessage("Click a highlighted enemy to fire", true);
+        showMessage("Click tile within weapon range", true);
         return;
     }
 
@@ -667,14 +628,8 @@ function onClick(event) {
         const { x, z } = clicked.userData;
         const selUnit = getSelectedUnit();
 
-        const gs = getGameState();
-        const map = gs?.game_map;
-
-        if (!map || !tileIsVisible(map, x, z)) {
-            showMessage("Cannot move to hidden tile", true);
-            return;
-        }
-
+        // No visibility check — if the tile is reachable (highlighted), you may
+        // move there even if it's in the fog. The server validates the path.
         if (selUnit !== null && highlightSet.has(`${x},${z}`)) {
             sendAction({
                 type: 'move',
@@ -842,7 +797,7 @@ function rebuildWorld(gameState) {
 
         const tile = gameMap.tiles[z]?.[x];
 
-        if (!tile || tile.fog !== "visible") {
+        if (!tile) {
             continue;
         }
 
