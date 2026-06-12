@@ -188,6 +188,7 @@ class Unit:
     sight: int
     armor: int = 0
     max_hp: int = 0
+    model: Optional[str] = None
     weapons: list[Weapon] = field(default_factory=list)
     traits: list[UnitTrait] = field(default_factory=list)
     status_effects: list[ActiveStatusEffect] = field(default_factory=list)
@@ -351,6 +352,7 @@ class GameState:
             hp=definition.health,
             armor=definition.armor,
             max_hp=definition.health,
+            model=definition.model,
             weapons=weapons,
             traits=traits,
             movement_remaining=definition.movement,
@@ -469,8 +471,10 @@ def unit_to_dict(u: Unit) -> dict[str, Any]:
         "x":                 u.x,
         "y":                 u.y,
         "hp":                u.hp,
+        "sight":             u.sight,
         "armor":             u.armor,
         "max_hp":            u.max_hp,
+        "model":             u.model,
         "weapons": [
             {
                 "name": w.name, "type": w.type, "damage": w.damage,
@@ -520,8 +524,10 @@ def unit_from_dict(d: dict[str, Any]) -> Unit:
     return Unit(
         id=d["id"], type=d["type"], owner_slot=d["owner_slot"],
         x=d["x"], y=d["y"], hp=d["hp"],
+        sight=d.get("sight", 1),
         armor=d.get("armor", 0),
         max_hp=d.get("max_hp", d["hp"]),
+        model=d.get("model"),
         weapons=weapons, traits=traits, status_effects=status_effects,
         veterancy=d.get("veterancy", 0),
         has_moved=d.get("has_moved", False),

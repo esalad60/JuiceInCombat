@@ -2,14 +2,14 @@
   "name": "Anti Armour Personnel",
   "type": "infantry",
   "cost": 150,
-  "health": 125, 
+  "health": 125,
   "armor": 3,
-  "sight": 2, 
+  "sight": 2,
   "movement": 2,
   "weapons": [
     {
       "name": "HEAT Round",
-      "description": "PG-7V", 
+      "description": "PG-7V",
       "type": "heat",
       "damage": 45,
       "ap": 15,
@@ -17,7 +17,7 @@
       "cooldown": 2,
       "perks": [
         {
-          "type": "cripple", 
+          "type": "cripple",
           "chance": 0.25,
           "duration": 0
         }
@@ -38,5 +38,6 @@
         }
       ]
     }
-  ]
+  ],
+  "model": null
 }

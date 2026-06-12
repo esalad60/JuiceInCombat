@@ -7,7 +7,7 @@
   "sight": 2,
   "movement": 2,
   "weapons": [
-    {   
+    {
       "name": "Shoot",
       "description": "",
       "type": "bullet",
@@ -16,5 +16,6 @@
       "range": 1,
       "cooldown": 1
     }
-  ]
+  ],
+  "model": null
 }

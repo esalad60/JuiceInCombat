@@ -268,18 +268,13 @@ function computeReachable(unit) {
 
     const map = gs.game_map;
 
-    const maxMove =
+
+    const budget =
+        unit.movement_remaining ??
         unit.movement ??
         unit.move_range ??
         unit.max_movement ??
-        unit.movement_remaining ??
         0;
-
-    if ((unit.movement_remaining ?? maxMove) < maxMove) {
-        return result;
-    }
-
-    const budget = maxMove;
 
     const occupied = new Set();
 
@@ -315,7 +310,6 @@ function computeReachable(unit) {
             const tile = map.tiles[ny]?.[nx];
 
             if (!tile) continue;
-            if (tile.fog !== "visible") continue;
             if (tile.base === 'ocean') continue;
 
             const key = `${nx},${ny}`;
@@ -814,7 +808,8 @@ function rebuildWorld(gameState) {
                 unit.type,
                 unit.owner_slot,
                 { x, z },
-                groundHeight
+                groundHeight,
+                unit.model || null
             );
 
             setUnitIdOnMesh(mesh, uid);

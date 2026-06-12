@@ -14,8 +14,8 @@
       "damage": 125,
       "ap": 13,
       "range": 1,
-      "cooldown": 0     
+      "cooldown": 0
     }
   ],
-  "model": "" 
+  "model": "/static/models/doon/doonBomber/doonBomber.gltf"
 }

@@ -31,5 +31,6 @@
       "type": "salvage",
       "amount": 25
     }
-  ]
+  ],
+  "model": "/static/models/presia/tankette/tankette.gltf"
 }

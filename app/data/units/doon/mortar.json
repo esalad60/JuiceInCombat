@@ -16,5 +16,6 @@
       "range": 3,
       "cooldown": 1
     }
-  ]
+  ],
+  "model": "/static/models/doon/doonMortar/doonMortar.gltf"
 }

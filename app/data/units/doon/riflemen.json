@@ -16,5 +16,6 @@
       "range": 1,
       "cooldown": 1
     }
-  ]
+  ],
+  "model": "/static/models/doon/doonRifleman/doonRifleman.gltf"
 }
