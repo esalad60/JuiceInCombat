@@ -64,4 +64,5 @@ if __name__ == '__main__':
         port=5000,
         debug=Config.DEBUG,
         use_reloader=False,  # reloader + eventlet + module-level state don't mix well
+        #allow_unsafe_werkzeug=True,
     )

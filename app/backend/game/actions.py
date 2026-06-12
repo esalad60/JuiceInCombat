@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable
 
-from . import combat, elevation, pathfinding, turn_order, economy
+from . import combat, elevation, pathfinding, turn_order, economy, fog
 from .state import Building, GameState, Unit
 
 if TYPE_CHECKING:
@@ -177,12 +177,18 @@ def validate_fire(
     if unit.has_fired_weapon:
         raise ActionError("Unit has already fired this turn")
 
-    # Check range (Chebyshev distance)
+    # Check range
     dx = abs(target_x - unit.x)
     dy = abs(target_y - unit.y)
     distance = max(dx, dy)
     if distance > weapon.range:
         raise ActionError(f"Target out of range ({distance} > {weapon.range})")
+
+    # Check fog-of-war visibility BEFORE resolving the target
+    fog.update_player_fog(state, player_slot)
+
+    if (target_x, target_y) not in state.get_player(player_slot).visible_tiles:
+        raise ActionError("Target is not visible")
 
     target_tile = state.game_map.tile_at(target_x, target_y)
     target = resolve_target_on_tile(state, target_tile, attacker_slot=player_slot)

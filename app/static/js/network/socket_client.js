@@ -1,6 +1,12 @@
 // frontend/static/js/network/socket_client.js
 import { io } from "https://cdn.socket.io/4.5.4/socket.io.esm.min.js";
-import { setMySlot, updateGameState, getMatchId, setMatchId, setUnitCatalog } from '../game/client_state.js';
+
+import {
+    setMySlot,
+    updateGameState,
+    setMatchId,
+    setUnitCatalog,
+} from '../game/client_state.js';
 
 let socket = null;
 let currentMatchId = null;
@@ -10,13 +16,28 @@ const MAX_RECONNECT_ATTEMPTS = 5;
 let callbacks = {};
 
 
+function handleIncomingGameState(state) {
+    if (!state) return;
+
+    updateGameState(state);
+
+    if (callbacks.onGameState) {
+        callbacks.onGameState(state);
+    }
+}
+
+
 export function connectSocket(matchId, handlers) {
     currentMatchId = matchId;
-    callbacks = handlers;
+    callbacks = handlers || {};
+
+    if (currentMatchId !== null && currentMatchId !== undefined) {
+        setMatchId(currentMatchId);
+    }
 
     socket = io('/game', {
         path: '/socket.io',
-        transports: ['websocket'],
+        transports: ['websocket', 'polling'],
         reconnection: true,
         reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
         reconnectionDelay: 1000,
@@ -25,99 +46,168 @@ export function connectSocket(matchId, handlers) {
     socket.on('connect', () => {
         console.log('Socket connected, joining match', currentMatchId);
         reconnectAttempts = 0;
-        socket.emit('join_match', { match_id: currentMatchId });
+
+        if (currentMatchId !== null && currentMatchId !== undefined) {
+            socket.emit('join_match', { match_id: currentMatchId });
+        }
     });
 
     socket.on('joined', (data) => {
         console.log('Joined match:', data);
+
+        currentMatchId = data.match_id;
+        setMatchId(data.match_id);
         setMySlot(data.player_slot);
-        if (data.unit_catalog) setUnitCatalog(data.unit_catalog);
-        if (data.game_state && callbacks.onGameState) {
-            callbacks.onGameState(data.game_state);
+
+        if (data.unit_catalog) {
+            setUnitCatalog(data.unit_catalog);
+        }
+
+        if (data.game_state) {
+            handleIncomingGameState(data.game_state);
+        }
+    });
+
+    socket.on('game_started', (payload) => {
+        console.log('Game started:', payload);
+
+        if (payload.unit_catalog) {
+            setUnitCatalog(payload.unit_catalog);
+        }
+
+        if (payload.game_state) {
+            handleIncomingGameState(payload.game_state);
+        }
+
+        if (callbacks.onGameStarted) {
+            callbacks.onGameStarted(payload.game_state);
         }
     });
 
     socket.on('game_state', (data) => {
-        updateGameState(data);
-        if (callbacks.onGameState) callbacks.onGameState(data);
+        handleIncomingGameState(data);
     });
 
     socket.on('action_applied', (result) => {
-        if (callbacks.onActionApplied) callbacks.onActionApplied(result);
+        if (callbacks.onActionApplied) {
+            callbacks.onActionApplied(result);
+        }
     });
 
     socket.on('turn_changed', (payload) => {
-        // payload contains next_slot (and sometimes turn)
-        if (callbacks.onTurnChanged) callbacks.onTurnChanged(payload.next_slot);
+        if (callbacks.onTurnChanged) {
+            callbacks.onTurnChanged(payload.next_slot);
+        }
     });
 
     socket.on('game_ended', (payload) => {
-        if (callbacks.onGameEnded) callbacks.onGameEnded(payload.winner_slot);
-    });
-
-    socket.on('game_started', (payload) => {
-        if (payload.unit_catalog) setUnitCatalog(payload.unit_catalog);
-        if (callbacks.onGameStarted) callbacks.onGameStarted(payload.game_state);
+        if (callbacks.onGameEnded) {
+            callbacks.onGameEnded(payload.winner_slot);
+        }
     });
 
     socket.on('match_created', (data) => {
         console.log('Match created:', data);
+
+        currentMatchId = data.match_id;
+        setMatchId(data.match_id);
+
+        if (callbacks.onMatchCreated) {
+            callbacks.onMatchCreated(data);
+        }
     });
 
     socket.on('error', (err) => {
         console.error('Server error:', err);
-        if (callbacks.onError) callbacks.onError(err);
+
+        if (callbacks.onError) {
+            callbacks.onError(err);
+        }
     });
 
     socket.on('disconnect', (reason) => {
         console.warn('Socket disconnected:', reason);
-        if (callbacks.onError) callbacks.onError({ message: 'Disconnected from server' });
+
+        if (callbacks.onError) {
+            callbacks.onError({ message: 'Disconnected from server' });
+        }
     });
 
     socket.on('connect_error', (err) => {
         console.error('Connection error:', err);
         reconnectAttempts++;
+
         if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS && callbacks.onError) {
             callbacks.onError({ message: 'Unable to connect to server' });
         }
     });
 }
 
+
 export function sendAction(action) {
     if (socket && socket.connected) {
-        socket.emit('action', { match_id: currentMatchId, action });
+        socket.emit('action', {
+            match_id: currentMatchId,
+            action,
+        });
     } else {
         console.warn('Cannot send action: socket not connected');
-        if (callbacks.onError) callbacks.onError({ message: 'Not connected to server' });
+
+        if (callbacks.onError) {
+            callbacks.onError({ message: 'Not connected to server' });
+        }
     }
 }
+
 
 export function sendEndTurn() {
     if (socket && socket.connected) {
-        socket.emit('end_turn', { match_id: currentMatchId });
+        socket.emit('end_turn', {
+            match_id: currentMatchId,
+        });
     } else {
         console.warn('Cannot end turn: socket not connected');
-        if (callbacks.onError) callbacks.onError({ message: 'Not connected to server' });
+
+        if (callbacks.onError) {
+            callbacks.onError({ message: 'Not connected to server' });
+        }
     }
 }
+
 
 export function createMatch(mapId, timeControl) {
     if (socket && socket.connected) {
-        socket.emit('create_match', { map_id: mapId, time_control: timeControl });
+        socket.emit('create_match', {
+            map_id: mapId,
+            time_control: timeControl,
+        });
     } else {
         console.error('Cannot create match: socket not connected');
+
+        if (callbacks.onError) {
+            callbacks.onError({ message: 'Not connected to server' });
+        }
     }
 }
 
+
 export function joinMatch(matchId) {
+    currentMatchId = matchId;
+    setMatchId(matchId);
+
     if (socket && socket.connected) {
-        socket.emit('join_match', { match_id: matchId });
-        currentMatchId = matchId;
-        setMatchId(matchId);
+        socket.emit('join_match', {
+            match_id: matchId,
+        });
     } else {
         console.error('Cannot join match: socket not connected');
+
+        if (callbacks.onError) {
+            callbacks.onError({ message: 'Not connected to server' });
+        }
     }
 }
+
 
 export function disconnect() {
     if (socket) {

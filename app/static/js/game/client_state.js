@@ -35,19 +35,39 @@ export function getMySlot() {
 }
 
 export function updateGameState(newState) {
-    if (newState && newState.game_map && Array.isArray(newState.game_map.tiles)
-        && (newState.game_map.tiles.length === 0 || !Array.isArray(newState.game_map.tiles[0]))) {
+    if (!newState) {
+        gameState = newState;
+        for (const fn of listeners) fn(gameState);
+        return;
+    }
+
+    if (newState.viewer_slot !== undefined && newState.viewer_slot !== null) {
+        mySlot = newState.viewer_slot;
+    }
+
+    if (
+        newState.game_map &&
+        Array.isArray(newState.game_map.tiles) &&
+        (newState.game_map.tiles.length === 0 || !Array.isArray(newState.game_map.tiles[0]))
+    ) {
         const gm = newState.game_map;
         const grid = [];
+
         for (let y = 0; y < gm.height; y++) {
             grid[y] = new Array(gm.width).fill(null);
         }
+
         for (const t of gm.tiles) {
-            if (grid[t.y]) grid[t.y][t.x] = t;
+            if (grid[t.y]) {
+                grid[t.y][t.x] = t;
+            }
         }
+
         gm.tiles = grid;
     }
+
     gameState = newState;
+
     for (const fn of listeners) {
         fn(gameState);
     }
@@ -117,4 +137,26 @@ export function subscribe(listener) {
     return () => {
         listeners = listeners.filter(l => l !== listener);
     };
+}
+
+export function getTileFog(x, y) {
+    const tile = getTile(x, y);
+    return tile?.fog ?? "unexplored";
+}
+
+export function isTileVisible(x, y) {
+    return getTileFog(x, y) === "visible";
+}
+
+export function isTileExplored(x, y) {
+    const fog = getTileFog(x, y);
+    return fog === "visible" || fog === "explored";
+}
+
+export function isTileUnexplored(x, y) {
+    return getTileFog(x, y) === "unexplored";
+}
+
+export function canInteractWithTile(x, y) {
+    return isTileVisible(x, y);
 }

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from . import fog
 
 import time
 from dataclasses import dataclass, field
@@ -69,6 +70,8 @@ class MatchEngine:
         self.state.current_player_slot = 0
         self.state.status = StateMatchStatus.IN_PROGRESS
 
+        fog.update_all_fog(self.state)
+
         tc = getattr(self.state, "time_control", "live")
         self.emit(EventType.MATCH_STARTED, player_slot=None, payload={
             "map_id": getattr(self.state, "map_id", None),
@@ -85,9 +88,10 @@ class MatchEngine:
         if player_slot != self.state.current_player_slot:
             raise ValueError(f"Not your turn (player {player_slot}, current {self.state.current_player_slot})")
 
-        # Validate and apply action
         actions.validate(self.state, player_slot, action)
         result = actions.apply(self.state, player_slot, action)
+
+        fog.update_all_fog(self.state)
 
         self.state.record_action(player_slot, action)
 
@@ -184,11 +188,12 @@ class MatchEngine:
                 "destroyed": ev["destroyed"],
             })
 
+        fog.update_all_fog(self.state)
+
         self.emit(EventType.TURN_STARTED, player_slot=player_slot, payload={
             "turn": self.state.turn,
             "resources": self.player_resources(player_slot),
         })
-
     def resolve_end_of_turn(self, player_slot: int) -> None:
         self.state.tick_status_effects(player_slot)
 
