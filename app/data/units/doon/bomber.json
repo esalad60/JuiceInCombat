@@ -14,10 +14,10 @@
       "damage": 125,
       "ap": 13,
       "range": 1,
-      "cooldown": 1,
-      "perks": [
+      "perks":[
         {
-          "type": "sacrafice"
+          "type": "explosive",
+          "duration": 0
         }
       ]
     }

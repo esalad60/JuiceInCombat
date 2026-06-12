@@ -55,6 +55,10 @@ PERK_REGISTRY: dict[str, PerkDefinition] = {
         description="Burns the target",
         turn_tick=incendiary_tick,
     ),
+    "explosive": PerkDefinition(
+        type="explosive",
+        description="dies after attack"
+    )
 }
 
 def get_perk(perk_type: str) -> Optional[PerkDefinition]:
@@ -90,8 +94,8 @@ def tick_damage_for_unit(state: "GameState", unit: "Unit") -> list[dict[str, Any
             break
     return events
 
-## Apply tick damage for 
-def apply_tick_damage_for_player(state: "GameState", player_slot: int) -> list[dict[str, Any]]: 
+## Apply tick damage for
+def apply_tick_damage_for_player(state: "GameState", player_slot: int) -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
     for unit in [u for u in state.units.values() if u.owner_slot == player_slot]:
         if unit.id not in state.units:

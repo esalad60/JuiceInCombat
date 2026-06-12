@@ -91,7 +91,6 @@ def fire_weapon(
             state.remove_unit(target.id)
         else:
             state.remove_building(target.id)
-
     return FireResult(
         attacker_id=attacker.id,
         target_id=target.id,
@@ -150,6 +149,9 @@ def apply_weapon_perk(
         source_slot=attacker.owner_slot,
         params=dict(params),
     )
+    if (perk_type == "explosive"):
+        state.remove_unit(attacker.id)
+        return
     state.apply_status_effect(target.id, effect)
 
 
