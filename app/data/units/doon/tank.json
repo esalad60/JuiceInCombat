@@ -1,0 +1,45 @@
+{
+  "name": "Desert Tank",
+  "type": "vehicle",
+  "cost": 300,
+  "health": 250,
+  "armor": 25,
+  "sight": 2,
+  "movement": 2,
+  "weapons": [
+    {
+      "name": "HEAT Shell",
+      "description": "",
+      "type": "heat",
+      "damage": 100,
+      "ap": 15,
+      "range": 3,
+      "cooldown": 3,
+      "perks": [
+        {
+          "type": "cripple",
+          "chance": 0.35
+        }
+      ]
+    },
+    {
+      "name": "Autocannon Fire",
+      "description": "",
+      "type": "he",
+      "damage": 30,
+      "ap": 10,
+      "range": 2,
+      "cooldown": 2
+    },
+    {
+      "name": "Autocannon Fire",
+      "description": "",
+      "type": "he",
+      "damage": 30,
+      "ap": 10,
+      "range": 2,
+      "cooldown": 2
+    }
+  ],
+  "model": "/static/models/doon/doonTank/doonTank.gltf"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "El Bombercar",
+  "type": "vehicle",
+  "cost": 125,
+  "health": 75,
+  "armor": 4,
+  "sight": 1,
+  "movement": 4,
+  "weapons": [
+    {
+      "name": "Kaboom",
+      "description": "",
+      "type": "he",
+      "damage": 175,
+      "ap": 20,
+      "range": 1,
+      "cooldown": 1,
+      "perks": [
+        {
+          "type": "sacrafice"
+        },
+        {
+          "type": "cripple",
+          "chance": 0.25
+        }
+      ]
+    }
+  ],
+  "model" "/static/models/doon/doonCarBomb/" 

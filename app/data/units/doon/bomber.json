@@ -14,7 +14,12 @@
       "damage": 125,
       "ap": 13,
       "range": 1,
-      "cooldown": 0
+      "cooldown": 1,
+      "perks": [
+        {
+          "type": "sacrafice"
+        }
+      ]
     }
   ],
   "model": "/static/models/doon/doonBomber/doonBomber.gltf"

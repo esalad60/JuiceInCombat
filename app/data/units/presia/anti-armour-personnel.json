@@ -18,8 +18,7 @@
       "perks": [
         {
           "type": "cripple",
-          "chance": 0.25,
-          "duration": 0
+          "chance": 0.25
         }
       ]
     },
