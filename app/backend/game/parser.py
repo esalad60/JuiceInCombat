@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -13,24 +14,52 @@ from .unit import (
     WeaponPerkRef,
 )
 
+
+REQUIRED_UNIT_KEYS = (
+    "name",
+    "type",
+    "cost",
+    "health",
+    "armor",
+    "sight",
+    "movement",
+)
+
+
+class UnitParseError(ValueError):
+    pass
+
+
+def require_keys(raw: dict[str, Any], keys: tuple[str, ...], *, path: Path) -> None:
+    missing = [key for key in keys if key not in raw]
+
+    if missing:
+        raise UnitParseError(
+            f"{path}: missing required unit keys: {', '.join(missing)}"
+        )
+
+
 def parse_unit_dict(
     raw: dict[str, Any],
     *,
     unit_type: str,
     faction: str,
+    path: Path | None = None,
 ) -> UnitDefinition:
+    if path is not None:
+        require_keys(raw, REQUIRED_UNIT_KEYS, path=path)
+
     def fetch(key: str) -> Any:
         return raw[key]
 
-    name     = fetch("name")
+    name = str(fetch("name"))
     category = UnitCategory(fetch("type"))
 
-    price    = fetch("cost")
-
-    health   = fetch("health")
-    armor    = fetch("armor")
-    sight    = fetch("sight")
-    movement = fetch("movement")
+    price = int(fetch("cost"))
+    health = int(fetch("health"))
+    armor = int(fetch("armor"))
+    sight = int(fetch("sight"))
+    movement = int(fetch("movement"))
 
     weapons_raw = raw.get("weapons", [])
     weapons = tuple(parse_weapon(w) for w in weapons_raw)
@@ -60,13 +89,13 @@ def parse_weapon(raw: dict[str, Any]) -> WeaponDef:
     def fetch(key: str) -> Any:
         return raw[key]
 
-    name        = fetch("name")
+    name = str(fetch("name"))
     description = raw.get("description", "")
     weapon_type = fetch("type")
-    damage      = fetch("damage")
-    ap          = raw.get("ap", 0)
-    rng         = raw.get("range", 1)
-    cd          = raw.get("cooldown", 1)
+    damage = int(fetch("damage"))
+    ap = int(raw.get("ap", 0))
+    rng = int(raw.get("range", 1))
+    cd = int(raw.get("cooldown", 1))
 
     perks_raw = raw.get("perks", [])
     perks = tuple(parse_weapon_perk(p) for p in perks_raw)
@@ -87,18 +116,34 @@ def parse_weapon_perk(raw: dict[str, Any]) -> WeaponPerkRef:
     def fetch(key: str) -> Any:
         return raw[key]
 
-    perk     = fetch("type")
+    perk = fetch("type")
     duration = int(fetch("duration"))
 
-    params = {k: v for k, v in raw.items() if k not in ("type", "duration")}
+    params = {
+        k: v
+        for k, v in raw.items()
+        if k not in ("type", "duration")
+    }
 
-    return WeaponPerkRef(type=perk, duration=duration, params=params)
+    return WeaponPerkRef(
+        type=perk,
+        duration=duration,
+        params=params,
+    )
 
 
 def parse_trait(raw: dict[str, Any]) -> TraitRef:
     trait_type = raw["type"]
-    params = {k: v for k, v in raw.items() if k != "type"}
-    return TraitRef(type=trait_type, params=params)
+    params = {
+        k: v
+        for k, v in raw.items()
+        if k != "type"
+    }
+
+    return TraitRef(
+        type=trait_type,
+        params=params,
+    )
 
 
 def parse_unit_file(path: str | Path) -> UnitDefinition:
