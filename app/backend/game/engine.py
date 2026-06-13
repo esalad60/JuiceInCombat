@@ -217,11 +217,20 @@ class MatchEngine:
 
     def check_win_condition(self) -> Optional[int]:
         for slot in range(len(self.state.players)):
+            capital_id = self.state.players[slot].capital_building_id
+
+            # if a player loses their capital they lose
+            if capital_id is not None and capital_id not in self.state.buildings:
+                return self.next_slot(slot)
+
             capital = self.state.get_capital(slot)
+
             if capital is None:
                 continue
+
             if capital.owner_slot != slot:
                 return capital.owner_slot
+
         return None
 
     def end_match(self, *, winner_slot: int, reason: str) -> None:
