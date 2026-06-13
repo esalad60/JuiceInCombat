@@ -101,28 +101,65 @@ def parse_trait(raw: dict[str, Any]) -> TraitRef:
     return TraitRef(type=trait_type, params=params)
 
 
-def parse_unit_file(path: str) -> UnitDefinition:
+def parse_unit_file(path: str | Path) -> UnitDefinition:
     path = Path(path)
-    with path.open() as f:
-        raw = json.load(f)
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            raw = json.load(f)
+    except json.JSONDecodeError as e:
+        raise UnitParseError(f"{path}: invalid JSON: {e}") from e
+
+    if not isinstance(raw, dict):
+        raise UnitParseError(f"{path}: unit file must contain a JSON object")
 
     unit_type = path.stem
-    faction   = path.parent.name
+    faction = path.parent.name
 
-    return parse_unit_dict(raw, unit_type=unit_type, faction=faction)
+    return parse_unit_dict(
+        raw,
+        unit_type=unit_type,
+        faction=faction,
+        path=path,
+    )
 
 
-def register_units(root: str) -> UnitRegistry:
+def register_units(
+    root: str | Path,
+    *,
+    strict: bool = False,
+) -> UnitRegistry:
     root = Path(root)
     registry = UnitRegistry()
+
+    if not root.exists():
+        message = f"Unit directory does not exist: {root}"
+
+        if strict:
+            raise FileNotFoundError(message)
+
+        print(f"[unit parser] WARNING: {message}", file=sys.stderr)
+        return registry
 
     for faction_dir in sorted(root.iterdir()):
         if not faction_dir.is_dir():
             continue
+
         for json_path in sorted(faction_dir.iterdir()):
             if json_path.suffix.lower() != ".json":
                 continue
-            definition = parse_unit_file(json_path)
+
+            try:
+                definition = parse_unit_file(json_path)
+            except Exception as e:
+                message = f"[unit parser] Skipping invalid unit file {json_path}: {e}"
+
+                if strict:
+                    raise UnitParseError(message) from e
+
+                print(message, file=sys.stderr)
+                continue
+
             registry.register(definition)
 
     return registry
