@@ -47,7 +47,45 @@ function statRow(label, value) {
     return `<div class="stat"><span class="jic-label">${label}</span><span class="jic-value">${value}</span></div>`;
 }
 
-export function showUnitPanel(unit, readOnly = false) {
+const EFFECT_ICONS = {
+    mark:        { glyph: '', label: 'Marked', desc: 'Takes increased damage' },
+    incendiary:  { glyph: '', label: 'Burning', desc: 'Loses HP each turn' },
+    cripple:     { glyph: '', label: 'Crippled', desc: 'Movement reduced' },
+    sacrafice:   { glyph: '', label: 'Sacrifice', desc: 'Detonates on attack' },
+    explosive:   { glyph: '', label: 'Explosive', desc: 'Explosive payload' },
+    regen:       { glyph: '', label: 'Regen', desc: 'Heals each turn', trait: true },
+    radio:       { glyph: '', label: 'Radio', desc: 'Comms support', trait: true },
+    salvage:     { glyph: '', label: 'Salvage', desc: 'Gets resources', trait: true },
+    climb:       { glyph: '', label: 'Climb', desc: 'Ignores cliffs', trait: true },
+};
+
+function effectChip(type, { duration = null, trait = false } = {}) {
+    const key = String(type || '').toLowerCase();
+    const info = EFFECT_ICONS[key] || { glyph: '•', label: type, desc: '' };
+    const tip = `${info.label}${info.desc ? ' — ' + info.desc : ''}` +
+                (duration != null ? ` (${duration}t)` : '');
+    const counter = duration != null
+        ? `<span class="status-count">${duration}</span>`
+        : '';
+    const cls = (trait || info.trait) ? 'status-chip status-trait' : 'status-chip';
+    return `<span class="${cls}" title="${tip}">${info.glyph}${counter}</span>`;
+}
+
+function statusIconsRow(unit) {
+    const chips = [];
+
+    for (const eff of (unit.status_effects || [])) {
+        chips.push(effectChip(eff.type, { duration: eff.duration }));
+    }
+    for (const t of (unit.traits || [])) {
+        chips.push(effectChip(t.type, { trait: true }));
+    }
+
+    if (chips.length === 0) return '';
+    return `<div class="status-row">${chips.join('')}</div>`;
+}
+
+export function showUnitPanel(unit, readOnly = false, capturable = null) {
     if (!panelEl || !unit) return;
     showPanel();
     if (panelTitleEl)
@@ -59,7 +97,8 @@ export function showUnitPanel(unit, readOnly = false) {
         statRow('HP', unit.hp) +
         statRow('Armor', unit.armor) +
         statRow('Move', `${unit.movement_remaining}/${unit.max_movement}`) +
-        statRow('Fired', unit.has_fired_weapon ? 'Yes' : 'No');
+        statRow('Fired', unit.has_fired_weapon ? 'Yes' : 'No') +
+        statusIconsRow(unit);
 
     actionsEl.innerHTML = '';
     actionsEl.style.flexDirection = 'row';
@@ -96,6 +135,20 @@ export function showUnitPanel(unit, readOnly = false) {
         note.className = 'jic-label';
         note.textContent = 'Already fired this turn';
         actionsEl.appendChild(note);
+    }
+
+    // Capture button — shown when the unit is adjacent to a capturable building
+    // and hasn't moved this turn.
+    if (capturable && !unit.has_moved) {
+        const capBtn = document.createElement('button');
+        capBtn.textContent = 'Capture';
+        capBtn.className = 'jic-btn jic-btn-gold';
+        capBtn.style.fontSize = '11px';
+        capBtn.style.padding = '6px 10px';
+        capBtn.addEventListener('click', () => {
+            if (cb.onCaptureRequested) cb.onCaptureRequested(unit.id, capturable.id);
+        });
+        actionsEl.appendChild(capBtn);
     }
 }
 
@@ -138,6 +191,7 @@ export function showEnemyUnitPanel(unit) {
     for (const w of (unit.weapons || [])) {
         html += statRow(`Wpn: ${w.name}`, `DMG ${w.damage} / AP ${w.ap} / R${w.range}`);
     }
+    html += statusIconsRow(unit);
     statsEl.innerHTML = html;
     actionsEl.innerHTML = '<div class="jic-label">Enemy unit — view only</div>';
 }

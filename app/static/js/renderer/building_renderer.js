@@ -21,7 +21,6 @@ export function createBuildingMesh(building, position, groundHeight) {
     mesh.castShadow = true;
     mesh.userData = { type: 'building', buildingId: building.id, ownerSlot: building.owner_slot };
 
-    // flag-pole on capitals so they read as the objective
     if (isCapital) {
         const poleGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.6, 6);
         const poleMat = new THREE.MeshStandardMaterial({ color: '#ffffff' });

@@ -11,6 +11,8 @@ import {
     highlightTileAttack
 } from './renderer/tile_renderer.js';
 
+import { createRampMesh } from './renderer/ramp_renderer.js';
+
 import {
     createUnitMesh,
     updateUnitPosition,
@@ -62,6 +64,7 @@ import {
 
 let scene, camera, renderer;
 let tileMeshes = [];
+let rampMeshes = [];
 let unitMeshes = new Map();
 let buildingMeshes = new Map();
 
@@ -93,6 +96,7 @@ async function init() {
             enterIdle();
         },
         onWeaponSelected: (unitId, weaponName) => enterFireMode(unitId, weaponName),
+        onCaptureRequested: (unitId, buildingId) => sendCapture(unitId, buildingId),
         onRecruitRequested: (bx, by) => openRecruitList(bx, by),
         onRecruitUnitChosen: (unitType) => enterRecruitMode(unitType),
     });
@@ -188,7 +192,38 @@ function enterMoveMode(unitId) {
 
     highlightSet = computeReachable(unit);
     paintHighlights('move');
-    showUnitPanel(unit);
+
+    const capturable = adjacentCapturableBuilding(unit);
+    showUnitPanel(unit, false, capturable);
+}
+
+function adjacentCapturableBuilding(unit) {
+    if (!unit || unit.has_moved) return null;
+
+    const gs = getGameState();
+    const buildings = gs?.buildings || {};
+    const mySlot = getMySlot();
+
+    for (const bid of Object.keys(buildings)) {
+        const b = buildings[bid];
+        if (!b) continue;
+        if (b.owner_slot === mySlot) continue;          // already ours
+        const dist = Math.abs(b.x - unit.x) + Math.abs(b.y - unit.y);
+        if (dist === 1) {
+            return { id: parseInt(bid), x: b.x, y: b.y };
+        }
+    }
+    return null;
+}
+
+
+function sendCapture(unitId, buildingId) {
+    sendAction({
+        type: 'capture',
+        unit_id: unitId,
+        building_id: buildingId,
+    });
+    enterIdle();
 }
 
 
@@ -344,10 +379,9 @@ function computeFireTargets(unit, weapon) {
             const tile = map.tiles[y]?.[x];
             if (!tile) continue;
 
-            const dist = Math.max(
-                Math.abs(x - unit.x),
-                Math.abs(y - unit.y)
-            );
+            const dist =
+                Math.abs(x - unit.x) +
+                Math.abs(y - unit.y);
 
             if (dist < 1 || dist > range) continue;
 
@@ -731,6 +765,30 @@ function rebuildWorld(gameState) {
                         tile.fog || "unexplored"
                     );
                 }
+            }
+        }
+    }
+
+    if (rampMeshes.length === 0 && Array.isArray(gameMap.ramps)) {
+        for (const ramp of gameMap.ramps) {
+            const [ax, ay] = ramp.tile_a;
+            const [bx, by] = ramp.tile_b;
+            const ta = gameMap.tiles[ay]?.[ax];
+            const tb = gameMap.tiles[by]?.[bx];
+            if (!ta || !tb) continue;
+
+            const fromTile = { x: ax, y: ay, height: ta.height, base: ta.base };
+            const toTile   = { x: bx, y: by, height: tb.height, base: tb.base };
+
+            const mesh = createRampMesh(
+                fromTile,
+                toTile,
+                (tb.height >= ta.height ? tb.base : ta.base),
+                ramp.type
+            );
+            if (mesh) {
+                scene.add(mesh);
+                rampMeshes.push(mesh);
             }
         }
     }

@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Union
 
+from . import terrain as terrain_mod
+from . import type_advantages
 from .state import (
     ActiveStatusEffect,
     Building,
@@ -46,11 +48,12 @@ def fire_weapon(
         target_height=target_tile.height,
     )
 
-    # Placeholders until terrain_features.json and veterancy are implemented
-    terrain_def_mod = 1.0
-    veterancy_mod   = 1.0
+    terrain_def_mod = terrain_mod.defense_multiplier(target_tile.base)
+    veterancy_mod   = 1.0  ## maybe implement
 
     status_mod = status_damage_multiplier(target)
+
+    type_mod = type_advantages.type_advantage_multiplier(target, weapon)
 
     raw_damage = apply_armor_formula(
         weapon_damage=weapon.damage,
@@ -64,6 +67,7 @@ def fire_weapon(
         * height_mod
         * veterancy_mod
         * status_mod
+        * type_mod
     )
 
     final_damage = max(MINIMUM_DAMAGE_AFTER_ARMOR, int(round(final_damage_f)))
@@ -79,7 +83,7 @@ def fire_weapon(
             apply_weapon_perk(
                 state=state,
                 attacker=attacker,
-                target=target, # type: ignore[arg-type]
+                target=target,
                 perk_type=perk_app.type,
                 duration=perk_app.duration,
                 params=perk_app.params,

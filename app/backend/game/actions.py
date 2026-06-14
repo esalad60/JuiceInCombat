@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable
 from . import combat, elevation, pathfinding, turn_order, economy, fog
 from .state import Building, GameState, Unit
 
-if TYPE_CHECKING:
-    from .unit import UnitRegistry
+from .unit import UnitRegistry
 
 
 class ActionError(ValueError):
@@ -89,11 +88,9 @@ def validate_move(
 
     dest_tile = state.game_map.tile_at(to_x, to_y)
 
-    # Block: another unit on the destination
     if dest_tile.unit_id is not None and dest_tile.unit_id != unit.id:
         raise ActionError("Destination is occupied by another unit")
 
-    # Block: enemy building (non-capital). Enemy capitals are capturable.
     if dest_tile.building_id is not None:
         building = state.get_building(dest_tile.building_id)
         if building is not None:
@@ -131,14 +128,12 @@ def apply_move(
     dest_tile = state.game_map.tile_at(to_x, to_y)
     captured_building_id: int | None = None
 
-    # Capture enemy capital?
     if dest_tile.building_id is not None:
         building = state.get_building(dest_tile.building_id)
         if building is not None and building.is_capital and building.owner_slot != player_slot:
             state.transfer_building(building.id, player_slot)
             captured_building_id = building.id
 
-    # Move unit
     state.move_unit(unit.id, to_x, to_y)
     turn_order.commit_move(unit, distance=int(cost))
 
@@ -177,10 +172,9 @@ def validate_fire(
     if unit.has_fired_weapon:
         raise ActionError("Unit has already fired this turn")
 
-    # Check range
     dx = abs(target_x - unit.x)
     dy = abs(target_y - unit.y)
-    distance = max(dx, dy)
+    distance = dx + dy
     if distance > weapon.range:
         raise ActionError(f"Target out of range ({distance} > {weapon.range})")
 
@@ -363,10 +357,71 @@ def is_unit(target, state: "GameState") -> bool:
     return target.id in state.units
 
 
+def validate_capture(
+    state: "GameState",
+    player_slot: int,
+    action: dict[str, Any],
+) -> None:
+    unit_id = action.get("unit_id")
+    if unit_id is None:
+        raise ActionError("Capture action missing 'unit_id'")
+
+    unit = state.get_unit(unit_id)
+    if unit is None:
+        raise ActionError("Capturing unit not found")
+    if unit.owner_slot != player_slot:
+        raise ActionError("Cannot capture with an enemy unit")
+
+    if unit.has_moved:
+        raise ActionError("Unit has already moved; cannot capture this turn")
+
+    building_id = action.get("building_id")
+    if building_id is not None:
+        building = state.get_building(building_id)
+    else:
+        building = None
+
+    if building is None:
+        raise ActionError("Target building not found")
+
+    dist = abs(building.x - unit.x) + abs(building.y - unit.y)
+    if dist != 1:
+        raise ActionError("Unit must be adjacent to the building to capture it")
+
+    if building.owner_slot == player_slot:
+        raise ActionError("You already own this building")
+
+    action["_resolved_building_id"] = building.id
+
+
+def apply_capture(
+    state: "GameState",
+    player_slot: int,
+    action: dict[str, Any],
+) -> dict[str, Any]:
+    unit = state.get_unit(action["unit_id"])
+    building_id = action.get("_resolved_building_id", action.get("building_id"))
+    building = state.get_building(building_id)
+
+    prev_owner = building.owner_slot
+    state.transfer_building(building.id, player_slot)
+
+    unit.has_moved = True
+    unit.movement_remaining = 0
+
+    return {
+        "captured_building_id": building.id,
+        "captured_from_slot": prev_owner,
+        "unit_id": unit.id,
+        "by_slot": player_slot,
+    }
+
+
 VALIDATORS: dict[str, Callable[..., None]] = {
     "move": validate_move,
     "fire": validate_fire,
     "recruit": validate_recruit,
+    "capture": validate_capture,
     "end_turn": validate_end_turn,
 }
 
@@ -374,5 +429,6 @@ APPLIERS: dict[str, Callable[..., dict[str, Any]]] = {
     "move": apply_move,
     "fire": apply_fire,
     "recruit": apply_recruit,
+    "capture": apply_capture,
     "end_turn": apply_end_turn,
 }

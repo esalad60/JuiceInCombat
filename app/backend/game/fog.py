@@ -233,6 +233,14 @@ def state_to_player_view(
             "height": state.game_map.height,
             "name": state.game_map.name,
             "tiles": tiles,
+            "ramps": [
+                {
+                    "tile_a": list(r.tile_a),
+                    "tile_b": list(r.tile_b),
+                    "type": r.type,
+                }
+                for r in state.game_map.ramps
+            ],
         },
 
         "players": [

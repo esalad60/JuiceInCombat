@@ -34,6 +34,30 @@
         #weapon-info-stats .stat { display:flex; justify-content:space-between; gap: 12px; }
         #unit-stats { padding: 10px 12px; font-size: 13px; line-height: 1.5; }
         #unit-stats .stat { display:flex; justify-content:space-between; }
+        .status-row {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-top: 8px; padding-top: 8px;
+            border-top: 1px solid var(--jic-line-soft, #43443a);
+        }
+        .status-chip {
+            position: relative;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px;
+            font-size: 15px; line-height: 1;
+            background: var(--jic-panel-2, #34352b);
+            border: 1px solid var(--jic-line, #5b5c4a);
+            border-radius: 4px;
+            cursor: default;
+        }
+        .status-chip.status-trait { border-color: var(--jic-olive, #6f7544); }
+        .status-chip .status-count {
+            position: absolute; bottom: -4px; right: -4px;
+            min-width: 13px; height: 13px; padding: 0 2px;
+            font-size: 9px; font-weight: 700; line-height: 13px;
+            text-align: center;
+            background: var(--jic-rust, #9d5a32); color: #fff;
+            border-radius: 7px;
+        }
         #unit-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 12px 12px; }
 
         #end-turn-btn { position: absolute; bottom: 18px; right: 18px; }
