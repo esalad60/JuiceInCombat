@@ -181,6 +181,9 @@ def validate_fire(
     target_tile = state.game_map.tile_at(target_x, target_y)
     target_kind, target = resolve_target_on_tile(state, target_tile)
 
+    if target is not None and target.owner_slot == player_slot:
+    raise ActionError("Cannot fire on friendly target")
+    
     action["_resolved_target_kind"] = target_kind
     action["_resolved_target_id"] = target.id if target is not None else None
     action["_resolved_target_xy"] = [target_x, target_y]
@@ -364,13 +367,11 @@ def resolve_target_on_tile(
     tile,
 ):
     if tile.unit_id is not None:
-        unit = state.get_unit(tile.unit_id)
-        if unit is not None and unit.owner_slot != attacker_slot:
-            return unit, state.get_unit(tile.unit_id)
+        return "unit", state.get_unit(tile.unit_id)
+
     if tile.building_id is not None:
-        b = state.get_building(tile.building_id)
-        if b is not None and b.owner_slot != attacker_slot:
-            return b, state.get_building(tile.building_id)
+        return "building", state.get_building(tile.building_id)
+
     return None, None
 
 
