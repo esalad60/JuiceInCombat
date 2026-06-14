@@ -365,33 +365,25 @@ function computeReachable(unit) {
 }
 
 
-function computeFireTargets(unit, weapon) {
-    const result = new Map();
-    const gs = getGameState();
+function computeFireTargets(gs, unit, weapon) {
+    const targets = new Set();
 
-    if (!gs || !gs.game_map) return result;
+    if (!gs || !gs.game_map || !unit || !weapon) {
+        return targets;
+    }
 
-    const map = gs.game_map;
     const range = weapon.range ?? 1;
 
-    for (let y = 0; y < map.height; y++) {
-        for (let x = 0; x < map.width; x++) {
-            const tile = map.tiles[y]?.[x];
-            if (!tile) continue;
+    for (const tile of gs.game_map.tiles || []) {
+        const dist = Math.abs(tile.x - unit.x) + Math.abs(tile.y - unit.y);
 
-            const dist =
-                Math.abs(x - unit.x) +
-                Math.abs(y - unit.y);
-
-            if (dist < 1 || dist > range) continue;
-
-            result.set(`${x},${y}`, dist);
+        if (dist <= range) {
+            targets.add(`${tile.x},${tile.y}`);
         }
     }
 
-    return result;
+    return targets;
 }
-
 
 function computeRecruitTiles(buildingXY) {
     const result = new Map();

@@ -178,13 +178,12 @@ def validate_fire(
     if distance > weapon.range:
         raise ActionError(f"Target out of range ({distance} > {weapon.range})")
 
-    fog.update_player_fog(state, player_slot)
-
     target_tile = state.game_map.tile_at(target_x, target_y)
-    target = resolve_target_on_tile(state, target_tile, attacker_slot=player_slot)
+    target_kind, target = resolve_target_on_tile(state, target_tile)
 
-    action["_resolved_target_kind"] = "unit" if is_unit(target, state) else "building"
-    action["_resolved_target_id"] = target.id
+    action["_resolved_target_kind"] = target_kind
+    action["_resolved_target_id"] = target.id if target is not None else None
+    action["_resolved_target_xy"] = [target_x, target_y]
 
 
 def apply_fire(
@@ -202,10 +201,26 @@ def apply_fire(
     target_id = action["_resolved_target_id"]
     if target_kind == "unit":
         target = state.get_unit(target_id)
-    else:
+    elif:
         target = state.get_building(target_id)
+    else:
+        target = None
+        
     if target is None:
-        pass
+        turn_order.commit_fire(unit)
+
+        return {
+            "attacker_id": unit.id,
+            "target_id": None,
+            "target_kind": None,
+            "weapon_name": weapon.name,
+            "target_xy": [target_x, target_y],
+            "result": "miss",
+            "raw_damage": 0,
+            "final_damage": 0,
+            "target_destroyed": False,
+            "perks_applied": [],
+        }
 
     fire_result = combat.fire_weapon(
         state, attacker=unit, weapon=weapon, target=target,
@@ -345,16 +360,13 @@ def resolve_target_on_tile(
     if tile.unit_id is not None:
         unit = state.get_unit(tile.unit_id)
         if unit is not None and unit.owner_slot != attacker_slot:
-            return unit
+            return unit, state.get_unit(tile.unit_id)
     if tile.building_id is not None:
         b = state.get_building(tile.building_id)
         if b is not None and b.owner_slot != attacker_slot:
-            return b
-    return None
+            return b, state.get_building(tile.building_id)
+    return None, None
 
-
-def is_unit(target, state: "GameState") -> bool:
-    return target.id in state.units
 
 
 def validate_capture(
