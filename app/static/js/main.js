@@ -239,7 +239,7 @@ function enterFireMode(unitId, weaponName) {
 
     clearHighlights();
 
-    highlightSet = computeFireTargets(unit, weapon);
+    highlightSet = computeFireTargets(getGameState(), unit, weapon);
     paintHighlights('fire');
 
     showWeaponInfo(weapon);
@@ -366,23 +366,26 @@ function computeReachable(unit) {
 
 
 function computeFireTargets(gs, unit, weapon) {
-    const targets = new Set();
+    const targets = new Map();
 
     if (!gs || !gs.game_map || !unit || !weapon) {
+        console.warn("Missing fire target input:", { gs, unit, weapon });
         return targets;
     }
 
+    const map = gs.game_map;
     const range = weapon.range ?? 1;
-    const tiles = gs.game_map.tiles || [];
 
-    for (const tile of tiles) {
-        const x = tile.x;
-        const y = tile.y;
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            const tile = map.tiles[y]?.[x];
+            if (!tile) continue;
 
-        const dist = Math.abs(x - unit.x) + Math.abs(y - unit.y);
+            const dist = Math.abs(x - unit.x) + Math.abs(y - unit.y);
 
-        if (dist <= range) {
-            targets.add(`${x},${y}`);
+            if (dist <= range) {
+                targets.set(`${x},${y}`, dist);
+            }
         }
     }
 
