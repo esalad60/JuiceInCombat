@@ -201,7 +201,7 @@ def apply_fire(
     target_id = action["_resolved_target_id"]
     if target_kind == "unit":
         target = state.get_unit(target_id)
-    elif:
+    elif target_kind == "building":
         target = state.get_building(target_id)
     else:
         target = None
