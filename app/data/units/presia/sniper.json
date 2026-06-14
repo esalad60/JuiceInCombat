@@ -1,0 +1,21 @@
+{
+  "name": "Sniper",
+  "type": "infantry",
+  "cost": 50,
+  "health": 80,
+  "armor": 2,
+  "sight": 3,
+  "movement": 3,
+  "weapons": [
+    {
+      "name": "Shoot",
+      "description": "",
+      "type": "bullet",
+      "damage": 75,
+      "ap": 5,
+      "range": 3,
+      "cooldown": 1
+    }
+  ],
+  "model": null
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Drone",
+  "type": "vehicle",
+  "cost": 50,
+  "health": 50,
+  "armor": 4,
+  "sight": 3,
+  "movement": 3,
+  "weapons": [
+    {
+      "name": "Recon",
+      "description": "",
+      "type": "he",
+      "damage": 0,
+      "ap": 0,
+      "range": 3,
+      "cooldown": 0
+    }
+  ],
+  "traits": [
+    {
+      "type": "multimove",
+      "amount": 2
+    }
+  ],
+  "model": "/static/models/presia/drone/drone.gltf"
+}
+
