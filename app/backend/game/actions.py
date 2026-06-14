@@ -182,7 +182,7 @@ def validate_fire(
     target_kind, target = resolve_target_on_tile(state, target_tile)
 
     if target is not None and target.owner_slot == player_slot:
-    raise ActionError("Cannot fire on friendly target")
+        raise ActionError("Cannot fire on friendly target")
     
     action["_resolved_target_kind"] = target_kind
     action["_resolved_target_id"] = target.id if target is not None else None
