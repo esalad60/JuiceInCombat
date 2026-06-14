@@ -104,7 +104,7 @@ export function connectSocket(matchId, handlers) {
 		const winnerSlot = payload.winner_slot;
 		const matchId = payload.match_id || currentMatchId;
 
-		window.location.href = `/win/${matchId}?winner_slot=${encodeURIComponent(winnerSlot)}`;
+		window.location.href = `/win/${matchId}/${winnerSlot}`;
 	});
 
     socket.on('match_created', (data) => {

@@ -10,7 +10,10 @@ def game_page(match_id):
         return redirect(url_for('auth.render_login'))
     return render_template('game.html', match_id=match_id)
   
-@bp.route("/win/<int:match_id>")
-def win_page(match_id):
-    winner_slot = request.args.get("winner_slot", type=int)
-    return render_template("win.html", match_id=match_id, winner_slot=winner_slot)
+@bp.route("/win/<int:match_id>/<int:winner_slot>")
+def win_page(match_id, winner_slot):
+    return render_template(
+        "win.html",
+        match_id=match_id,
+        winner_slot=winner_slot,
+    )

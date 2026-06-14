@@ -1,20 +1,30 @@
 {% extends "base.html" %}
+
 {% block title %}Game Over{% endblock %}
+
 {% block content %}
-
-
 <div class="container mx-auto p-6 max-w-5xl">
-    <div class="flex justify-between items-center mb-6">Game Over
-        <h1 class="jic-title text-3xl">Winner {{winner_slot}}</h1>
-        <a href="/logout" class="jic-btn jic-btn-danger">Logout</a>
-		<a href="/lobby" class="jic-btn jic-btn-danger">Play another? </a>
+
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="jic-title text-3xl">Game Over</h1>
+            <p class="text-lg mt-2">Match ID: {{ match_id }}</p>
+            <p class="text-xl mt-1">Winner: Player {{ winner_slot }}</p>
+        </div>
+
+        <div class="flex gap-3">
+            <a href="/lobby" class="jic-btn">Play another?</a>
+            <a href="/logout" class="jic-btn jic-btn-danger">Logout</a>
+        </div>
     </div>
 
-	{% with messages = get_flashed_messages(with_categories=true) %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
-            <div class="jic-flash {% if category == 'error' %}jic-flash-error{% else %}jic-flash-ok{% endif %}">{{ message }}</div>
+            <div class="jic-flash {% if category == 'error' %}jic-flash-error{% else %}jic-flash-ok{% endif %}">
+                {{ message }}
+            </div>
         {% endfor %}
     {% endwith %}
 
 </div>
-{% endblock % }
+{% endblock %}
