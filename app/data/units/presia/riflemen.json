@@ -1,7 +1,7 @@
 {
   "name": "Riflemen",
   "type": "infantry",
-  "cost": 100,
+  "cost": 50,
   "health": 100,
   "armor": 2,
   "sight": 2,
@@ -17,5 +17,5 @@
       "cooldown": 1
     }
   ],
-  "model": null
+  "model": "/static/models/presia/commandos/presiaRiflemen.gltf"
 }
