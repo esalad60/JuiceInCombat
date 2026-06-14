@@ -184,16 +184,10 @@ def validate_fire(
     if distance > weapon.range:
         raise ActionError(f"Target out of range ({distance} > {weapon.range})")
 
-    # Check fog-of-war visibility BEFORE resolving the target
     fog.update_player_fog(state, player_slot)
-
-    if (target_x, target_y) not in state.get_player(player_slot).visible_tiles:
-        raise ActionError("Target is not visible")
 
     target_tile = state.game_map.tile_at(target_x, target_y)
     target = resolve_target_on_tile(state, target_tile, attacker_slot=player_slot)
-    if target is None:
-        raise ActionError("No enemy target on that tile")
 
     action["_resolved_target_kind"] = "unit" if is_unit(target, state) else "building"
     action["_resolved_target_id"] = target.id
