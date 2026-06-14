@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Game Over{% endblock %}
+{% block content %}
+
+
+<div class="container mx-auto p-6 max-w-5xl">
+    <div class="flex justify-between items-center mb-6">Game Over
+        <h1 class="jic-title text-3xl">Winner {{winner_slot}}</h1>
+        <a href="/logout" class="jic-btn jic-btn-danger">Logout</a>
+		<a href="/lobby" class="jic-btn jic-btn-danger">Play another? </a>
+    </div>
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="jic-flash {% if category == 'error' %}jic-flash-error{% else %}jic-flash-ok{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+</div>
