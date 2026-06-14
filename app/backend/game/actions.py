@@ -166,15 +166,15 @@ def validate_fire(
 
     weapon_name = action.get("weapon_name")
     weapon = next((w for w in unit.weapons if w.name == weapon_name), None)
+
     if weapon is None:
         raise ActionError(f"Unit has no weapon named {weapon_name!r}")
 
     if unit.has_fired_weapon:
         raise ActionError("Unit has already fired this turn")
 
-    dx = abs(target_x - unit.x)
-    dy = abs(target_y - unit.y)
-    distance = dx + dy
+    distance = abs(target_x - unit.x) + abs(target_y - unit.y)
+
     if distance > weapon.range:
         raise ActionError(f"Target out of range ({distance} > {weapon.range})")
 
@@ -185,27 +185,30 @@ def validate_fire(
     action["_resolved_target_id"] = target.id if target is not None else None
     action["_resolved_target_xy"] = [target_x, target_y]
 
-
 def apply_fire(
     state: "GameState",
     player_slot: int,
     action: dict[str, Any],
 ) -> dict[str, Any]:
     unit = state.get_unit(action["unit_id"])
+
     if unit is None:
-        pass
+        raise RuntimeError("Unit disappeared")
+
     weapon_name = action["weapon_name"]
     weapon = next(w for w in unit.weapons if w.name == weapon_name)
 
-    target_kind = action["_resolved_target_kind"]
-    target_id = action["_resolved_target_id"]
+    target_kind = action.get("_resolved_target_kind")
+    target_id = action.get("_resolved_target_id")
+    target_x, target_y = action.get("_resolved_target_xy", action["target_xy"])
+
     if target_kind == "unit":
         target = state.get_unit(target_id)
     elif target_kind == "building":
         target = state.get_building(target_id)
     else:
         target = None
-        
+
     if target is None:
         turn_order.commit_fire(unit)
 
@@ -223,8 +226,12 @@ def apply_fire(
         }
 
     fire_result = combat.fire_weapon(
-        state, attacker=unit, weapon=weapon, target=target,
+        state,
+        attacker=unit,
+        weapon=weapon,
+        target=target,
     )
+
     turn_order.commit_fire(unit)
 
     return {
@@ -232,12 +239,13 @@ def apply_fire(
         "target_id": fire_result.target_id,
         "target_kind": fire_result.target_kind,
         "weapon_name": fire_result.weapon_name,
+        "target_xy": [target_x, target_y],
+        "result": "hit",
         "raw_damage": fire_result.raw_damage,
         "final_damage": fire_result.final_damage,
         "target_destroyed": fire_result.target_destroyed,
         "perks_applied": fire_result.perks_applied,
     }
-
 
 def validate_recruit(
     state: "GameState",
