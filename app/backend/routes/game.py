@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash
+from flask import Blueprint, render_template, session, redirect, url_for, flash, request
 
 bp = Blueprint('game', __name__)
 
