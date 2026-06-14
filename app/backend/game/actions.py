@@ -354,8 +354,6 @@ def apply_end_turn(
 def resolve_target_on_tile(
     state: "GameState",
     tile,
-    *,
-    attacker_slot: int,
 ):
     if tile.unit_id is not None:
         unit = state.get_unit(tile.unit_id)
