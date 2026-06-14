@@ -452,7 +452,10 @@ class GameNamespace(Namespace):
                     broadcast_to_match(match_id, "turn_changed", ev.payload)
 
                 elif ev.type == EventType.MATCH_ENDED:
-                    broadcast_to_match(match_id, "game_ended", ev.payload)
+                    payload = dict(ev.payload)
+                    payload["match_id"] = match_id
+
+                    broadcast_to_match(match_id, "game_ended", payload)
 
         except Exception as e:
             emit("error", {"message": str(e)})
@@ -506,7 +509,11 @@ class GameNamespace(Namespace):
                     broadcast_to_match(match_id, "turn_changed", ev.payload)
 
                 elif ev.type == EventType.MATCH_ENDED:
-                    broadcast_to_match(match_id, "game_ended", ev.payload)
+                    payload = dict(ev.payload)
+                    payload["match_id"] = match_id
+
+                    broadcast_to_match(match_id, "game_ended", payload)
+
 
         except Exception as e:
             emit("error", {"message": str(e)})
