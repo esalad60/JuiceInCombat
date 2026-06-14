@@ -373,12 +373,16 @@ function computeFireTargets(gs, unit, weapon) {
     }
 
     const range = weapon.range ?? 1;
+    const tiles = gs.game_map.tiles || [];
 
-    for (const tile of gs.game_map.tiles || []) {
-        const dist = Math.abs(tile.x - unit.x) + Math.abs(tile.y - unit.y);
+    for (const tile of tiles) {
+        const x = tile.x;
+        const y = tile.y;
+
+        const dist = Math.abs(x - unit.x) + Math.abs(y - unit.y);
 
         if (dist <= range) {
-            targets.add(`${tile.x},${tile.y}`);
+            targets.add(`${x},${y}`);
         }
     }
 
