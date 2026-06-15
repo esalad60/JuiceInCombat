@@ -100,9 +100,6 @@ def emit_fogged_state_to_players(match_id: int, engine: MatchEngine) -> None:
 
 
 def emit_game_started_to_players(match_id: int, engine: MatchEngine) -> None:
-    """
-    Sends the game_started event to each player with their own fog-filtered state.
-    """
     state = engine.get_state()
     fog.update_all_fog(state)
 
@@ -112,12 +109,13 @@ def emit_game_started_to_players(match_id: int, engine: MatchEngine) -> None:
         emit(
             "game_started",
             {
+                "match_id": match_id,
+                "player_slot": slot,
                 "game_state": fog.state_to_player_view(state, slot),
                 "unit_catalog": UNIT_CATALOG,
             },
             to=player_room(match_id, slot),
         )
-
 
 def get_or_create_engine(match_id: int) -> Optional[MatchEngine]:
     if match_id in active_engines:

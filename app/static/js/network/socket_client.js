@@ -68,21 +68,16 @@ export function connectSocket(matchId, handlers) {
         }
     });
 
-    socket.on('game_started', (payload) => {
-        console.log('Game started:', payload);
+		socket.on("game_started", (payload) => {
+		const matchId = payload.match_id;
 
-        if (payload.unit_catalog) {
-            setUnitCatalog(payload.unit_catalog);
-        }
+		if (!matchId) {
+			console.error("game_started missing match_id:", payload);
+			return;
+		}
 
-        if (payload.game_state) {
-            handleIncomingGameState(payload.game_state);
-        }
-
-        if (callbacks.onGameStarted) {
-            callbacks.onGameStarted(payload.game_state);
-        }
-    });
+		window.location.href = `/game/${matchId}`;
+	});
 
     socket.on('game_state', (data) => {
         handleIncomingGameState(data);
