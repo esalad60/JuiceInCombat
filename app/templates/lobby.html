@@ -54,7 +54,7 @@
 
         <div class="jic-panel">
             <div class="jic-titlebar">Open Matches</div>
-            <div class="p-5">
+            <div id="open-matches-list" class="p-5">
                 {% if waiting_matches %}
                     {% for match in waiting_matches %}
                         <div class="jic-row">
@@ -76,7 +76,7 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p style="color:var(--jic-ink-dim)">Make a match</p>
+                    <p data-empty-matches style="color:var(--jic-ink-dim)">Make a match</p>
                 {% endif %}
             </div>
         </div>

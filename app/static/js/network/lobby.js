@@ -5,6 +5,9 @@ import {
 } from './network/socket_client.js';
 
 
+let createdMatchId = null;
+
+
 function showLobbyMessage(message, isError = false) {
     const box = document.getElementById('lobby-message');
 
@@ -20,17 +23,47 @@ function showLobbyMessage(message, isError = false) {
 }
 
 
+function addCreatedMatchRow(matchId) {
+    const openMatchesPanel = document.getElementById('open-matches-list');
+
+    if (!openMatchesPanel) {
+        return;
+    }
+
+    const emptyText = openMatchesPanel.querySelector('[data-empty-matches]');
+    if (emptyText) {
+        emptyText.remove();
+    }
+
+    const row = document.createElement('div');
+    row.className = 'jic-row';
+    row.innerHTML = `
+        <div class="text-sm">
+            <span class="jic-value">#${matchId}</span> — Created match<br>
+            <span class="jic-label">1/2 players — waiting for opponent</span>
+        </div>
+        <button type="button" class="jic-btn" disabled>
+            Waiting...
+        </button>
+    `;
+
+    openMatchesPanel.prepend(row);
+}
+
+
 connectSocket(null, {
     onMatchCreated: (data) => {
+        createdMatchId = data.match_id;
+
         showLobbyMessage(
-            `Match #${data.match_id} created. Waiting for another player...`
+            `Match #${createdMatchId} created. Waiting for another player...`
         );
+
+        addCreatedMatchRow(createdMatchId);
     },
 
     onMatchReady: (payload) => {
-        console.log("MATCH READY RECEIVED IN LOBBY:", payload);
-
-        const matchId = payload.match_id;
+        const matchId = payload.match_id || createdMatchId;
 
         if (!matchId) {
             console.error("match_ready missing match_id:", payload);
@@ -63,6 +96,8 @@ if (createForm) {
             return;
         }
 
+        showLobbyMessage("Creating match...");
+
         createMatch(mapId, timeControl);
     });
 }
@@ -76,6 +111,8 @@ document.querySelectorAll('.join-match-btn').forEach((button) => {
             showLobbyMessage("Missing match ID.", true);
             return;
         }
+
+        showLobbyMessage(`Joining match #${matchId}...`);
 
         joinMatch(matchId);
     });
