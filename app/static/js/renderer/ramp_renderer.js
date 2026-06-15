@@ -24,10 +24,10 @@ export function createRampPrism(x, z, lowHeight, highHeight, dirX, dirZ, color =
     const idx = [
         // sloped top face (two tris)
         0, 1, 2,   0, 2, 3,
-        // low end wall  (vertical face at local -z, between ground and lowHeight)
-        4, 1, 0,   4, 5, 1,
-        // high end wall (vertical face at local +z, between ground and highHeight)
-        3, 2, 6,   3, 6, 7,
+        // low end wall 
+        0, 1, 4,   1, 5, 4,
+        // high end wall
+        3, 6, 2,   3, 7, 6,
         // left side wall
         0, 3, 7,   0, 7, 4,
         // right side wall

@@ -128,14 +128,12 @@ async function init() {
             enterIdle();
         },
 
-       onGameStarted: (payload) => {
-			const gs = payload.game_state || payload;
-
-			rebuildWorld(gs);
-			updateHUD(gs);
-			setEndTurnEnabled(isMyTurn());
-			showMessage("Game started!");
-		},
+        onGameStarted: (gs) => {
+            rebuildWorld(gs);
+            updateHUD(gs);
+            setEndTurnEnabled(isMyTurn());
+            showMessage("Game started!");
+        },
 
         onError: (err) => showMessage(`Error: ${err.message}`, true),
     });
@@ -719,6 +717,11 @@ function rebuildWorld(gameState) {
             for (let x = 0; x < width; x++) {
                 const tile = gameMap.tiles[y][x];
 
+                if (tile.feature === 'ramp') {
+                    tileMeshes[y][x] = { mesh: null, x, y, height: tile.height };
+                    continue;
+                }
+
                 const mesh = createTileMesh(
                     x,
                     y,
@@ -744,6 +747,7 @@ function rebuildWorld(gameState) {
                 const entry = tileMeshes[y][x];
 
                 if (!entry) continue;
+                if (tile.feature === 'ramp' || entry.mesh === null) continue;
 
                 if (entry.height !== tile.height) {
                     scene.remove(entry.mesh);
@@ -797,8 +801,8 @@ function rebuildWorld(gameState) {
                 if (feature === 'ramp') {
                     const ramps = gameMap.ramps || [];
                     const rampEntry = ramps.find(r =>
-                        (r.from[0] === x && r.from[1] === y) ||
-                        (r.to[0]   === x && r.to[1]   === y)
+                        (Array.isArray(r.from) && r.from[0] === x && r.from[1] === y) ||
+                        (Array.isArray(r.to)   && r.to[0]   === x && r.to[1]   === y)
                     );
 
                     let dirX = 0, dirZ = 1;
@@ -806,7 +810,7 @@ function rebuildWorld(gameState) {
                     let high = tile.height + 1;
 
                     if (rampEntry) {
-                        const ct = rampEntry.connects_to || rampEntry.to;
+                        const ct = rampEntry.connects_to || rampEntry.to || rampEntry.tile_b;
                         const highTile = gameMap.tiles[ct[1]]?.[ct[0]];
                         if (highTile) {
                             high = highTile.height;
@@ -842,6 +846,7 @@ function rebuildWorld(gameState) {
                     featureMeshesByKey.set(key, mesh);
                 }
             }
+
             const fmesh = featureMeshesByKey.get(key);
             if (fmesh) {
                 const targetOpacity = fog === 'explored' ? 0.45 : 1.0;

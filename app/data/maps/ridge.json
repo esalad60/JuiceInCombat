@@ -388,14 +388,14 @@
       "x": 5,
       "y": 4,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
       "x": 6,
       "y": 4,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
@@ -465,7 +465,7 @@
       "x": 4,
       "y": 5,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
@@ -486,7 +486,7 @@
       "x": 7,
       "y": 5,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
@@ -549,7 +549,7 @@
       "x": 4,
       "y": 6,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
@@ -570,7 +570,7 @@
       "x": 7,
       "y": 6,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
@@ -640,14 +640,14 @@
       "x": 5,
       "y": 7,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {
       "x": 6,
       "y": 7,
       "base": "plains",
-      "feature": "ramp",
+      "feature": null,
       "height": 1
     },
     {

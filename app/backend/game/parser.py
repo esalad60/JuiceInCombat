@@ -193,6 +193,8 @@ def register_units(
             continue
 
         for json_path in sorted(faction_dir.iterdir()):
+            if json_path.name.startswith('.'):
+                continue
             if json_path.suffix.lower() != ".json":
                 continue
 
@@ -232,6 +234,8 @@ def register_buildings(buildings_root: str, *, strict: bool = False) -> "Buildin
         return registry
 
     for json_path in sorted(root.rglob("*.json")):
+        if json_path.name.startswith('.'):
+            continue
         try:
             definition = parse_building_file(json_path)
         except Exception as e:
