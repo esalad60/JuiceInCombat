@@ -88,13 +88,6 @@ export function connectSocket(matchId, handlers) {
 		}
 	});
 	
-	socket.on("match_ready", (payload) => {
-		console.log("MATCH READY RECEIVED:", payload);
-
-		if (callbacks.onMatchReady) {
-			callbacks.onMatchReady(payload);
-		}
-	});
 
     socket.on('game_state', (data) => {
         handleIncomingGameState(data);

@@ -380,9 +380,6 @@ class GameNamespace(Namespace):
             emit_game_started_to_players(match_id, engine)
 
 
-            broadcast_to_match(match_id, "match_ready", {
-                "match_id": match_id,
-            })
             # Clear MATCH_STARTED / TURN_STARTED internal events so they do not
             # get drained during the first action later.
             engine.drain_events()

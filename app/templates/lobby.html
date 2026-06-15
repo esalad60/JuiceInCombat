@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Lobby — JuiceInCombat{% endblock %}
 
 {% block content %}
@@ -8,8 +7,6 @@
         <h1 class="jic-title text-3xl">Match Room</h1>
         <a href="/logout" class="jic-btn jic-btn-danger">Logout</a>
     </div>
-
-    <div id="lobby-message" class="jic-flash jic-flash-ok hidden"></div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
@@ -23,14 +20,12 @@
         <div class="jic-panel">
             <div class="jic-titlebar">New Match</div>
             <div class="p-5">
-                <form id="create-match-form" class="space-y-4">
+                <form method="POST" action="/lobby/create" class="space-y-4">
                     <div>
                         <label class="jic-label block mb-1.5">Map</label>
                         <select name="map_id" class="jic-input" required>
                             {% for map in available_maps %}
-                                <option value="{{ map.id }}">
-                                    {{ map.name }} ({{ map.width }}x{{ map.height }})
-                                </option>
+                                <option value="{{ map.id }}">{{ map.name }} ({{ map.width }}x{{ map.height }})</option>
                             {% else %}
                                 <option disabled>No maps available</option>
                             {% endfor %}
@@ -54,29 +49,23 @@
 
         <div class="jic-panel">
             <div class="jic-titlebar">Open Matches</div>
-            <div id="open-matches-list" class="p-5">
+            <div class="p-5">
                 {% if waiting_matches %}
                     {% for match in waiting_matches %}
                         <div class="jic-row">
                             <div class="text-sm">
                                 <span class="jic-value">#{{ match.id }}</span>
                                 — {{ match.map_name }} ({{ match.time_control }})<br>
-                                <span class="jic-label">
-                                    {{ match.player_count }}/2 players
-                                </span>
+                                <span class="jic-label">{{ match.player_count }}/2 players</span>
                             </div>
 
-                            <button
-                                type="button"
-                                class="jic-btn join-match-btn"
-                                data-match-id="{{ match.id }}"
-                            >
-                                Join
-                            </button>
+                            <form method="POST" action="/lobby/join/{{ match.id }}">
+                                <button type="submit" class="jic-btn">Join</button>
+                            </form>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p data-empty-matches style="color:var(--jic-ink-dim)">Make a match</p>
+                    <p style="color:var(--jic-ink-dim)">Make a match</p>
                 {% endif %}
             </div>
         </div>
@@ -92,8 +81,7 @@
                             <span class="jic-value">Match #{{ match.id }}</span>
                             — {{ match.map_name }} ({{ match.time_control }})<br>
                             <span class="jic-label">
-                                Status: {{ match.status }} |
-                                You are Player {{ match.my_slot + 1 }}
+                                Status: {{ match.status }} | You are Player {{ match.my_slot + 1 }}
                             </span>
                         </div>
 
@@ -106,6 +94,4 @@
         </div>
     {% endif %}
 </div>
-
-<script type="module" src="/static/js/network/lobby.js"></script>
 {% endblock %}
