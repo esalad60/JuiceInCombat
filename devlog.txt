@@ -194,3 +194,7 @@ evissW-05/10/26 03:32
 evissW-05/11/26 10:44
 - Edited .json files for units
 - Added more models
+
+ethanS- 6/14/26 22:32
+- added a win screen
+- attempted various bugfixes
