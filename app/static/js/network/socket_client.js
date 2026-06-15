@@ -52,31 +52,24 @@ export function connectSocket(matchId, handlers) {
         }
     });
 
-    socket.on('joined', (data) => {
-        console.log('Joined match:', data);
+	socket.on('joined', (data) => {
+		console.log('Joined match:', data);
 
-        currentMatchId = data.match_id;
-        setMatchId(data.match_id);
-        setMySlot(data.player_slot);
+		currentMatchId = data.match_id;
+		setMatchId(data.match_id);
+		setMySlot(data.player_slot);
 
-        if (data.unit_catalog) {
-            setUnitCatalog(data.unit_catalog);
-        }
+		if (data.unit_catalog) {
+			setUnitCatalog(data.unit_catalog);
+		}
 
-        if (data.game_state) {
-            handleIncomingGameState(data.game_state);
-        }
-    });
+		if (data.game_state) {
+			handleIncomingGameState(data.game_state);
+		}
+	});
 
 	socket.on("game_started", (payload) => {
 		console.log("GAME STARTED RECEIVED:", payload);
-
-		const matchId = payload.match_id || currentMatchId;
-
-		if (!matchId) {
-			console.error("game_started missing match_id:", payload);
-			return;
-		}
 
 		if (payload.player_slot !== undefined && payload.player_slot !== null) {
 			setMySlot(payload.player_slot);
@@ -91,10 +84,16 @@ export function connectSocket(matchId, handlers) {
 		}
 
 		if (callbacks.onGameStarted) {
-			callbacks.onGameStarted(payload.game_state || payload);
+			callbacks.onGameStarted(payload);
 		}
+	});
+	
+	socket.on("match_ready", (payload) => {
+		console.log("MATCH READY RECEIVED:", payload);
 
-		window.location.href = `/game/${matchId}`;
+		if (callbacks.onMatchReady) {
+			callbacks.onMatchReady(payload);
+		}
 	});
 
     socket.on('game_state', (data) => {

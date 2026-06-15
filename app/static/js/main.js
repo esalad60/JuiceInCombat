@@ -127,12 +127,14 @@ async function init() {
             enterIdle();
         },
 
-        onGameStarted: (gs) => {
-            rebuildWorld(gs);
-            updateHUD(gs);
-            setEndTurnEnabled(isMyTurn());
-            showMessage("Game started!");
-        },
+       onGameStarted: (payload) => {
+			const gs = payload.game_state || payload;
+
+			rebuildWorld(gs);
+			updateHUD(gs);
+			setEndTurnEnabled(isMyTurn());
+			showMessage("Game started!");
+		},
 
         onError: (err) => showMessage(`Error: ${err.message}`, true),
     });
