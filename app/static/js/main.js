@@ -11,7 +11,8 @@ import {
     highlightTileAttack
 } from './renderer/tile_renderer.js';
 
-import { createRampMesh } from './renderer/ramp_renderer.js';
+import { createRampPrism } from './renderer/ramp_renderer.js';
+import { createFeatureMesh, featureHasModel } from './renderer/feature_renderer.js';
 
 import {
     createUnitMesh,
@@ -64,7 +65,7 @@ import {
 
 let scene, camera, renderer;
 let tileMeshes = [];
-let rampMeshes = [];
+let featureMeshesByKey = new Map();
 let unitMeshes = new Map();
 let buildingMeshes = new Map();
 
@@ -351,7 +352,9 @@ function computeReachable(unit) {
 
             if (occupied.has(key)) continue;
 
-            const nc = cc + 1;
+            const FEATURE_COST = { forest: 2, mountain: 3 };
+            const stepCost = FEATURE_COST[tile.feature] ?? 1;
+            const nc = cc + stepCost;
 
             if (nc > budget) continue;
 
@@ -663,8 +666,6 @@ function onClick(event) {
         const { x, z } = clicked.userData;
         const selUnit = getSelectedUnit();
 
-        // No visibility check — if the tile is reachable (highlighted), you may
-        // move there even if it's in the fog. The server validates the path.
         if (selUnit !== null && highlightSet.has(`${x},${z}`)) {
             sendAction({
                 type: 'move',
@@ -677,7 +678,7 @@ function onClick(event) {
         }
 
         if (selUnit !== null) {
-            showMessage("Out of range", true);
+            enterIdle();
             return;
         }
     }
@@ -770,27 +771,94 @@ function rebuildWorld(gameState) {
         }
     }
 
-    if (rampMeshes.length === 0 && Array.isArray(gameMap.ramps)) {
-        for (const ramp of gameMap.ramps) {
-            const [ax, ay] = ramp.tile_a;
-            const [bx, by] = ramp.tile_b;
-            const ta = gameMap.tiles[ay]?.[ax];
-            const tb = gameMap.tiles[by]?.[bx];
-            if (!ta || !tb) continue;
+    const activeFeatureKeys = new Set();
 
-            const fromTile = { x: ax, y: ay, height: ta.height, base: ta.base };
-            const toTile   = { x: bx, y: by, height: tb.height, base: tb.base };
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const tile = gameMap.tiles[y][x];
+            const feature = tile.feature;
+            const fog    = tile.fog || 'unexplored';
+            const key    = `${x},${y}`;
 
-            const mesh = createRampMesh(
-                fromTile,
-                toTile,
-                (tb.height >= ta.height ? tb.base : ta.base),
-                ramp.type
-            );
-            if (mesh) {
-                scene.add(mesh);
-                rampMeshes.push(mesh);
+            if (!feature || fog === 'unexplored') continue;
+
+            activeFeatureKeys.add(key);
+
+            const existing = featureMeshesByKey.get(key);
+
+            if (existing && existing.userData?.feature !== feature) {
+                scene.remove(existing);
+                featureMeshesByKey.delete(key);
             }
+
+            if (!featureMeshesByKey.has(key)) {
+                let mesh = null;
+
+                if (feature === 'ramp') {
+                    const ramps = gameMap.ramps || [];
+                    const rampEntry = ramps.find(r =>
+                        (r.from[0] === x && r.from[1] === y) ||
+                        (r.to[0]   === x && r.to[1]   === y)
+                    );
+
+                    let dirX = 0, dirZ = 1;
+                    let low  = tile.height;
+                    let high = tile.height + 1;
+
+                    if (rampEntry) {
+                        const ct = rampEntry.connects_to || rampEntry.to;
+                        const highTile = gameMap.tiles[ct[1]]?.[ct[0]];
+                        if (highTile) {
+                            high = highTile.height;
+                            dirX = ct[0] - x;
+                            dirZ = ct[1] - y;
+                        }
+                    } else {
+                        let best = null;
+                        for (const [dx, dz] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+                            const nx = x + dx, nz = y + dz;
+                            const nt = gameMap.tiles[nz]?.[nx];
+                            if (!nt) continue;
+                            if (best === null || nt.height > best.h) {
+                                best = { h: nt.height, dx, dz };
+                            }
+                        }
+                        if (best) {
+                            high = Math.max(tile.height + 1, best.h);
+                            dirX = best.dx;
+                            dirZ = best.dz;
+                        }
+                    }
+
+                    mesh = createRampPrism(x, y, low, high, dirX, dirZ);
+                    if (mesh) mesh.userData.feature = feature;
+                } else if (featureHasModel(feature)) {
+                    mesh = createFeatureMesh(feature, x, y, tile.height);
+                    if (mesh) mesh.userData.feature = feature;
+                }
+
+                if (mesh) {
+                    scene.add(mesh);
+                    featureMeshesByKey.set(key, mesh);
+                }
+            }
+            const fmesh = featureMeshesByKey.get(key);
+            if (fmesh) {
+                const targetOpacity = fog === 'explored' ? 0.45 : 1.0;
+                fmesh.traverse((child) => {
+                    if (child.isMesh && child.material) {
+                        child.material.transparent = targetOpacity < 1.0;
+                        child.material.opacity     = targetOpacity;
+                    }
+                });
+            }
+        }
+    }
+
+    for (const [key, mesh] of featureMeshesByKey.entries()) {
+        if (!activeFeatureKeys.has(key)) {
+            scene.remove(mesh);
+            featureMeshesByKey.delete(key);
         }
     }
 

@@ -13,6 +13,7 @@ class TraitDefinition:
     description: str = ""
     turn_tick: Optional[Callable[["GameState", "Unit", "UnitTrait"], Optional[int]]] = None
     ignores_climb: bool = False
+    multi_move: bool = False   # can move multiple times per turn (until budget runs out)
     movement_modifier: Optional[Callable[["UnitTrait"], float]] = None ## For future slow perk etc
 
 
@@ -20,29 +21,44 @@ def _regen_tick(state: "GameState", unit: "Unit", trait: "UnitTrait") -> Optiona
     return int(trait.params.get("amount", REGEN_AMOUNT))
 
 TRAIT_REGISTRY: dict[str, TraitDefinition] = {
-    "Regen": TraitDefinition(
-        type="Regen",
+    "regen": TraitDefinition(
+        type="regen",
         description="Heals HP at the start of each turn.",
         turn_tick=_regen_tick,
     ),
-    "Climb": TraitDefinition(
-        type="Climb",
+    "climb": TraitDefinition(
+        type="climb",
         description="Ignores cliff restrictions and climb movement cost.",
         ignores_climb=True,
     ),
-    "Radio": TraitDefinition(
-        type="Radio",
-        description="Baboom",
-        ## Not implemented yet
+    "radio": TraitDefinition(
+        type="radio",
+        description="Comms support (not yet implemented).",
+    ),
+    "salvage": TraitDefinition(
+        type="salvage",
+        description="Recovers resources (handled by economy).",
+    ),
+    "multimove": TraitDefinition(
+        type="multimove",
+        description="May move multiple times per turn until movement budget is spent.",
+        multi_move=True,
     ),
 }
 
 def get_trait(trait_type: str) -> Optional[TraitDefinition]:
-    return TRAIT_REGISTRY.get(trait_type)
+    return TRAIT_REGISTRY.get(str(trait_type).lower())
+
+def unit_has_multimove(unit: "Unit") -> bool:
+    for t in getattr(unit, "traits", []) or []:
+        d = TRAIT_REGISTRY.get(str(t.type).lower())
+        if d and d.multi_move:
+            return True
+    return False
 
 def unit_ignores_climb(unit: "Unit") -> bool:
     for t in getattr(unit, "traits", []) or []:
-        d = TRAIT_REGISTRY.get(t.type)
+        d = TRAIT_REGISTRY.get(str(t.type).lower())
         if d and d.ignores_climb:
             return True
     return False
@@ -51,7 +67,7 @@ def unit_ignores_climb(unit: "Unit") -> bool:
 def movement_multiplier_for_unit(unit: "Unit") -> float:
     mult = 1.0
     for t in getattr(unit, "traits", []) or []:
-        d = TRAIT_REGISTRY.get(t.type)
+        d = TRAIT_REGISTRY.get(str(t.type).lower())
         if d and d.movement_modifier:
             mult *= d.movement_modifier(t)
     return mult
@@ -60,7 +76,7 @@ def movement_multiplier_for_unit(unit: "Unit") -> float:
 def tick_traits_for_unit(state: "GameState", unit: "Unit") -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
     for t in getattr(unit, "traits", []) or []:
-        d = TRAIT_REGISTRY.get(t.type)
+        d = TRAIT_REGISTRY.get(str(t.type).lower())
         if not d or not d.turn_tick:
             continue
         delta = d.turn_tick(state, unit, t)

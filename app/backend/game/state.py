@@ -36,6 +36,7 @@ class Ramp:
     tile_a: tuple[int, int]
     tile_b: tuple[int, int]
     type: str
+    connects_to: Optional[tuple[int, int]] = None
 
 @dataclass
 class GameMap:
@@ -71,6 +72,18 @@ class GameMap:
         for r in self.ramps:
             if (r.tile_a == a and r.tile_b == b) or (r.tile_a == b and r.tile_b == a):
                 return r
+
+        ax, ay = a
+        bx, by = b
+        ta = self.tiles[ay][ax] if self.in_bounds(ax, ay) else None
+        tb = self.tiles[by][bx] if self.in_bounds(bx, by) else None
+        if (ta is not None and ta.feature == "ramp") or \
+           (tb is not None and tb.feature == "ramp"):
+            if ta is not None and tb is not None and ta.height < tb.height:
+                high = b
+            else:
+                high = a
+            return Ramp(tile_a=a, tile_b=b, type="standard", connects_to=high)
         return None
 
     def to_saved_map_dict(self) -> dict:
@@ -87,7 +100,12 @@ class GameMap:
         ]
 
         ramps_data = [
-            {"from": list(r.tile_a), "to": list(r.tile_b), "type": r.type}
+            {
+                "from": list(r.tile_a),
+                "to": list(r.tile_b),
+                "type": r.type,
+                "connects_to": list(r.connects_to) if r.connects_to is not None else list(r.tile_b),
+            }
             for r in self.ramps
         ]
 
@@ -131,6 +149,7 @@ class GameMap:
                 tile_a=tuple(rd["from"]),
                 tile_b=tuple(rd["to"]),
                 type=rd["type"],
+                connects_to=tuple(rd["connects_to"]) if "connects_to" in rd else tuple(rd["to"]),
             )
             for rd in d.get("ramps", [])
         ]

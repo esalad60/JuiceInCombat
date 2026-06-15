@@ -4,6 +4,7 @@ from enum import Enum
 
 from .state import GameState, Unit
 from .unit import UnitDefinition
+from . import traits
 
 class Reason(str, Enum):
     OK                  = "ok"
@@ -62,8 +63,11 @@ def can_fire(
 
 
 def commit_move(unit: Unit, *, distance: int = 1) -> None:
-    unit.movement_remaining = max(0, unit.movement_remaining - distance)
     unit.has_moved = True
+    if traits.unit_has_multimove(unit):
+        unit.movement_remaining = max(0, unit.movement_remaining - distance)
+    else:
+        unit.movement_remaining = 0
 
 
 def commit_fire(unit: Unit) -> None:

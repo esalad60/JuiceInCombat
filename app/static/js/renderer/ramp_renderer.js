@@ -2,80 +2,66 @@ import * as THREE from 'three';
 
 const TILE_SIZE = 1.0;
 
-const COLORS = {
-    plains: 0x6b8e23,
-    grassland: 0x5a9e4e,
-    forest: 0x2c5e2a,
-    hills:  0xaa8c5e,
-    mountains: 0xaa9988,
-    desert: 0xe8cf9a,
-    tundra: 0xc9d9e8,
-    dirt:   0x8a6d4a,
-    rocky:  0x9a9286,
-    urban:  0x8c8c8c,
-    ocean:  0x4a7b9d
-};
+export function createRampPrism(x, z, lowHeight, highHeight, dirX, dirZ, color = 0x8a7d5a) {
+    const s    = TILE_SIZE - 0.05;
+    const half = s / 2;
 
-function terrainColor(t) {
-    return COLORS[t] || COLORS.plains;
-}
+    const yLow  = lowHeight;
+    const yHigh = highHeight;
+    const yBase = 0; 
 
-export function createRampMesh(fromTile, toTile, terrainType, rampType) {
-    if (!fromTile || !toTile) return null;
+    const v = [
+        [-half, yLow,  -half],  // 0  top-low-left
+        [ half, yLow,  -half],  // 1  top-low-right
+        [ half, yHigh,  half],  // 2  top-high-right
+        [-half, yHigh,  half],  // 3  top-high-left
+        [-half, yBase, -half],  // 4  bot-low-left
+        [ half, yBase, -half],  // 5  bot-low-right
+        [ half, yBase,  half],  // 6  bot-high-right
+        [-half, yBase,  half],  // 7  bot-high-left
+    ];
 
-    const ax = fromTile.x, az = fromTile.y, ah = fromTile.height ?? 1;
-    const bx = toTile.x,   bz = toTile.y,   bh = toTile.height ?? 1;
+    const idx = [
+        // sloped top face (two tris)
+        0, 1, 2,   0, 2, 3,
+        // low end wall  (vertical face at local -z, between ground and lowHeight)
+        4, 1, 0,   4, 5, 1,
+        // high end wall (vertical face at local +z, between ground and highHeight)
+        3, 2, 6,   3, 6, 7,
+        // left side wall
+        0, 3, 7,   0, 7, 4,
+        // right side wall
+        1, 5, 6,   1, 6, 2,
+        // bottom face
+        4, 7, 6,   4, 6, 5,
+    ];
 
-    const dx = bx - ax;
-    const dz = bz - az;
-    if (Math.abs(dx) + Math.abs(dz) !== 1) return null;
+    const positions = [];
+    for (const i of idx) positions.push(...v[i]);
 
-    const color = terrainColor(
-        terrainType || (bh >= ah ? toTile.base : fromTile.base)
-    );
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.computeVertexNormals();
 
-    const lowH  = Math.min(ah, bh);
-    const highH = Math.max(ah, bh);
-    const rise  = highH - lowH;
-    const run   = 1.0; 
-
-    const slabLength = Math.sqrt(run * run + rise * rise);
-    const thickness  = 0.08;
-    const width      = TILE_SIZE - 0.05;
-
-    const geometry = new THREE.BoxGeometry(width, thickness, slabLength);
     const material = new THREE.MeshStandardMaterial({
         color,
-        roughness: 0.9,
+        roughness: 0.95,
         metalness: 0.0,
+        flatShading: true,
     });
-    const ramp = new THREE.Mesh(geometry, material);
-    ramp.castShadow = true;
-    ramp.receiveShadow = true;
 
-    const midX = (ax + bx) / 2;
-    const midZ = (az + bz) / 2;
-    const midY = (ah + bh) / 2; 
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow    = true;
+    mesh.receiveShadow = true;
 
-    ramp.position.set(midX, midY, midZ);
+    let yaw = 0;
+    if      (dirX ===  1 && dirZ ===  0) yaw = -Math.PI / 2;
+    else if (dirX === -1 && dirZ ===  0) yaw =  Math.PI / 2;
+    else if (dirX ===  0 && dirZ ===  1) yaw =  0;
+    else if (dirX ===  0 && dirZ === -1) yaw =  Math.PI;
 
-    const slopeAngle = Math.atan2(rise, run);
-
-    if (dx !== 0) {
-        ramp.rotation.y = Math.PI / 2;
-        const dir = (bh > ah) ? Math.sign(dx) : -Math.sign(dx);
-        ramp.rotation.z = -dir * slopeAngle;
-    } else {
-        const dir = (bh > ah) ? Math.sign(dz) : -Math.sign(dz);
-        ramp.rotation.x = dir * slopeAngle;
-    }
-
-    ramp.userData = {
-        type: 'ramp',
-        rampType: rampType || null,
-        a: [ax, az],
-        b: [bx, bz],
-    };
-
-    return ramp;
+    mesh.rotation.y = yaw;
+    mesh.position.set(x, 0, z);
+    mesh.userData = { type: 'ramp', x, z };
+    return mesh;
 }

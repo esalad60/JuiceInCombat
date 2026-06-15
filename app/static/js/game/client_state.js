@@ -1,10 +1,8 @@
-// src/frontend/static/js/game/client_state.js
-
 let matchId = null;
 let gameState = null;
-let mySlot = null;          // 0 or 1, set by server on join
-let listeners = [];         // functions to call when state changes
-let unitCatalog = {};       // faction -> [ {unit_type, name, cost, ...} ]
+let mySlot = null; 
+let listeners = [];    
+let unitCatalog = {};   
 
 export function setUnitCatalog(catalog) {
     if (catalog) unitCatalog = catalog;
@@ -129,6 +127,12 @@ export function getResources(slot) {
 export function getMyResources() {
     if (mySlot === null) return {};
     return getResources(mySlot);
+}
+
+export function getMyIncome() {
+    if (mySlot === null || !gameState) return {};
+    const p = (gameState.players || []).find(pl => pl.slot === mySlot);
+    return (p && p.income_per_turn) ? p.income_per_turn : {};
 }
 
 export function subscribe(listener) {

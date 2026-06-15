@@ -14,9 +14,9 @@
       "damage": 125,
       "ap": 13,
       "range": 1,
-      "perks":[
+      "perks": [
         {
-          "type": "explosive",
+          "type": "explode",
           "duration": 0
         }
       ]

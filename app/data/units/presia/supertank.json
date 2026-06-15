@@ -26,8 +26,6 @@
       "cooldown": 1
     }
   ],
-  "traits": [
-  ],
+  "traits": [],
   "model": "/static/models/presia/superTank/superTank.gltf"
 }
-

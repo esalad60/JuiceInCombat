@@ -1,26 +1,3 @@
-"""
-perks.py — Weapon-perk registry and resolution.
-
-A "perk" is a status effect a weapon applies to a target on hit (e.g. Mark,
-incendiary). Previously the behavior of each perk was hardcoded inside
-combat.py (Mark -> x1.25, incendiary -> nothing). This module centralizes
-every perk's behavior in one place so combat.py and the engine just look perks
-up instead of special-casing them.
-
-How it plugs into the existing system
---------------------------------------
-* A weapon carries `WeaponPerkRef`s (type, duration, params) parsed from JSON.
-* On a hit, combat.apply_weapon_perk() turns each into an `ActiveStatusEffect`
-  attached to the target unit (state.apply_status_effect).
-* Each turn, state.tick_status_effects() decrements durations and drops expired
-  ones. We add a per-tick damage hook here for effects like incendiary.
-* When something attacks a unit, combat.status_damage_multiplier() asks this
-  registry how much the unit's active effects scale incoming damage (Mark).
-
-Each perk is described by a PerkDefinition with optional hooks. Adding a new
-perk = add one PerkDefinition to PERK_REGISTRY. No changes to combat/engine.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -55,9 +32,9 @@ PERK_REGISTRY: dict[str, PerkDefinition] = {
         description="Burns the target",
         turn_tick=incendiary_tick,
     ),
-    "explosive": PerkDefinition(
-        type="explosive",
-        description="dies after attack"
+    "explode": PerkDefinition(
+        type="explode",
+        description="Detonates the user's tile and the target tile"
     )
 }
 

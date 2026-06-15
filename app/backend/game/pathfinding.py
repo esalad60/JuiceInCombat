@@ -8,12 +8,12 @@ import heapq
 from . import elevation
 from .state import GameMap, Tile, Unit
 
-# Add different terrain costs later
 DEFAULT_TERRAIN_COST = 1.0
 
 
 def base_terrain_cost(tile: "Tile") -> float:
-    return DEFAULT_TERRAIN_COST
+    from . import terrain as terrain_mod
+    return terrain_mod.move_cost(tile.feature)
 
 # 4 Directions (maybe do 8 later on)
 # rn looks like diamond vs square

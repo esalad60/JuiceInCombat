@@ -1,1 +1,8 @@
-placeholder
+{
+  "name": "Doon HQ",
+  "type": "doon_hq",
+  "health": 200,
+  "armor": 3,
+  "income": 50,
+  "model": "/static/models/buildings/doonTent/doonTent.gltf"
+}

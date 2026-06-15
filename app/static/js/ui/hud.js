@@ -1,14 +1,15 @@
-import { getUnit, getMySlot, getMyResources, getGameState, isMyTurn } from '../game/client_state.js';
+import { getUnit, getMySlot, getMyResources, getMyIncome, getGameState, isMyTurn } from '../game/client_state.js';
 import { getSelectedUnit } from '../game/selection.js';
 
 let cb = {};
-let turnIndicatorEl, cashEl, timerEl, endTurnBtn, panelEl, statsEl, actionsEl, panelTitleEl;
+let turnIndicatorEl, cashEl, incomeEl, timerEl, endTurnBtn, panelEl, statsEl, actionsEl, panelTitleEl;
 let weaponPanelEl, weaponTitleEl, weaponStatsEl;
 
 export function initHUD(callbacks) {
     cb = callbacks || {};
     turnIndicatorEl = document.getElementById('turn-indicator');
     cashEl          = document.getElementById('cash');
+    incomeEl        = document.getElementById('income');
     timerEl         = document.getElementById('turn-timer');
     endTurnBtn      = document.getElementById('end-turn-btn');
     panelEl         = document.getElementById('selected-unit-panel');
@@ -35,6 +36,10 @@ export function updateHUD(gameState) {
             : `Enemy Turn // P${currentSlot + 1}`;
     const res = getMyResources();
     if (cashEl) cashEl.textContent = `$${res.cash || 0}`;
+    if (incomeEl) {
+        const inc = getMyIncome().cash || 0;
+        incomeEl.textContent = `+${inc}/turn`;
+    }
     if (endTurnBtn) endTurnBtn.disabled = !isMyTurn();
 }
 
@@ -225,7 +230,6 @@ export function showBuildingPanel(building, owned) {
     }
 }
 
-// ---- Recruit list ----
 export function showRecruitList(units) {
     if (!panelEl) return;
     showPanel();

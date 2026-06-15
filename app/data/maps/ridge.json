@@ -1,0 +1,1147 @@
+{
+  "name": "Ridge",
+  "width": 12,
+  "height": 12,
+  "spawns": [
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 10,
+      "y": 10
+    }
+  ],
+  "tiles": [
+    {
+      "x": 0,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 0,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 3,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 4,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "base": "plains",
+      "feature": "mountain",
+      "height": 2
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "base": "plains",
+      "feature": "mountain",
+      "height": 2
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "base": "plains",
+      "feature": "mountain",
+      "height": 2
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "base": "plains",
+      "feature": "mountain",
+      "height": 2
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "base": "plains",
+      "feature": "ramp",
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 8,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 8,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "base": "plains",
+      "feature": "forest",
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 4,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 5,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 9,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 10,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    },
+    {
+      "x": 11,
+      "y": 11,
+      "base": "plains",
+      "feature": null,
+      "height": 1
+    }
+  ],
+  "ramps": [
+    {
+      "from": [
+        4,
+        5
+      ],
+      "to": [
+        5,
+        5
+      ],
+      "type": "standard",
+      "connects_to": [
+        5,
+        5
+      ]
+    },
+    {
+      "from": [
+        5,
+        4
+      ],
+      "to": [
+        5,
+        5
+      ],
+      "type": "standard",
+      "connects_to": [
+        5,
+        5
+      ]
+    },
+    {
+      "from": [
+        7,
+        5
+      ],
+      "to": [
+        6,
+        5
+      ],
+      "type": "standard",
+      "connects_to": [
+        6,
+        5
+      ]
+    },
+    {
+      "from": [
+        6,
+        4
+      ],
+      "to": [
+        6,
+        5
+      ],
+      "type": "standard",
+      "connects_to": [
+        6,
+        5
+      ]
+    },
+    {
+      "from": [
+        4,
+        6
+      ],
+      "to": [
+        5,
+        6
+      ],
+      "type": "standard",
+      "connects_to": [
+        5,
+        6
+      ]
+    },
+    {
+      "from": [
+        5,
+        7
+      ],
+      "to": [
+        5,
+        6
+      ],
+      "type": "standard",
+      "connects_to": [
+        5,
+        6
+      ]
+    },
+    {
+      "from": [
+        7,
+        6
+      ],
+      "to": [
+        6,
+        6
+      ],
+      "type": "standard",
+      "connects_to": [
+        6,
+        6
+      ]
+    },
+    {
+      "from": [
+        6,
+        7
+      ],
+      "to": [
+        6,
+        6
+      ],
+      "type": "standard",
+      "connects_to": [
+        6,
+        6
+      ]
+    }
+  ]
+}

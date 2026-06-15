@@ -24,13 +24,15 @@ from .state import (
 from .unit import (
     UnitDefinition,
     UnitRegistry,
+    BuildingDefinition,
+    BuildingRegistry,
     UnitCategory,
     WeaponDef,
     WeaponPerkRef,
     TraitRef,
 )
 
-from .parser import register_units, parse_unit_file, parse_unit_dict
+from .parser import register_units, parse_unit_file, parse_unit_dict, register_buildings
 from .actions import validate, apply as apply_action, set_unit_registry
 
 from . import combat
@@ -50,7 +52,8 @@ __all__ = [
     "unit_to_dict", "unit_from_dict", "player_to_dict", "player_from_dict",
     "UnitDefinition", "UnitRegistry", "UnitCategory",
     "WeaponDef", "WeaponPerkRef", "TraitRef",
-    "register_units", "parse_unit_file", "parse_unit_dict",
+    "register_units", "parse_unit_file", "parse_unit_dict", "register_buildings",
+    "BuildingDefinition", "BuildingRegistry",
     "validate", "apply_action", "set_unit_registry",
     "combat", "economy", "pathfinding", "elevation", "turn_order", "timer", "perks", "traits",
 ]

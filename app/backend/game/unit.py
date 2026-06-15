@@ -98,3 +98,33 @@ class UnitRegistry:
 
     def __len__(self) -> int:
         return len(self.defs)
+
+
+@dataclass(frozen=True)
+class BuildingDefinition:
+    type: str     
+    name: str = ""
+    health: int = 100
+    armor: int = 0
+    income: int = 0
+    model: Optional[str] = None
+
+
+class BuildingRegistry:
+    def __init__(self) -> None:
+        self.defs: dict[str, BuildingDefinition] = {}
+
+    def register(self, definition: BuildingDefinition) -> None:
+        self.defs[definition.type] = definition
+
+    def get(self, building_type: str) -> Optional[BuildingDefinition]:
+        return self.defs.get(building_type)
+
+    def all(self) -> list[BuildingDefinition]:
+        return list(self.defs.values())
+
+    def __contains__(self, building_type: str) -> bool:
+        return building_type in self.defs
+
+    def __len__(self) -> int:
+        return len(self.defs)

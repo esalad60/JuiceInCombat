@@ -1,0 +1,8 @@
+{
+  "name": "Grein HQ",
+  "type": "grein_hq",
+  "health": 200,
+  "armor": 3,
+  "income": 50,
+  "model": "/static/models/buildings/greinTent/greinTent.gltf"
+}

@@ -5,6 +5,7 @@ from typing import Any
 from dataclasses import asdict
 
 from .state import GameState, GameMap, Tile, Unit, Building, unit_to_dict
+from . import economy
 
 
 OFFSETS_4 = ((0, -1), (1, 0), (0, 1), (-1, 0))
@@ -249,6 +250,10 @@ def state_to_player_view(
                 "faction": p.faction,
                 "color": p.color,
                 "resources": dict(p.resources) if p.slot == viewer_slot else {},
+                "income_per_turn": (
+                    economy.preview_income(state, p.slot)
+                    if p.slot == viewer_slot else {}
+                ),
             }
             for p in state.players
         ],

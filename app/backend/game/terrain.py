@@ -4,39 +4,45 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class TerrainDef:
+class FeatureDef:
     name: str
     defense_mult: float = 1.0 
-    move_cost: float = 1.0 
+    move_cost: float = 1.0    
     impassable: bool = False
     description: str = ""
 
 
-DEFAULT_TERRAIN = TerrainDef(name="plains", defense_mult=1.0, move_cost=1.0)
+OPEN_GROUND = FeatureDef(name="none", defense_mult=1.0, move_cost=1.0)
 
-TERRAIN_REGISTRY: dict[str, TerrainDef] = {
-    "plains":    TerrainDef("plains",    defense_mult=1.00, move_cost=1.0,
-                            description="Open ground, no cover."),
-    "forest":    TerrainDef("forest",    defense_mult=0.80, move_cost=2.0,
-                            description="20% less damage taken, slow"),
-    "mountains": TerrainDef("mountains", defense_mult=0.75, move_cost=3.0,
-                            description="Heavy cover, very slow."),
+FEATURE_REGISTRY: dict[str, FeatureDef] = {
+    "forest":   FeatureDef("forest",   defense_mult=0.80, move_cost=2.0,
+                           description="Tree cover: -20% damage taken, slow."),
+    "mountain": FeatureDef("mountain", defense_mult=0.75, move_cost=3.0,
+                           description="Heavy cover, very slow to cross."),
+    "ramp":     FeatureDef("ramp",     defense_mult=1.0,  move_cost=1.0,
+                           description="Slope connecting two height levels."),
+    "building": FeatureDef("building", defense_mult=1.0,  move_cost=1.0,
+                           description="A structure occupies this tile."),
 }
 
 
-def get_terrain(base: str | None) -> TerrainDef:
-    if not base:
-        return DEFAULT_TERRAIN
-    return TERRAIN_REGISTRY.get(base, DEFAULT_TERRAIN)
+def get_feature(feature: str | None) -> FeatureDef:
+    if not feature:
+        return OPEN_GROUND
+    return FEATURE_REGISTRY.get(feature, OPEN_GROUND)
 
 
-def defense_multiplier(base: str | None) -> float:
-    return get_terrain(base).defense_mult
+def defense_multiplier(feature: str | None) -> float:
+    return get_feature(feature).defense_mult
 
 
-def move_cost(base: str | None) -> float:
-    return get_terrain(base).move_cost
+def move_cost(feature: str | None) -> float:
+    return get_feature(feature).move_cost
 
 
-def is_impassable(base: str | None) -> bool:
-    return get_terrain(base).impassable
+def is_impassable(feature: str | None) -> bool:
+    return get_feature(feature).impassable
+
+
+def is_ramp(feature: str | None) -> bool:
+    return feature == "ramp"

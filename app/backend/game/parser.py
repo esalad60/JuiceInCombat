@@ -12,6 +12,8 @@ from .unit import (
     UnitRegistry,
     WeaponDef,
     WeaponPerkRef,
+    BuildingRegistry,
+    BuildingDefinition
 )
 
 
@@ -117,7 +119,7 @@ def parse_weapon_perk(raw: dict[str, Any]) -> WeaponPerkRef:
         return raw[key]
 
     perk = fetch("type")
-    duration = int(fetch("duration"))
+    duration = int(raw.get("duration", 1))
 
     params = {
         k: v
@@ -206,5 +208,38 @@ def register_units(
                 continue
 
             registry.register(definition)
+
+    return registry
+
+def parse_building_file(json_path: Path) -> "BuildingDefinition":
+    from .unit import BuildingDefinition
+    raw = json.loads(json_path.read_text())
+    return BuildingDefinition(
+        type=str(raw["type"]),
+        name=str(raw.get("name", "")),
+        health=int(raw.get("health", 100)),
+        armor=int(raw.get("armor", 0)),
+        income=int(raw.get("income", 0)),
+        model=raw.get("model"),
+    )
+
+
+def register_buildings(buildings_root: str, *, strict: bool = False) -> "BuildingRegistry":
+    from .unit import BuildingRegistry
+    registry = BuildingRegistry()
+    root = Path(buildings_root)
+    if not root.exists():
+        return registry
+
+    for json_path in sorted(root.rglob("*.json")):
+        try:
+            definition = parse_building_file(json_path)
+        except Exception as e:
+            message = f"[building parser] Skipping invalid building file {json_path}: {e}"
+            if strict:
+                raise UnitParseError(message) from e
+            print(message, file=sys.stderr)
+            continue
+        registry.register(definition)
 
     return registry

@@ -17,7 +17,7 @@
       "cooldown": 1,
       "perks": [
         {
-          "type": "sacrafice"
+          "type": "explode"
         },
         {
           "type": "cripple",
@@ -26,4 +26,5 @@
       ]
     }
   ],
-  "model" "/static/models/doon/doonCarBomb/" 
+  "model": "/static/models/doon/doonCarBomb/carBomb.gltf"
+}

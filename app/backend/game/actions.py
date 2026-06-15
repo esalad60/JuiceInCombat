@@ -83,6 +83,10 @@ def validate_move(
     unit = require_unit(state, player_slot, action)
     to_x, to_y = get_xy(action, "to")
 
+    from . import traits
+    if unit.has_moved and not traits.unit_has_multimove(unit):
+        raise ActionError("Unit has already moved this turn")
+
     if not state.game_map.in_bounds(to_x, to_y):
         raise ActionError(f"Destination ({to_x},{to_y}) out of bounds")
 

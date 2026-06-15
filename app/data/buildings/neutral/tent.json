@@ -1,0 +1,8 @@
+{
+  "name": "Outpost",
+  "type": "outpost",
+  "health": 120,
+  "armor": 1,
+  "income": 25,
+  "model": "/static/models/buildings/tent/tent.gltf"
+}

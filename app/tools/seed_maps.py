@@ -33,15 +33,18 @@ def seed_maps(maps_dir: str = "data/maps"):
         if not width or not height:
             continue
 
-        existing = None
+        map_json = json.dumps(map_data)
+
         with get_db() as conn:
             cur = conn.execute("SELECT id FROM maps WHERE name = ?", (name,))
             row = cur.fetchone()
             if row:
+                conn.execute(
+                    "UPDATE maps SET width = ?, height = ?, json_data = ? WHERE id = ?",
+                    (width, height, map_json, row[0]),
+                )
                 continue
 
-        # Insert map
-        map_json = json.dumps(map_data)
         map_id = create_map(name, width, height, map_json, author_id=None)
 
 if __name__ == "__main__":

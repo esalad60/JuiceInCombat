@@ -48,7 +48,7 @@ def fire_weapon(
         target_height=target_tile.height,
     )
 
-    terrain_def_mod = terrain_mod.defense_multiplier(target_tile.base)
+    terrain_def_mod = terrain_mod.defense_multiplier(target_tile.feature)
     veterancy_mod   = 1.0  ## maybe implement
 
     status_mod = status_damage_multiplier(target)
@@ -78,8 +78,23 @@ def fire_weapon(
     perks_applied: list[str] = []
     is_unit_target = is_unit(state, target)
 
+    explode_perks = [p for p in weapon.perks if p.type == "explode"]
+    other_perks   = [p for p in weapon.perks if p.type != "explode"]
+
+    if explode_perks:
+        explosion_dmg = weapon.damage
+        apply_explosion(
+            state=state,
+            attacker=attacker,
+            target=target,
+            explosion_damage=explosion_dmg,
+        )
+        perks_applied.append("explode")
+        if is_unit_target and target.id not in state.units:
+            destroyed = True
+
     if is_unit_target and not destroyed:
-        for perk_app in weapon.perks:
+        for perk_app in other_perks:
             apply_weapon_perk(
                 state=state,
                 attacker=attacker,
@@ -92,9 +107,11 @@ def fire_weapon(
 
     if destroyed:
         if is_unit_target:
-            state.remove_unit(target.id)
+            if target.id in state.units:
+                state.remove_unit(target.id)
         else:
-            state.remove_building(target.id)
+            if target.id in state.buildings:
+                state.remove_building(target.id)
     return FireResult(
         attacker_id=attacker.id,
         target_id=target.id,
@@ -138,6 +155,44 @@ def status_damage_multiplier(target: Union[Unit, Building]) -> float:
     return perks.damage_multiplier_for_effects(effects)
 
 
+def apply_explosion(
+    *,
+    state: GameState,
+    attacker: Unit,
+    target: Union[Unit, Building],
+    explosion_damage: int,
+) -> None:
+    blast = max(1, int(explosion_damage))
+
+    # Tiles affected: attacker's own tile + target tile + target's neighbors.
+    affected: set[tuple[int, int]] = set()
+    affected.add((attacker.x, attacker.y))
+    tx, ty = target.x, target.y
+    affected.add((tx, ty))
+    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        nx, ny = tx + dx, ty + dy
+        if state.game_map.in_bounds(nx, ny):
+            affected.add((nx, ny))
+
+    victims = [
+        u for u in list(state.units.values())
+        if (u.x, u.y) in affected and u.id != attacker.id
+    ]
+    for u in victims:
+        u.hp -= blast
+        if u.hp <= 0 and u.id in state.units:
+            state.remove_unit(u.id)
+
+    for b in list(state.buildings.values()):
+        if (b.x, b.y) in affected:
+            b.hp -= blast
+            if b.hp <= 0 and b.id in state.buildings:
+                state.remove_building(b.id)
+
+    if attacker.id in state.units:
+        state.remove_unit(attacker.id)
+
+
 def apply_weapon_perk(
     *,
     state: GameState,
@@ -153,9 +208,6 @@ def apply_weapon_perk(
         source_slot=attacker.owner_slot,
         params=dict(params),
     )
-    if (perk_type == "explosive"):
-        state.remove_unit(attacker.id)
-        return
     state.apply_status_effect(target.id, effect)
 
 
