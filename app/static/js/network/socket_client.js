@@ -68,12 +68,30 @@ export function connectSocket(matchId, handlers) {
         }
     });
 
-		socket.on("game_started", (payload) => {
-		const matchId = payload.match_id;
+	socket.on("game_started", (payload) => {
+		console.log("GAME STARTED RECEIVED:", payload);
+
+		const matchId = payload.match_id || currentMatchId;
 
 		if (!matchId) {
 			console.error("game_started missing match_id:", payload);
 			return;
+		}
+
+		if (payload.player_slot !== undefined && payload.player_slot !== null) {
+			setMySlot(payload.player_slot);
+		}
+
+		if (payload.unit_catalog) {
+			setUnitCatalog(payload.unit_catalog);
+		}
+
+		if (payload.game_state) {
+			handleIncomingGameState(payload.game_state);
+		}
+
+		if (callbacks.onGameStarted) {
+			callbacks.onGameStarted(payload.game_state || payload);
 		}
 
 		window.location.href = `/game/${matchId}`;
